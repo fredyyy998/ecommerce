@@ -4,6 +4,7 @@ public interface ICustomerRepository
 {
     void Create(Customer customer);
     Customer GetByEmail(string email);
+    bool EmailExists(string email);
     void Update(Customer customer);
     void Delete(Guid id);
 }
