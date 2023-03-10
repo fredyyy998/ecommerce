@@ -1,5 +1,6 @@
 ﻿using System.Threading.Channels;
 using Account.Application.Dtos;
+using Account.Application.Exceptions;
 using Account.Core.User;
 using AutoMapper;
 
@@ -21,6 +22,10 @@ public class ProfileService : IProfileService
     public CustomerResponseDto GetProfile(Guid customerId)
     {
         var customer = _customerRepository.GetById(customerId);
+        if (customer is null)
+        {
+            throw new EntityNotFoundException("Customer not found");
+        }
         return _mapper.Map<CustomerResponseDto>(customer);
     }
     
@@ -29,7 +34,7 @@ public class ProfileService : IProfileService
         var customer = _customerRepository.GetById(customerId);
         if (customer is null)
         {
-            throw new Exception("Customer not found");
+            throw new EntityNotFoundException("Customer not found");
         }
         
         customer.UpdateAddress(customerUpdateDto.Address.Street, customerUpdateDto.Address.City, customerUpdateDto.Address.Zip, customerUpdateDto.Address.Country);
@@ -45,6 +50,11 @@ public class ProfileService : IProfileService
 
     public void DeleteProfile(Guid customerId)
     {
+        var customer = _customerRepository.GetById(customerId);
+        if (customer is null)
+        {
+            throw new EntityNotFoundException("Customer not found");
+        }
         _customerRepository.Delete(customerId);
     }
 }
