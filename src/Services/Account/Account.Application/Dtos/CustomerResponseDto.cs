@@ -2,4 +2,7 @@
 
 public record CustomerResponseDto(
     Guid Id,
-    string Email);
+    string Email,
+    AddressDto? Address,
+    PersonalInformationDto? PersonalInformation,
+    PaymentInformationDto? PaymentInformation);

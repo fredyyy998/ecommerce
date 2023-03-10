@@ -1,0 +1,59 @@
+﻿using Account.Application.Dtos;
+using Account.Application.Profile;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Account.Web;
+
+[ApiController]
+[Route("/api/[controller]")]
+public class AuthenticationController : Controller
+{
+    private IAuthenticationService _authenticationService;
+    
+    public AuthenticationController(IAuthenticationService authenticationService)
+    {
+        _authenticationService = authenticationService;
+    }
+    
+    [HttpPost]
+    [Route("register")]
+    public IActionResult RegisterCustomer(CustomerCreateDto customerDto)
+    {
+        try
+        {
+            var customer = _authenticationService.RegisterCustomer(customerDto);
+            return CreatedAtAction(
+                nameof(RegisterCustomer),
+                new { id = customer.Id },
+                customer);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+    
+    [HttpPost]
+    [Route("login")]
+    public IActionResult LoginCustomer(string email, string password)
+    {
+        try
+        {
+            var customer = _authenticationService.AuthenticateCustomer(email, password);
+            return Ok(customer);
+        }
+        catch (ValidationException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+}

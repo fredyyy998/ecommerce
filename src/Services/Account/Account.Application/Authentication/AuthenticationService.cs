@@ -7,7 +7,6 @@ using AutoMapper;
 using FluentValidation;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Account.Application.Profile;
 
@@ -59,10 +58,10 @@ public class AuthenticationService : IAuthenticationService
             throw new InvalidLoginException(email);
         }
 
-        return GenerateToken(user);
+        return GenerateJwt(user);
     }
     
-    private string GenerateToken(Customer customer)
+    private string GenerateJwt(Customer customer)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtInformation.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
