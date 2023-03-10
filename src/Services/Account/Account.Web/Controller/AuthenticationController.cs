@@ -52,9 +52,9 @@ public class AuthenticationController : Controller
             var customer = _authenticationService.AuthenticateCustomer(email, password);
             return Ok(customer);
         }
-        catch (ValidationException e)
+        catch (InvalidLoginException e)
         {
-            return BadRequest(e.Message);
+            return BadRequest("Invalid login");
         }
         catch (Exception e)
         {
