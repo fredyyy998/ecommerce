@@ -1,4 +1,5 @@
 ﻿using Account.Application.Dtos;
+using Account.Application.Exceptions;
 using Account.Application.Profile;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,10 @@ public class AuthenticationController : Controller
                 nameof(RegisterCustomer),
                 new { id = customer.Id },
                 customer);
+        }
+        catch (EmailAlreadyExistsException e)
+        {
+            return BadRequest("Email already exists");
         }
         catch (ValidationException e)
         {
