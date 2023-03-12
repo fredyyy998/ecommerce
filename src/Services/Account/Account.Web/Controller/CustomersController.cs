@@ -1,11 +1,14 @@
-﻿using Account.Application.Dtos;
+﻿using System.Security.Claims;
+using Account.Application.Dtos;
 using Account.Application.Exceptions;
 using Account.Application.Profile;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Account.Web;
 
 [ApiController]
+[Authorize]
 [Route("/api/[controller]")]
 public class CustomersController : Controller
 {
@@ -16,9 +19,10 @@ public class CustomersController : Controller
         _profileService = profileService;
     }
     
-    [HttpGet("{customerId:guid}")]
-    public IActionResult GetProfile(Guid customerId)
+    [HttpGet()]
+    public IActionResult GetProfile()
     {
+        var customerId = GetGuidFromClaims();
         try
         {
             var customer = _profileService.GetProfile(customerId);
@@ -34,9 +38,10 @@ public class CustomersController : Controller
         }
     }
     
-    [HttpPut("{customerId:guid}")]
-    public IActionResult UpdateProfile(Guid customerId, CustomerUpdateDto customerUpdateDto)
+    [HttpPut()]
+    public IActionResult UpdateProfile(CustomerUpdateDto customerUpdateDto)
     {
+        var customerId = GetGuidFromClaims();
         try
         {
             _profileService.UpdateProfile(customerId, customerUpdateDto);
@@ -52,9 +57,10 @@ public class CustomersController : Controller
         }
     }
     
-    [HttpDelete("{customerId:guid}")]
-    public IActionResult DeleteProfile(Guid customerId)
+    [HttpDelete()]
+    public IActionResult DeleteProfile()
     {
+         var customerId = GetGuidFromClaims();
         try
         {
             _profileService.DeleteProfile(customerId);
@@ -68,5 +74,12 @@ public class CustomersController : Controller
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+    }
+    
+    private Guid GetGuidFromClaims()
+    {
+        var claims = User.Claims;
+        var customerId= claims.FirstOrDefault(x=>x.Type==ClaimTypes.NameIdentifier).Value;
+        return Guid.Parse(customerId);
     }
 }

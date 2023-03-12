@@ -81,7 +81,9 @@ public class AuthenticationService : IAuthenticationService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-    
+
+
+
     public ClaimsPrincipal ValidateToken(string token)
     {
         var validationParameters = new TokenValidationParameters
