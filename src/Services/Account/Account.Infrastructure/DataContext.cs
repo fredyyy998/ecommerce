@@ -14,23 +14,48 @@ public class DataContext : DbContext
     public DataContext(IConfiguration configuration)
     {
         Configuration = configuration;
+        // necessary to save DateTime
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseInMemoryDatabase(databaseName: "AccountDatabase");
+        optionsBuilder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), 
+            builder => builder.MigrationsAssembly("Account.Web"));
+        // optionsBuilder.UseInMemoryDatabase(databaseName: "AccountDatabase");
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.OwnsOne(c => c.Address);
+            entity.OwnsOne(c => c.Address, address =>
+            {
+                address.Property(a => a.Street).IsRequired(false);
+                address.Property(a => a.City).IsRequired(false);
+                address.Property(a => a.Zip).IsRequired(false);
+                address.Property(a => a.Country).IsRequired(false);
+            });
+
             entity.OwnsOne(c => c.PaymentInformation, pi =>
+            {
+                pi.OwnsOne(p => p.Address, address =>
                 {
-                    pi.OwnsOne(c => c.Address);
+                    address.Property(a => a.Street).IsRequired(false);
+                    address.Property(a => a.City).IsRequired(false);
+                    address.Property(a => a.Zip).IsRequired(false);
+                    address.Property(a => a.Country).IsRequired(false);
                 });
-            entity.OwnsOne(c => c.PersonalInformation);
+            });
+
+            entity.OwnsOne(c => c.PersonalInformation, pi =>
+            {
+                pi.Property(p => p.FirstName).IsRequired(false);
+                pi.Property(p => p.LastName).IsRequired(false);
+                // TODO the DateOnly type cannot be set to nullable, tho for now we simply set an unrealistic default value
+                // TODO this is a workaround, we should find a better solution
+                pi.Property(p => p.DateOfBirth).HasDefaultValue(DateOnly.Parse("1900-01-01"));
+            });
             entity.OwnsOne(c => c.Password);
         });
     }
