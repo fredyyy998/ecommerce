@@ -1,5 +1,6 @@
 ﻿using Account.Application;
 using Account.Application.Dtos;
+using Account.Application.Exceptions;
 using Account.Application.Profile;
 using Account.Core.User;
 using AutoMapper;
@@ -36,7 +37,32 @@ public class ProfileServiceTest
     }
 
     [Fact]
+    public void Customer_gets_EntityNotFoundException_when_customer_does_not_exist()
+    {
+        var notPersistedCustomer = Customer.Create("customer@test.de", "abc123");
+        _customerRepository.Setup(x => x.GetById(It.IsAny<Guid>())).Returns((Customer) null);
+
+        
+        Assert.Throws<EntityNotFoundException>(() => _profileService.GetProfile(notPersistedCustomer.Id));
+    }
+
+    [Fact]
     public void Customer_can_update_their_profile()
+    {
+        var customer = Customer.Create("customer@test.de", "abc123");
+        var updateAddress = new AddressDto("street", "city", "zip", "country");
+        var updatePersonalInfo = new PersonalInformationDto("firstName", "lastName", "01.01.2000");
+        var paymentInformation = new PaymentInformationDto(new AddressDto("street", "city", "zip", "country"));
+        var updateDto = new CustomerUpdateDto(updateAddress, updatePersonalInfo, paymentInformation);
+        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+
+        _profileService.UpdateProfile(customer.Id, updateDto);
+
+        _customerRepository.Verify(x => x.Update(It.IsAny<Customer>()), Times.Once);
+    }
+    
+    [Fact]
+    public void Customer_can_update_their_profile_without_payment_information()
     {
         var customer = Customer.Create("customer@test.de", "abc123");
         var updateAddress = new AddressDto("street", "city", "zip", "country");
@@ -47,6 +73,18 @@ public class ProfileServiceTest
         _profileService.UpdateProfile(customer.Id, updateDto);
 
         _customerRepository.Verify(x => x.Update(It.IsAny<Customer>()), Times.Once);
+    }
+
+    [Fact]
+    public void Customer_can_delete_their_profile()
+    {
+        var customer = Customer.Create("customer@test.de", "avce123");
+        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+        _customerRepository.Setup(x => x.Delete(customer.Id));
+        
+        _profileService.DeleteProfile(customer.Id);
+        
+        _customerRepository.Verify(x => x.Delete(customer.Id), Times.Once);
     }
 
 }

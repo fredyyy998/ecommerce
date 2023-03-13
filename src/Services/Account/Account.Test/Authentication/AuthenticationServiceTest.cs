@@ -73,16 +73,24 @@ public class AuthenticationTests
     }
 
     [Fact]
-    public void Login_Issues_Token_On_Valid_Credentials()
+    public void Login_is_not_valid_if_user_does_not_exist()
     {
         var email = "test@test.de";
         var password = "abc123";
         var customer = Customer.Create(email, password);
-        _customerRepository.Setup(x => x.GetByEmail(email)).Returns(customer);
+        _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns((Customer) null);
         
-        var token = _authenticationService.AuthenticateCustomer(email, password);
-        var claimsPrincipal = _authenticationService.ValidateToken(token);
+        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateCustomer(email, password));
+    }
+    
+    [Fact]
+    public void Login_is_not_valid_on_non_matching_password()
+    {
+        var email = "test@test.de";
+        var password = "abc123";
+        var customer = Customer.Create(email, password);
+        _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns(customer);
         
-        Assert.Equal(claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value, customer.Id.ToString());
+        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateCustomer(email, "abc12345"));
     }
 }

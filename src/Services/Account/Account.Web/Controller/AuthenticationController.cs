@@ -24,10 +24,12 @@ public class AuthenticationController : Controller
         try
         {
             var customer = _authenticationService.RegisterCustomer(customerDto);
-            return CreatedAtAction(
-                nameof(RegisterCustomer),
-                new { id = customer.Id },
-                customer);
+            return Ok(customer);
+            // TODO better would be following response, but the routing is not working:
+            // CreatedAtAction(
+            //     nameof(RegisterCustomer),
+            //     new { id = customer.Id },
+            //     customer);
         }
         catch (EmailAlreadyExistsException e)
         {
@@ -49,8 +51,8 @@ public class AuthenticationController : Controller
     {
         try
         {
-            var customer = _authenticationService.AuthenticateCustomer(email, password);
-            return Ok(customer);
+            var jwtToken = _authenticationService.AuthenticateCustomer(email, password);
+            return Ok(jwtToken);
         }
         catch (InvalidLoginException e)
         {

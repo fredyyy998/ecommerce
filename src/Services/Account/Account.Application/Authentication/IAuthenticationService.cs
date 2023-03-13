@@ -7,5 +7,4 @@ public interface IAuthenticationService
 {
     CustomerResponseDto RegisterCustomer(CustomerCreateDto userDto);
     string AuthenticateCustomer(string email, string password);
-    ClaimsPrincipal ValidateToken(string token);
 }

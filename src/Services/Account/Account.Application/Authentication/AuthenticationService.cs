@@ -81,34 +81,5 @@ public class AuthenticationService : IAuthenticationService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
-
-
-    public ClaimsPrincipal ValidateToken(string token)
-    {
-        var validationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtInformation.SecretKey)),
-            ValidateIssuer = true,
-            ValidIssuer = _jwtInformation.Issuer,
-            ValidateAudience = true,
-            ValidAudience = _jwtInformation.Audience,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-
-        var handler = new JwtSecurityTokenHandler();
-        try
-        {
-            var claimsPrincipal = handler.ValidateToken(token, validationParameters, out var securityToken);
-            return claimsPrincipal;
-        }
-        catch (Exception)
-        {
-            // token is invalid
-            return null;
-        }
-    }
 }
 
