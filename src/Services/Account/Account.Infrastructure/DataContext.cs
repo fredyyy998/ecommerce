@@ -7,24 +7,14 @@ namespace Account.Infrastructure;
 public class DataContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
-    
-    protected readonly IConfiguration Configuration;
-    
-    
-    public DataContext(IConfiguration configuration)
+
+
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
-        Configuration = configuration;
         // necessary to save DateTime
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), 
-            builder => builder.MigrationsAssembly("Account.Web"));
-        // optionsBuilder.UseInMemoryDatabase(databaseName: "AccountDatabase");
-    }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Customer>(entity =>

@@ -10,11 +10,11 @@ namespace Account.Web;
 [ApiController]
 [Authorize]
 [Route("/api/[controller]")]
-public class CustomersController : Controller
+public class CustomerProfilesController : Controller
 {
     private readonly IProfileService _profileService;
     
-    public CustomersController(IProfileService profileService)
+    public CustomerProfilesController(IProfileService profileService)
     {
         _profileService = profileService;
     }
@@ -22,64 +22,68 @@ public class CustomersController : Controller
     [HttpGet()]
     public IActionResult GetProfile()
     {
-        var customerId = GetGuidFromClaims();
         try
         {
+            var customerId = GetGuidFromClaims();
             var customer = _profileService.GetProfile(customerId);
             return Ok(customer);
         }
-        catch (EntityNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
         catch (Exception e)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return HandleException(e);
         }
     }
     
     [HttpPut()]
     public IActionResult UpdateProfile(CustomerUpdateDto customerUpdateDto)
     {
-        var customerId = GetGuidFromClaims();
         try
         {
+            var customerId = GetGuidFromClaims();
             _profileService.UpdateProfile(customerId, customerUpdateDto);
             return Ok();
         }
-        catch (EntityNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
         catch (Exception e)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return HandleException(e);
         }
     }
     
     [HttpDelete()]
     public IActionResult DeleteProfile()
     {
-         var customerId = GetGuidFromClaims();
         try
         {
+            var customerId = GetGuidFromClaims();
             _profileService.DeleteProfile(customerId);
             return Ok();
         }
-        catch (EntityNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
         catch (Exception e)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return HandleException(e);
         }
     }
     
     private Guid GetGuidFromClaims()
     {
-        var claims = User.Claims;
-        var customerId= claims.FirstOrDefault(x=>x.Type==ClaimTypes.NameIdentifier).Value;
+        var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(customerId))
+        {
+            throw new UnauthorizedException("User not authorized.");
+        }
         return Guid.Parse(customerId);
+    }
+    
+    private IActionResult HandleException(Exception e)
+    {
+        if (e is EntityNotFoundException)
+        {
+            return NotFound(e.Message);
+        }
+        if (e is UnauthorizedException)
+        {
+            return Unauthorized(e.Message);
+        }
+        return StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

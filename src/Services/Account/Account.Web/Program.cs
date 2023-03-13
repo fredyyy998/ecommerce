@@ -7,6 +7,7 @@ using Account.Infrastructure;
 using Account.Infrastructure.Repository;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -34,8 +35,11 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
     builder.Services.AddAutoMapper(typeof(MappingProfile));
-    builder.Services.AddDbContext<DataContext>();
+    builder.Services.AddDbContext<DataContext>(options =>
+        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("Account.Web")));
     
+
     var jwtInformation = new JwtInformation(configuration["JWT:Secret"], configuration["JWT:ValidIssuer"], configuration["JWT:ValidAudience"]);
     builder.Services.AddSingleton<JwtInformation>(jwtInformation);
     
