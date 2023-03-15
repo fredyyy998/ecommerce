@@ -80,3 +80,5 @@ var app = builder.Build();
     
     app.Run();
 }
+
+public partial class Program { }
