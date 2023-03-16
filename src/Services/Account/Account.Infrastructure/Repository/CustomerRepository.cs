@@ -1,4 +1,5 @@
 ﻿using Account.Core.Common;
+using Account.Core.Events;
 using Account.Core.User;
 using MediatR;
 
@@ -58,9 +59,23 @@ public class CustomerRepository : ICustomerRepository
 
     private void PublishDomainEvents(EntityRoot entity)
     {
-        foreach (var domainEvent in entity.DomainEvents)
+        var publishEvents = MergeDomainEvents(entity.DomainEvents);
+        foreach (var domainEvent in publishEvents)
         {
             _mediator.Publish(domainEvent);
         }
+    }
+
+    private IReadOnlyCollection<IDomainEvent> MergeDomainEvents(IReadOnlyCollection<IDomainEvent> domainEvents)
+    {
+        var publishEvents = domainEvents.ToList();
+        var eventsToDelete = publishEvents.Where(x => x.GetType() == typeof(CustomerEditedEvent)).Reverse().Skip(1);
+        
+        foreach (var obj in eventsToDelete.ToList())
+        {
+            publishEvents.Remove(obj);
+        }
+
+        return publishEvents;
     }
 }
