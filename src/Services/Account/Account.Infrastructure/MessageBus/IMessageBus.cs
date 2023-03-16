@@ -4,5 +4,5 @@ namespace Account.Infrastructure.MessageBus;
 
 public interface IMessageBus
 {
-    void Publish(string topic, string message);
+    Object Publish<T>(string topic, T message);
 }
