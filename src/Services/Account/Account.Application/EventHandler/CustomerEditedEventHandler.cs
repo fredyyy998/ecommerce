@@ -15,6 +15,6 @@ public class CustomerEditedEventHandler : INotificationHandler<CustomerEditedEve
 
     public async Task Handle(CustomerEditedEvent notification, CancellationToken cancellationToken)
     {
-        _messageBus.Publish("customer-edited", "Customer edited");
+        _messageBus.Publish<CustomerEditedEvent>("customer-edited", notification);
     }
 }
