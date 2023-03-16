@@ -2,7 +2,7 @@
 
 namespace Account.Core.User;
 
-public abstract class User : Entity
+public abstract class User : EntityRoot
 {
     public string Email { get; protected set; }
     public Password Password { get; protected set; }

@@ -1,4 +1,6 @@
-﻿using Account.Core.User;
+﻿using Account.Core.Common;
+using Account.Core.User;
+using MediatR;
 
 namespace Account.Infrastructure.Repository;
 
@@ -6,15 +8,20 @@ public class CustomerRepository : ICustomerRepository
 {
     private readonly DataContext _dbContext;
     
-    public CustomerRepository(DataContext dbContext)
+    private readonly IMediator _mediator;
+    
+    public CustomerRepository(DataContext dbContext, IMediator mediator)
     {
         _dbContext = dbContext;
+        _mediator = mediator;
     }
     
     public void Create(Customer customer)
     {
         _dbContext.Customers.Add(customer);
         _dbContext.SaveChanges();
+        
+        PublishDomainEvents(customer);
     }
 
     public Customer GetByEmail(string email)
@@ -36,6 +43,8 @@ public class CustomerRepository : ICustomerRepository
     {
         _dbContext.Customers.Update(customer);
         _dbContext.SaveChanges();
+        
+        PublishDomainEvents(customer);
     }
 
     public void Delete(Guid id)
@@ -43,5 +52,15 @@ public class CustomerRepository : ICustomerRepository
         var customer = GetById(id);
         _dbContext.Customers.Remove(customer);
         _dbContext.SaveChanges();
+        
+        PublishDomainEvents(customer);
+    }
+
+    private void PublishDomainEvents(EntityRoot entity)
+    {
+        foreach (var domainEvent in entity.DomainEvents)
+        {
+            _mediator.Publish(domainEvent);
+        }
     }
 }

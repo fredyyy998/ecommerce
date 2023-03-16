@@ -1,11 +1,16 @@
+using System.Reflection;
 using System.Text;
 using Account.Application;
 using Account.Application.Dtos;
+using Account.Application.EventHandler;
 using Account.Application.Profile;
+using Account.Core.Events;
 using Account.Core.User;
 using Account.Infrastructure;
+using Account.Infrastructure.MessageBus;
 using Account.Infrastructure.Repository;
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -59,6 +64,11 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
     builder.Services.AddScoped<IProfileService, ProfileService>();
+    
+    builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventHandler>();
+    
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 }
 
 var app = builder.Build();

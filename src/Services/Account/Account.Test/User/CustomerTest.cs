@@ -1,4 +1,5 @@
-﻿using Account.Core.User;
+﻿using Account.Core.Events;
+using Account.Core.User;
 
 namespace Account.Test.User;
 
@@ -41,8 +42,29 @@ public class CustomerTest
         Assert.Equal("Testcity", customer.PaymentInformation.Address.City);
         Assert.Equal("TestCountry", customer.PaymentInformation.Address.Country);
     }
+    
+    [Fact]
+    public void CustomerRegistrationEventIsAdded()
+    {
+        var customer = CreateCustomer();
+        
+        Assert.Single(customer.DomainEvents);
+        Assert.IsType<CustomerRegisteredEvent>(customer.DomainEvents.First());
+    }
 
-    public Customer CreateCustomer()
+    [Fact]
+    public void CustomerEditedEvent_is_added_on_customer_changes()
+    {
+        var customer = CreateCustomer();
+        customer.ClearEvents(); // Clear the registration event
+        
+        customer.UpdatePersonalInformation("John", "Doe", "01.01.2000");
+        
+        Assert.Single(customer.DomainEvents);
+        Assert.IsType<CustomerEditedEvent>(customer.DomainEvents.First());
+    }
+
+    private Customer CreateCustomer()
     {
         return Customer.Create("user@test.de", "abc123");
     }

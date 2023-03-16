@@ -1,4 +1,4 @@
-﻿using System.Dynamic;
+﻿using Account.Core.Events;
 
 namespace Account.Core.User;
 
@@ -12,25 +12,30 @@ public class Customer : User
 
     public static Customer Create(string email, string password)
     {
-        return new Customer
+        var customer = new Customer
         {
             Id = Guid.NewGuid(),
             Email = email,
             Password = Password.Create(password),
             CreatedAt = DateTime.Now,
         };
+        
+        customer.AddDomainEvent(new CustomerRegisteredEvent(customer));
+        return customer;
     }
 
     public void UpdatePersonalInformation(string FirstName, string LastName, string DateOfBirth)
     {
         PersonalInformation = new PersonalInformation(FirstName, LastName, DateOnly.Parse(DateOfBirth));
         UpdatedAt = DateTime.Now;
+        AddDomainEvent(new CustomerEditedEvent(this));
     }
 
     public void UpdateAddress(string street, string zip, string city, string country)
     {
         Address = new Address(street, zip, city, country);
         UpdatedAt = DateTime.Now;
+        AddDomainEvent(new CustomerEditedEvent(this));
     }
 
 
@@ -39,5 +44,6 @@ public class Customer : User
         var paymentAddress = new Address(street, zip, city, country);
         PaymentInformation = new PaymentInformation(paymentAddress);
         UpdatedAt = DateTime.Now;
+        AddDomainEvent(new CustomerEditedEvent(this));
     }
 }
