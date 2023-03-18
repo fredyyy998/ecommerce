@@ -1,19 +1,4 @@
-using System.Reflection;
-using System.Text;
-using Account.Application;
-using Account.Application.Dtos;
-using Account.Application.EventHandler;
-using Account.Application.Profile;
-using Account.Core.Events;
-using Account.Core.User;
-using Account.Infrastructure;
-using Account.Infrastructure.MessageBus;
-using Account.Infrastructure.Repository;
-using FluentValidation;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using Account.Web.Configuration;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -37,39 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
-
-    builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
-    builder.Services.AddAutoMapper(typeof(MappingProfile));
-    builder.Services.AddDbContext<DataContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-            b => b.MigrationsAssembly("Account.Web")));
     
-
-    var jwtInformation = new JwtInformation(configuration["JWT:Secret"], configuration["JWT:ValidIssuer"], configuration["JWT:ValidAudience"]);
-    builder.Services.AddSingleton<JwtInformation>(jwtInformation);
-    
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:Secret").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-    
-    builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
-    builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-    builder.Services.AddScoped<IProfileService, ProfileService>();
-
-    builder.Services.AddScoped<IMessageBus, KafkaProducer>();
-    builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventHandler>();
-    builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventHandler>();
-    
-    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+    builder.Services.InstallServices(builder.Configuration, typeof(IServiceInstaller).Assembly);
 }
 
 var app = builder.Build();
