@@ -1,6 +1,8 @@
-﻿namespace Inventory.Core.Product;
+﻿using Account.Core.Common;
 
-public class ProductInformation
+namespace Inventory.Core.Product;
+
+public class ProductInformation : ValueObject
 {
     public string Key { get; private set; }
     public string Value { get; private set; }
@@ -12,5 +14,11 @@ public class ProductInformation
             Key = key,
             Value = value
         };
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Key;
+        yield return Value;
     }
 }

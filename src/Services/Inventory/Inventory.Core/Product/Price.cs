@@ -1,6 +1,8 @@
-﻿namespace Inventory.Core.Product;
+﻿using Account.Core.Common;
 
-public class Price
+namespace Inventory.Core.Product;
+
+public class Price : ValueObject
 {
     public decimal GrossPrice { get; private set; }
 
@@ -41,5 +43,13 @@ public class Price
     private static decimal CalculateNetPrice(decimal grossPrice, int salesTax)
     {
         return Math.Round(grossPrice / (100 + salesTax) * 100, MaxDecimalPlaces);
+    }
+    
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return GrossPrice;
+        yield return NetPrice;
+        yield return SalesTax;
+        yield return CurrencyCode;
     }
 }

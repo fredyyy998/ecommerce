@@ -1,6 +1,8 @@
-﻿namespace Inventory.Core.Product;
+﻿using Account.Core.Common;
 
-public class Product
+namespace Inventory.Core.Product;
+
+public class Product : EntityRoot
 {
     public string Name { get; private set; }
     
