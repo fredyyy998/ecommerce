@@ -1,5 +1,5 @@
-﻿using Account.Core.Common;
-using Account.Core.User;
+﻿using Account.Core.User;
+using Ecommerce.Common.Core;
 
 namespace Account.Core.Events;
 

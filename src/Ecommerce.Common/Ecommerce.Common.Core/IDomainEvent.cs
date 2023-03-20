@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Account.Core.Common;
+namespace Ecommerce.Common.Core;
 
 public interface IDomainEvent : INotification
 {

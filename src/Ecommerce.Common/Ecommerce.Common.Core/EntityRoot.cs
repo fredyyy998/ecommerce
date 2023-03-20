@@ -1,4 +1,4 @@
-﻿namespace Account.Core.Common;
+﻿namespace Ecommerce.Common.Core;
 
 public abstract class EntityRoot : Entity
 {

@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-using System.Security.Cryptography;
-using Account.Application;
+﻿using Account.Application;
 using Account.Application.Dtos;
 using Account.Application.Exceptions;
 using Account.Application.Profile;

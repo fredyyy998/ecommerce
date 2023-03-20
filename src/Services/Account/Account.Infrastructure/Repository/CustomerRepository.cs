@@ -1,6 +1,6 @@
-﻿using Account.Core.Common;
-using Account.Core.Events;
+﻿using Account.Core.Events;
 using Account.Core.User;
+using Ecommerce.Common.Core;
 using MediatR;
 
 namespace Account.Infrastructure.Repository;

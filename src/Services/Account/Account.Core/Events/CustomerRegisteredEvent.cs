@@ -1,6 +1,5 @@
-﻿using Account.Core.Common;
-using Account.Core.User;
-using MediatR;
+﻿using Account.Core.User;
+using Ecommerce.Common.Core;
 
 namespace Account.Core.Events;
 

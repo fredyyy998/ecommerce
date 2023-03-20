@@ -1,10 +1,8 @@
-﻿namespace Inventory.Core.Product;
+﻿using Ecommerce.Common.Core;
 
-public interface IProductRepository
+namespace Inventory.Core.Product;
+
+public interface IProductRepository : IRepository<Product>
 {
-    void Create(Product customer);
-    Product GetById(Guid id);
     ICollection<Product> Search(string search);
-    void Update(Product customer);
-    void Delete(Guid id);
 }
