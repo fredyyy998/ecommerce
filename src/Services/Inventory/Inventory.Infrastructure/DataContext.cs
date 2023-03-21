@@ -13,4 +13,13 @@ public class DataContext : DbContext
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
     
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.OwnsOne(p => p.Price);
+            entity.OwnsMany(p => p.Information);
+        });
+    }
+    
 }

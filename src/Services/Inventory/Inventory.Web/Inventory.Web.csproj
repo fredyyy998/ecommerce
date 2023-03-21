@@ -8,6 +8,18 @@
 
     <ItemGroup>
       <PackageReference Include="Ecommerce.Common.Web" Version="1.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Inventory.Infrastructure\Inventory.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Configuration" />
     </ItemGroup>
 
 </Project>

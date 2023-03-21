@@ -1,6 +1,8 @@
 
 
 using Ecommerce.Common.Web;
+using Inventory.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -10,6 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHttpContextAccessor();
 
+    builder.Services.AddDbContext<DataContext>(options =>
+        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("Inventory.Web")));
+    
     builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
 }
 
