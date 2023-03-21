@@ -11,9 +11,6 @@ The services share code via the Common project. Currently that is provided local
 1. Pack the project with `dotnet pack -o {direcotry path}`
 2. Reference the local package directory
 
-// tbd
-
-
 ## Project Structure
 
 The soruce code is structured as following:

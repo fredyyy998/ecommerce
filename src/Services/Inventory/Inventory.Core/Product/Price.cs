@@ -1,4 +1,4 @@
-﻿using Account.Core.Common;
+﻿using Ecommerce.Common.Core;
 
 namespace Inventory.Core.Product;
 
