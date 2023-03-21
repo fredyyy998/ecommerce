@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Account.Application;
+using Ecommerce.Common.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 

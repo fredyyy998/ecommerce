@@ -5,6 +5,7 @@ using Account.Core.User;
 using Account.Infrastructure;
 using Account.Infrastructure.MessageBus;
 using Account.Infrastructure.Repository;
+using Ecommerce.Common.Web;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

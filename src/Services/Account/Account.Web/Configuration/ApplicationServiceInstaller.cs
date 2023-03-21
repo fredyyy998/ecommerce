@@ -1,6 +1,7 @@
 ﻿using Account.Application;
 using Account.Application.Dtos;
 using Account.Application.Profile;
+using Ecommerce.Common.Web;
 using FluentValidation;
 
 namespace Account.Web.Configuration;

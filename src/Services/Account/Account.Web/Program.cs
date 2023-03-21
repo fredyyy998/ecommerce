@@ -1,4 +1,5 @@
 using Account.Web.Configuration;
+using Ecommerce.Common.Web;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
