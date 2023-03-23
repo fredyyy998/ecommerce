@@ -1,15 +1,32 @@
 ﻿using Inventory.Application.Dtos;
 using Inventory.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Inventory.Web;
 
 [ApiController]
 [Route("/api/[controller]")]
+[Authorize]
 public class ProductManagement : BaseController
 {
     public ProductManagement(IProductService productService) : base(productService)
     {
+    }
+    
+    [HttpGet("{id}")]
+    public IActionResult GetProduct(Guid id)
+    {
+        try
+        {
+            var product = _productService.GetProduct(id);
+            return Ok(product);
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
     }
 
     [HttpPost()]

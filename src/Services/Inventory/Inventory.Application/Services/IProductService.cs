@@ -5,6 +5,7 @@ namespace Inventory.Application.Services;
 
 public interface IProductService
 {
+    ProductResponseDto GetProduct(Guid productId);
     ICollection<ProductResponseDto> SearchProduct(string searchString);
     
     void ReserveProduct(Guid productId, int quantity);

@@ -16,6 +16,12 @@ public class ProductService : IProductService
         _mapper = mapper;
     }
 
+    public ProductResponseDto GetProduct(Guid productId)
+    {
+        var product = _productRepository.GetById(productId);
+        return _mapper.Map<Product, ProductResponseDto>(product);
+    }
+
     public ICollection<ProductResponseDto> SearchProduct(string searchString)
     {
         var products = _productRepository.Search(searchString);
