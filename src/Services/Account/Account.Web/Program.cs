@@ -7,8 +7,8 @@ using Account.Application.Profile;
 using Account.Core.Events;
 using Account.Core.User;
 using Account.Infrastructure;
-using Account.Infrastructure.MessageBus;
 using Account.Infrastructure.Repository;
+using Ecommerce.Common.Kafka;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,7 +65,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
     builder.Services.AddScoped<IProfileService, ProfileService>();
 
-    builder.Services.AddScoped<IMessageBus, KafkaProducer>();
+    builder.Services.AddSingleton<KafkaProducer>(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
     builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventHandler>();
     builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventHandler>();
     

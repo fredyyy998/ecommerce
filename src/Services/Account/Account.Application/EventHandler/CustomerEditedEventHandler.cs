@@ -1,20 +1,20 @@
 ﻿using Account.Core.Events;
-using Account.Infrastructure.MessageBus;
+using Ecommerce.Common.Kafka;
 using MediatR;
 
 namespace Account.Application.EventHandler;
 
 public class CustomerEditedEventHandler : INotificationHandler<CustomerEditedEvent>
 {
-    public readonly IMessageBus _messageBus;
+    public readonly KafkaProducer _messageBus;
 
-    public CustomerEditedEventHandler(IMessageBus messageBus)
+    public CustomerEditedEventHandler(KafkaProducer messageBus)
     {
         _messageBus = messageBus;
     }
 
     public async Task Handle(CustomerEditedEvent notification, CancellationToken cancellationToken)
     {
-        _messageBus.Publish<CustomerEditedEvent>("customer-edited", notification);
+        _messageBus.Publish<CustomerEditedEvent>("customer", "customer-edited", notification);
     }
 }

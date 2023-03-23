@@ -1,20 +1,20 @@
 ﻿using Account.Core.Events;
-using Account.Infrastructure.MessageBus;
+using Ecommerce.Common.Kafka;
 using MediatR;
 
 namespace Account.Application.EventHandler;
 
 public class CustomerRegisteredEventHandler : INotificationHandler<CustomerRegisteredEvent>
 {
-    public readonly IMessageBus _messageBus;
+    public readonly KafkaProducer _messageBus;
     
-    public CustomerRegisteredEventHandler(IMessageBus messageBus)
+    public CustomerRegisteredEventHandler(KafkaProducer messageBus)
     {
         _messageBus = messageBus;
     }
 
     public async Task Handle(CustomerRegisteredEvent notification, CancellationToken cancellationToken)
     {
-        _messageBus.Publish<CustomerRegisteredEvent>("customer-registration", notification);
+        _messageBus.Publish<CustomerRegisteredEvent>("customer", "customer-registration", notification);
     }
 }
