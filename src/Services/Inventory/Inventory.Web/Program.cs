@@ -1,7 +1,9 @@
 
-
-using Ecommerce.Common.Web;
+using Inventory.Application.Services;
+using Inventory.Application.Utils;
+using Inventory.Core.Product;
 using Inventory.Infrastructure;
+using Inventory.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,12 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHttpContextAccessor();
-
+    builder.Services.AddSwaggerGen();
+    
     builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
             b => b.MigrationsAssembly("Inventory.Web")));
+
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
     
-    builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
+    builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddScoped<IProductService, ProductService>();
+    
+    // builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
 }
 
 var app = builder.Build();
@@ -24,6 +32,8 @@ var app = builder.Build();
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
 
     app.UseCors("corsapp");
