@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
 using Inventory.Application.Dtos;
 using Inventory.Core.Product;
 
@@ -14,7 +15,7 @@ public class ProductService : IProductService
         _productRepository = productRepository;
         _mapper = mapper;
     }
-    
+
     public ICollection<ProductResponseDto> SearchProduct(string searchString)
     {
         var products = _productRepository.Search(searchString);

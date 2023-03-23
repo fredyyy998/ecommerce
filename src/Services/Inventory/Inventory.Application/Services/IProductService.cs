@@ -1,4 +1,5 @@
-﻿using Inventory.Application.Dtos;
+﻿using System.Collections;
+using Inventory.Application.Dtos;
 
 namespace Inventory.Application.Services;
 
