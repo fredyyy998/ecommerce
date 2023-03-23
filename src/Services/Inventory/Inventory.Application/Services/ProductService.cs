@@ -44,6 +44,20 @@ public class ProductService : IProductService
         var product = Product.Create(productCreateDto.Name, productCreateDto.Description, productCreateDto.GrossPrice);
         _productRepository.Create(product);
     }
+    
+    public void AddStock(Guid productId, int quantity)
+    {
+        var product = _productRepository.GetById(productId);
+        product.AddStock(quantity);
+        _productRepository.Update(product);
+    }
+    
+    public void RemoveStock(Guid productId, int quantity)
+    {
+        var product = _productRepository.GetById(productId);
+        product.RemoveStock(quantity);
+        _productRepository.Update(product);
+    }
 
     public void DeleteProduct(Guid productId)
     {

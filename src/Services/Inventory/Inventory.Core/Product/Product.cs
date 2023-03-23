@@ -20,9 +20,11 @@ public class Product : EntityRoot
     {
         return new Product
         {
+            Id = Guid.NewGuid(),
             Name = name,
             Description = description,
-            Price = Price.CreateDefault(price)
+            Price = Price.CreateDefault(price),
+            Stock = 0,
         };
     }
 

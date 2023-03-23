@@ -15,4 +15,8 @@ public interface IProductService
     void CreateProduct(ProductCreateDto productCreateDto);
     
     void DeleteProduct(Guid productId);
+    
+    void AddStock(Guid productId, int quantity);
+    
+    void RemoveStock(Guid productId, int quantity);
 }
