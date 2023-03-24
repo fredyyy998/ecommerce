@@ -9,6 +9,8 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
 
   zookeeper:
@@ -38,3 +40,7 @@ services:
 networks:
   kafka-net:
     driver: bridge
+
+volumes:
+  db-data:
+    driver: local
