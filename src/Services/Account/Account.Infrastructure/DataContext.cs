@@ -8,6 +8,8 @@ namespace Account.Infrastructure;
 public class DataContext : DbContext
 {
     public DbSet<Customer> Customers { get; set; }
+    
+    public DbSet<Administrator> Administrators { get; set; }
 
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
