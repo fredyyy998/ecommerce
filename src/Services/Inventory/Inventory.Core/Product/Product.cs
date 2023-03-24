@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using Inventory.Core.DomainEvents;
 
 namespace Inventory.Core.Product;
 
@@ -18,7 +19,7 @@ public class Product : EntityRoot
 
     public static Product Create(string name, string description, decimal price)
     {
-        return new Product
+        var product = new Product
         {
             Id = Guid.NewGuid(),
             Name = name,
@@ -26,6 +27,9 @@ public class Product : EntityRoot
             Price = Price.CreateDefault(price),
             Stock = 0,
         };
+
+        product.AddDomainEvent(new ProductAddedByAdmin(product));
+        return product;
     }
 
     public void AddInformation(string testKey, string testValue)
@@ -36,11 +40,15 @@ public class Product : EntityRoot
         }
 
         _informations.Add(ProductInformation.Create(testKey, testValue));
+        
+        AddDomainEvent(new ProductUpdatedByAdmin(this));
     }
 
     public void RemoveInformation(string key)
     {
         _informations.Remove(_informations.First(x => x.Key == key));
+        
+        AddDomainEvent(new ProductUpdatedByAdmin(this));
     }
 
     public void Update(string newName, string newDescription, decimal grossPrice)
@@ -48,6 +56,8 @@ public class Product : EntityRoot
         Name = newName;
         Description = newDescription;
         Price.UpdateGross(grossPrice);
+        
+        AddDomainEvent(new ProductUpdatedByAdmin(this));
     }
 
     public void AddStock(int value)
@@ -58,6 +68,8 @@ public class Product : EntityRoot
         }
         
         Stock += value;
+        
+        AddDomainEvent(new ProductStockUpdated(this));
     }
 
     public void RemoveStock(int value)
@@ -73,5 +85,7 @@ public class Product : EntityRoot
         }
         
         Stock -= value;
+        
+        AddDomainEvent(new ProductStockUpdated(this));
     }
 }
