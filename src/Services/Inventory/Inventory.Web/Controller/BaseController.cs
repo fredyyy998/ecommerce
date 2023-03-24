@@ -1,4 +1,5 @@
 ﻿using Inventory.Application.Services;
+using Inventory.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Web;
@@ -14,6 +15,11 @@ public abstract class BaseController : Controller
     
     protected IActionResult HandleException(Exception e)
     {
+        if (e is ProductDomainException)
+        {
+            return BadRequest(e.Message);
+        }
+        
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 }
