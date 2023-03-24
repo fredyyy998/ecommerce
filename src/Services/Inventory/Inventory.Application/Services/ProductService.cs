@@ -44,6 +44,7 @@ public class ProductService : IProductService
     {
         var product = _productRepository.GetById(productId);
         product.Update(productUpdateDto.Name, productUpdateDto.Description, productUpdateDto.GrossPrice);
+        _productRepository.Update(product);
     }
 
     public void CreateProduct(ProductCreateDto productCreateDto)
