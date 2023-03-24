@@ -1,4 +1,5 @@
-﻿using Account.Core.User;
+﻿using Account.Core.Administrator;
+using Account.Core.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -48,5 +49,7 @@ public class DataContext : DbContext
             });
             entity.OwnsOne(c => c.Password);
         });
+        
+        modelBuilder.Entity<Administrator>(entity => entity.OwnsOne(c => c.Password));
     }
 }
