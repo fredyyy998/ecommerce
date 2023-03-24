@@ -1,10 +1,15 @@
 
+using System.Reflection;
 using System.Text;
+using Ecommerce.Common.Kafka;
+using Inventory.Application.EventHandlers;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
+using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
 using Inventory.Infrastructure;
 using Inventory.Infrastructure.Repository;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -51,7 +56,15 @@ var builder = WebApplication.CreateBuilder(args);
             ValidateAudience = false
         };
     });
+
+    builder.Services.AddSingleton<KafkaProducer>(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
+    builder.Services.AddScoped<INotificationHandler<ProductAddedByAdmin>, ProductAddedByAdminEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<ProductRemovedByAdmin>, ProductRemovedByAdminEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<ProductUpdatedByAdmin>, ProductUpdatedByAdminEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<ProductStockUpdated>, ProductStockUpdateEventHandler>();
     
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
     // builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
 }
 
