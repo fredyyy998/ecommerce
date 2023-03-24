@@ -1,4 +1,5 @@
-﻿using Inventory.Application.Services;
+﻿using Inventory.Application.Exceptions;
+using Inventory.Application.Services;
 using Inventory.Core;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,10 @@ public abstract class BaseController : Controller
         if (e is ProductDomainException)
         {
             return BadRequest(e.Message);
+        }
+        else if (e is EntityNotFoundException)
+        {
+            return NotFound(e.Message);
         }
         
         return StatusCode(StatusCodes.Status500InternalServerError);

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using AutoMapper;
 using Inventory.Application.Dtos;
+using Inventory.Application.Exceptions;
 using Inventory.Core.Product;
 
 namespace Inventory.Application.Services;
@@ -18,7 +19,7 @@ public class ProductService : IProductService
 
     public ProductResponseDto GetProduct(Guid productId)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         return _mapper.Map<Product, ProductResponseDto>(product);
     }
 
@@ -30,19 +31,19 @@ public class ProductService : IProductService
 
     public void ReserveProduct(Guid productId, int quantity)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         product.RemoveStock(quantity);
     }
 
     public void CancelReservation(Guid productId, int quantity)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         product.AddStock(quantity);
     }
 
     public void UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         product.Update(productUpdateDto.Name, productUpdateDto.Description, productUpdateDto.GrossPrice);
         _productRepository.Update(product);
     }
@@ -55,14 +56,14 @@ public class ProductService : IProductService
     
     public void AddStock(Guid productId, int quantity)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         product.AddStock(quantity);
         _productRepository.Update(product);
     }
     
     public void RemoveStock(Guid productId, int quantity)
     {
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         product.RemoveStock(quantity);
         _productRepository.Update(product);
     }
@@ -70,5 +71,15 @@ public class ProductService : IProductService
     public void DeleteProduct(Guid productId)
     {
         _productRepository.Delete(productId);
+    }
+    
+    private Product GetProductFromRepository(Guid productId)
+    {
+        var product = _productRepository.GetById(productId);
+        if (product == null)
+        {
+            throw new EntityNotFoundException($"Product with id: {productId} not found");
+        }
+        return product;
     }
 }
