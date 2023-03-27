@@ -2,13 +2,12 @@
 using Inventory.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Inventory.Web;
 
 [ApiController]
 [Route("/api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class ProductManagement : BaseController
 {
     public ProductManagement(IProductService productService) : base(productService)
