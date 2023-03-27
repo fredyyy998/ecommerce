@@ -2,6 +2,7 @@
 using Account.Application.Dtos;
 using Account.Application.Exceptions;
 using Account.Application.Profile;
+using Account.Core.Administrator;
 using Account.Core.User;
 using AutoMapper;
 using FluentValidation;
@@ -14,7 +15,8 @@ public class AuthenticationTests
     // outer dependencies - mock implementations - other project or other systems
     private Mock<ICustomerRepository> _customerRepository;
     private Mock<IMapper> _mapper;
-    
+    private Mock<IAdministratorRepository> _administratorRepository;
+
     // inner dependencies - concrete implementations
     private IValidator<CustomerCreateDto> _customerValidator;
     private IAuthenticationService _authenticationService;
@@ -22,10 +24,11 @@ public class AuthenticationTests
     public AuthenticationTests()
     {
         _customerRepository = new Mock<ICustomerRepository>();
+        _administratorRepository = new Mock<IAdministratorRepository>();
         _mapper = new Mock<IMapper>();
         _customerValidator = new CustomerCreateDtoValidator();
         var jwtInformation = new JwtInformation("0Ukke8V63dDaWqgX0Ukke8V63dDaWqgX", "testIssuer", "testAudience");
-        _authenticationService = new AuthenticationService(_customerRepository.Object, _mapper.Object, _customerValidator, jwtInformation);
+        _authenticationService = new AuthenticationService(_customerRepository.Object, _administratorRepository.Object, _mapper.Object, _customerValidator, jwtInformation);
     }
 
 
@@ -78,7 +81,7 @@ public class AuthenticationTests
         var customer = Customer.Create(email, password);
         _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns((Customer) null);
         
-        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateCustomer(email, password));
+        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, password));
     }
     
     [Fact]
@@ -89,6 +92,6 @@ public class AuthenticationTests
         var customer = Customer.Create(email, password);
         _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns(customer);
         
-        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateCustomer(email, "abc12345"));
+        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, "abc12345"));
     }
 }

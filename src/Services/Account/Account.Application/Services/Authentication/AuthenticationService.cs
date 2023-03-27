@@ -6,6 +6,7 @@ using Account.Core.User;
 using AutoMapper;
 using FluentValidation;
 using System.IdentityModel.Tokens.Jwt;
+using Account.Core.Administrator;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Account.Application.Profile;
@@ -13,6 +14,8 @@ namespace Account.Application.Profile;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly ICustomerRepository _customerRepository;
+
+    private readonly IAdministratorRepository _administratorRepository;
 
     private readonly IMapper _mapper;
     
@@ -22,11 +25,13 @@ public class AuthenticationService : IAuthenticationService
 
     public AuthenticationService(
         ICustomerRepository customerRepository,
+        IAdministratorRepository administratorRepository,
         IMapper mapper,
         IValidator<CustomerCreateDto> customerValidator,
         JwtInformation jwtInformation)
     {
         _customerRepository = customerRepository;
+        _administratorRepository = administratorRepository;
         _mapper = mapper;
         _customerValidator = customerValidator;
         _jwtInformation = jwtInformation;
@@ -50,9 +55,13 @@ public class AuthenticationService : IAuthenticationService
         return _mapper.Map<CustomerResponseDto>(user);
     }
     
-    public string AuthenticateCustomer(string email, string password)
+    public string AuthenticateUser(string email, string password)
     {
-        var user = _customerRepository.GetByEmail(email);
+        User user = _customerRepository.GetByEmail(email);
+        if (_administratorRepository.EmailExists(email))
+        {
+            user = _administratorRepository.GetAdministrator(email);
+        }
         if (user is null ||user.Password.Verify(password) == false)
         {
             throw new InvalidLoginException(email);
@@ -61,16 +70,22 @@ public class AuthenticationService : IAuthenticationService
         return GenerateJwt(user);
     }
     
-    private string GenerateJwt(Customer customer)
+    private string GenerateJwt(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtInformation.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, customer.Email),
-            new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
+
+        if (user is Administrator)
+        {
+            var admin = (Administrator) user;
+            claims.Add(new Claim(ClaimTypes.Role, admin.Role));
+        }
 
         var token = new JwtSecurityToken(
             issuer: _jwtInformation.Issuer,

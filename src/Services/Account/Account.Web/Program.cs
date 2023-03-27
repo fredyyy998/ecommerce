@@ -4,6 +4,7 @@ using Account.Application;
 using Account.Application.Dtos;
 using Account.Application.EventHandler;
 using Account.Application.Profile;
+using Account.Core.Administrator;
 using Account.Core.Events;
 using Account.Core.User;
 using Account.Infrastructure;
@@ -61,6 +62,7 @@ var builder = WebApplication.CreateBuilder(args);
     });
     
     builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+    builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 
     builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
     builder.Services.AddScoped<IProfileService, ProfileService>();

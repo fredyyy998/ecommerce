@@ -13,7 +13,7 @@ public class AdministratorRepository : IAdministratorRepository
 
     public Administrator GetAdministrator(string email)
     {
-        return _dbContext.Administrators.FirstOrDefault(a => a.Email == email);
+        return _dbContext.Administrator.FirstOrDefault(a => a.Email == email);
     }
 
     public bool EmailExists(string email)

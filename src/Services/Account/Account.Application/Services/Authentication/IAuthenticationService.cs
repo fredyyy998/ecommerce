@@ -1,10 +1,9 @@
-﻿using System.Security.Claims;
-using Account.Application.Dtos;
+﻿using Account.Application.Dtos;
 
 namespace Account.Application.Profile;
 
 public interface IAuthenticationService
 {
     CustomerResponseDto RegisterCustomer(CustomerCreateDto userDto);
-    string AuthenticateCustomer(string email, string password);
+    string AuthenticateUser(string email, string password);
 }

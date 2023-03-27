@@ -60,7 +60,7 @@ public class AuthenticationControllerTest
         var email = "test@customer.de";
         var password = "abc123";
         var token = "token";
-        _authenticationServiceMock.Setup(x => x.AuthenticateCustomer(email, password))
+        _authenticationServiceMock.Setup(x => x.AuthenticateUser(email, password))
             .Returns(token);
 
         var result = _authenticationController.LoginCustomer(email, password);
@@ -74,7 +74,7 @@ public class AuthenticationControllerTest
     {
         var email = "test@customer.de";
         var password = "abc123";
-        _authenticationServiceMock.Setup(x => x.AuthenticateCustomer(email, password))
+        _authenticationServiceMock.Setup(x => x.AuthenticateUser(email, password))
             .Throws(new InvalidLoginException("Invalid login"));
         
         var result = _authenticationController.LoginCustomer(email, password);
