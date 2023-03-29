@@ -31,4 +31,17 @@ public class Product : EntityRoot
         
         return new Product(id, name, description, price, stock);
     }
+    
+    public void Update(string name, string description, Price price, int stock)
+    {
+        if (stock <= 0)
+        {
+            throw new ProductDomainException("Stock must be greater than zero");
+        }
+        
+        Name = name;
+        Description = description;
+        Price = price;
+        Stock = stock;
+    }
 }
