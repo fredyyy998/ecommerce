@@ -100,6 +100,21 @@ public class ShoppingCartTest
         Assert.Equal(10, product.Stock);
     }
     
+    [Fact]
+    public void On_ShoppingCart_TimeOut_All_Product_Return_To_Stock()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product1 = GetProduct();
+        var product2 = GetProduct(15);
+        shoppingCart.AddItem(product1, 5);
+        shoppingCart.AddItem(product2, 3);
+
+        shoppingCart.MarkAsTimedOut();
+        
+        Assert.Equal(10, product1.Stock);
+        Assert.Equal(15, product2.Stock);
+    }
+    
     public Product GetProduct(int stock = 10)
     {
         return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), stock);

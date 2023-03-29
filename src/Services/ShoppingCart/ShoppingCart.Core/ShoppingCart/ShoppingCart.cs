@@ -11,6 +11,8 @@ public class ShoppingCart : EntityRoot
     
     public IReadOnlyCollection<ShoppingCartItem> Items => _items.AsReadOnly();
     
+    public State Status { get; private set; }
+    
     public DateTime CreatedAt { get; private set; }
     
     public DateTime? UpdatedAt { get; private set; }
@@ -20,6 +22,7 @@ public class ShoppingCart : EntityRoot
         Id = Guid.NewGuid();
         CustomerId = customerId;
         _items = new List<ShoppingCartItem>();
+        Status = State.Active;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = null;
     }
@@ -46,6 +49,7 @@ public class ShoppingCart : EntityRoot
             _items.Add(item);            
         }
         product.RemoveStock(quantity);
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void RemoveQuantityOfProduct(Product.Product product, int quantity)
@@ -61,5 +65,20 @@ public class ShoppingCart : EntityRoot
         {
             _items.Remove(item);
         }
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    public void MarkAsTimedOut()
+    {
+        Status = State.TimedOut;
+        foreach (var item in _items)
+        {
+            item.Product.AddStock(item.Quantity);
+        }
+    }
+    
+    public void MarkAsOrdered()
+    {
+        Status = State.Ordered;
     }
 }
