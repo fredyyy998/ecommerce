@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using ShoppingCart.Core.Events;
 using ShoppingCart.Core.Exceptions;
 
 namespace ShoppingCart.Core.ShoppingCart;
@@ -42,17 +43,19 @@ public class ShoppingCart : EntityRoot
         if (item != null)
         {
             item.IncreaseQuantity(quantity);
+            AddDomainEvent(new CustomerChangedProductQuantityInCartEvent(this.Id, product, item.Quantity));
         }
         else
         {
             item = ShoppingCartItem.Create(product, quantity);
-            _items.Add(item);            
+            _items.Add(item);
+            AddDomainEvent(new CustomerAddedProductToBasketEvent(product, quantity));
         }
         product.RemoveStock(quantity);
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void RemoveQuantityOfProduct(Product.Product product, int quantity)
+    public void RemoveQuantityOfItem(Product.Product product, int quantity)
     {
         var item = _items.FirstOrDefault(x => x.Product.Id == product.Id);
         if (item == null)
@@ -61,6 +64,7 @@ public class ShoppingCart : EntityRoot
         }
         item.DecreaseQuantity(quantity);
         product.AddStock(quantity);
+        AddDomainEvent(new CustomerChangedProductQuantityInCartEvent(this.Id, product, item.Quantity));
         if (item.Quantity == 0)
         {
             _items.Remove(item);
@@ -75,10 +79,12 @@ public class ShoppingCart : EntityRoot
         {
             item.Product.AddStock(item.Quantity);
         }
+        AddDomainEvent(new ShoppingBasketTimedOutEvent(this));
     }
     
     public void MarkAsOrdered()
     {
         Status = State.Ordered;
+        AddDomainEvent(new CustomerOrderedShoppingCartEvent(this));
     }
 }

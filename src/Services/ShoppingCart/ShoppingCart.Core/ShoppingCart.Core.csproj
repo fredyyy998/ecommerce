@@ -10,8 +10,4 @@
       <PackageReference Include="Ecommerce.Common.Core" Version="1.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Events" />
-    </ItemGroup>
-
 </Project>
