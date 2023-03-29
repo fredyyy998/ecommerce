@@ -10,22 +10,20 @@ public class ShoppingCartItem : ValueObject
     public int Quantity { get; private set; }
     
     public decimal TotalPrice { get; private set; }
-    
-    private ShoppingCartItem(Product.Product product, int quantity)
-    {
-        Product = product;
-        Quantity = quantity;
-        TotalPrice = Product.Price.GrossPrice * Quantity;
-    }
-    
+
     public static ShoppingCartItem Create(Product.Product product, int quantity)
     {
         if (quantity <= 0)
         {
             throw new ShoppingCartDomainException("Quantity must be greater than zero.");
         }
-        
-        return new ShoppingCartItem(product, quantity);
+
+        return new ShoppingCartItem
+        {
+            Product = product,
+            Quantity = quantity,
+            TotalPrice = product.Price.GrossPrice * quantity,
+        };
     }
     
 

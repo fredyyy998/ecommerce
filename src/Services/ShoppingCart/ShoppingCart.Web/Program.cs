@@ -1,7 +1,9 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
+using ShoppingCart.Infrastructure;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
     });
+    
+    builder.Services.AddDbContext<DataContext>(options =>
+        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+            b => b.MigrationsAssembly("ShoppingCart.Web")));
 
 
     builder.Services.AddAutoMapper(typeof(MappingProfile));    

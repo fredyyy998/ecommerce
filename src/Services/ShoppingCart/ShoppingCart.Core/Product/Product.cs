@@ -12,16 +12,7 @@ public class Product : EntityRoot
     public Price Price { get; private set; }
     
     public int Stock { get; private set; }
-    
-    private Product(Guid id, string name, string description, Price price, int stock)
-    {
-        Id = id;
-        Name = name;
-        Description = description;
-        Price = price;
-        Stock = stock;
-    }
-    
+
     public static Product Create(Guid id, string name, string description, Price price, int stock)
     {
         if (stock <= 0)
@@ -29,7 +20,14 @@ public class Product : EntityRoot
             throw new ProductDomainException("Stock must be greater than zero");
         }
         
-        return new Product(id, name, description, price, stock);
+        return new Product
+        {
+            Id = id,
+            Name = name,
+            Description = description,
+            Price = price,
+            Stock = stock,
+        };
     }
     
     public void Update(string name, string description, Price price, int stock)
