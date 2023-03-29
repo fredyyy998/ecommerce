@@ -66,8 +66,42 @@ public class ShoppingCartTest
         Assert.Throws<ShoppingCartDomainException>(() => shoppingCart.RemoveQuantityOfProduct(product, 1));
     }
 
-    public Product GetProduct()
+    [Fact]
+    public void Product_Stock_Should_Decrease_When_Added_To_ShoppingCart()
     {
-        return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct(2);
+        var quantity = 3;
+        
+        
+        Assert.Throws<ShoppingCartDomainException>(() => shoppingCart.AddItem(product, quantity));
+        Assert.Equal(2, product.Stock);
+        Assert.Empty(shoppingCart.Items);
+    }
+    
+    [Fact]
+    public void Product_Cannot_Be_Added_When_Stock_ProdcutStock_Is_Not_Sufficent()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct();
+        var quantity = 10;
+    }
+    
+    [Fact]
+    public void Product_Stock_Should_Increase_When_Removed_From_ShoppingCart()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct();
+        var quantity = 1;
+        shoppingCart.AddItem(product, quantity);
+        
+        shoppingCart.RemoveQuantityOfProduct(product, quantity);
+        
+        Assert.Equal(10, product.Stock);
+    }
+    
+    public Product GetProduct(int stock = 10)
+    {
+        return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), stock);
     }
 }

@@ -32,13 +32,20 @@ public class ShoppingCart : EntityRoot
     public void AddItem(Product.Product product, int quantity)
     {
         var item = _items.FirstOrDefault(x => x.Product.Id == product.Id);
+        if (!product.HasSufficientStock(quantity))
+        {
+            throw new ShoppingCartDomainException("Not enough stock.");
+        }
         if (item != null)
         {
             item.IncreaseQuantity(quantity);
-            return;
         }
-        item = ShoppingCartItem.Create(product, quantity);
-        _items.Add(item);
+        else
+        {
+            item = ShoppingCartItem.Create(product, quantity);
+            _items.Add(item);            
+        }
+        product.RemoveStock(quantity);
     }
 
     public void RemoveQuantityOfProduct(Product.Product product, int quantity)
@@ -49,6 +56,7 @@ public class ShoppingCart : EntityRoot
             throw new ShoppingCartDomainException("Product not found in shopping cart.");
         }
         item.DecreaseQuantity(quantity);
+        product.AddStock(quantity);
         if (item.Quantity == 0)
         {
             _items.Remove(item);

@@ -44,6 +44,11 @@ public class Product : EntityRoot
         Price = price;
         Stock = stock;
     }
+    
+    public bool HasSufficientStock(int quantity)
+    {
+        return Stock - quantity >= 0;
+    }
 
     public void RemoveStock(int quantity)
     {
@@ -52,7 +57,7 @@ public class Product : EntityRoot
             throw new ProductDomainException("Quantity must be greater than zero");
         }
         
-        if (Stock - quantity < 0)
+        if (!HasSufficientStock(quantity))
         {
             throw new ProductDomainException("Stock must be greater than zero");
         }
