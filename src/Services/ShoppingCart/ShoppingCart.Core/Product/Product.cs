@@ -44,4 +44,29 @@ public class Product : EntityRoot
         Price = price;
         Stock = stock;
     }
+
+    public void RemoveStock(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ProductDomainException("Quantity must be greater than zero");
+        }
+        
+        if (Stock - quantity < 0)
+        {
+            throw new ProductDomainException("Stock must be greater than zero");
+        }
+        
+        Stock -= quantity;
+    }
+
+    public void AddStock(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ProductDomainException("Quantity must be greater than zero");
+        }
+        
+        Stock += quantity;
+    }
 }
