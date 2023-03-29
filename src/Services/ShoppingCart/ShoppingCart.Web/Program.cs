@@ -1,7 +1,8 @@
 
+using Microsoft.OpenApi.Models;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
-using ShoppingCart.Core.ShoppingCart;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -11,7 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHttpContextAccessor();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+        {
+            Description = "Standard authorization header using the Bearer scheme (\"bearer {token}\"",
+            In = ParameterLocation.Header,
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+        });
 
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+    });
 
 
     builder.Services.AddAutoMapper(typeof(MappingProfile));    
@@ -23,7 +35,8 @@ var app = builder.Build();
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
 
     app.UseCors("corsapp");
