@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
+using ShoppingCart.Core.Product;
 using ShoppingCart.Infrastructure;
+using ShoppingCart.Infrastructure.Repositories;
 using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,8 @@ var builder = WebApplication.CreateBuilder(args);
             b => b.MigrationsAssembly("ShoppingCart.Web")));
 
 
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    
     builder.Services.AddAutoMapper(typeof(MappingProfile));    
     builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 }
