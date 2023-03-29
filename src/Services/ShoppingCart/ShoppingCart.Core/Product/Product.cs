@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using ShoppingCart.Core.Exceptions;
 
 namespace ShoppingCart.Core.Product;
 
@@ -12,7 +13,7 @@ public class Product : EntityRoot
     
     public int Stock { get; private set; }
     
-    public Product(Guid id, string name, string description, Price price, int stock)
+    private Product(Guid id, string name, string description, Price price, int stock)
     {
         Id = id;
         Name = name;
@@ -21,5 +22,13 @@ public class Product : EntityRoot
         Stock = stock;
     }
     
-    
+    public static Product Create(Guid id, string name, string description, Price price, int stock)
+    {
+        if (stock <= 0)
+        {
+            throw new ProductDomainException("Stock must be greater than zero");
+        }
+        
+        return new Product(id, name, description, price, stock);
+    }
 }

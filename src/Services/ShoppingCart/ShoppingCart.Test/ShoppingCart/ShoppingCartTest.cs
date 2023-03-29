@@ -9,7 +9,7 @@ public class ShoppingCartTest
     public void New_Added_Item_Should_Create_New_ShoppingCartItem()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 1;
         
         shoppingCart.AddItem(product, quantity);
@@ -22,7 +22,7 @@ public class ShoppingCartTest
     public void Existing_Item_Should_Increase_Quantity()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 1;
         
         shoppingCart.AddItem(product, quantity);
@@ -36,7 +36,7 @@ public class ShoppingCartTest
     public void Existing_Item_Should_Decrease_Quantity()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         shoppingCart.AddItem(product, 5);
         
         shoppingCart.RemoveQuantityOfProduct(product, 1);
@@ -49,7 +49,7 @@ public class ShoppingCartTest
     public void Existing_Item_Should_Remove_When_Quantity_Is_Zero()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         shoppingCart.AddItem(product, 5);
         
         shoppingCart.RemoveQuantityOfProduct(product, 5);
@@ -61,8 +61,13 @@ public class ShoppingCartTest
     public void NotExisting_Item_Should_Throw_Exception()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct(); 
         
         Assert.Throws<ShoppingCartDomainException>(() => shoppingCart.RemoveQuantityOfProduct(product, 1));
+    }
+
+    public Product GetProduct()
+    {
+        return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
     }
 }

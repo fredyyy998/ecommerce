@@ -9,7 +9,7 @@ public class ShoppingCartItemTest
     [Fact]
     public void Quantity_ShouldBeGreaterThanZero()
     {
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 0;
         
         Assert.Throws<ShoppingCartDomainException>(() => ShoppingCartItem.Create(product, quantity));
@@ -20,7 +20,7 @@ public class ShoppingCartItemTest
     [InlineData(-1)]
     public void Quantity_Increase_ShouldBeGreaterThanZero(int quantityIncrease)
     {
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 1;
         var shoppingCartItem = ShoppingCartItem.Create(product, quantity);
         
@@ -30,7 +30,7 @@ public class ShoppingCartItemTest
     [Fact]
     public void Quantity_Increase_Should_Calculate_New_Total_Price()
     {
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 1;
         var shoppingCartItem = ShoppingCartItem.Create(product, quantity);
         
@@ -44,7 +44,7 @@ public class ShoppingCartItemTest
     [InlineData(-1)]
     public void Quantity_Decrease_ShouldBeGreaterThanZero(int decreaseQuantity)
     {
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 1;
         var shoppingCartItem = ShoppingCartItem.Create(product, quantity);
         
@@ -54,12 +54,17 @@ public class ShoppingCartItemTest
     [Fact]
     public void Quantity_Decrease_Should_Calculate_New_Total_Price()
     {
-        var product = new Product(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
+        var product = GetProduct();
         var quantity = 5;
         var shoppingCartItem = ShoppingCartItem.Create(product, quantity);
         
         shoppingCartItem.DecreaseQuantity(1);
         
         Assert.Equal(40, shoppingCartItem.TotalPrice);
+    }
+    
+    public Product GetProduct()
+    {
+        return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), 10);
     }
 }
