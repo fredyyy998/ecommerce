@@ -25,7 +25,12 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<Core.ShoppingCart.ShoppingCart>(entity =>
         {
-            entity.OwnsMany(p => p.Items);
+            entity.OwnsMany(p => p.Items, i =>
+            {
+                i.WithOwner().HasForeignKey("ShoppingCartId");
+                i.Property<int>("Id").UseIdentityColumn();
+                i.HasKey("Id");
+            });
         });
     }
 }

@@ -48,16 +48,16 @@ namespace ShoppingCart.Web.Migrations
                 name: "ShoppingCartItem",
                 columns: table => new
                 {
-                    ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: false),
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false)
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    ShoppingCartId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingCartItem", x => new { x.ShoppingCartId, x.Id });
+                    table.PrimaryKey("PK_ShoppingCartItem", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ShoppingCartItem_Products_ProductId",
                         column: x => x.ProductId,
@@ -76,6 +76,11 @@ namespace ShoppingCart.Web.Migrations
                 name: "IX_ShoppingCartItem_ProductId",
                 table: "ShoppingCartItem",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCartItem_ShoppingCartId",
+                table: "ShoppingCartItem",
+                column: "ShoppingCartId");
         }
 
         /// <inheritdoc />

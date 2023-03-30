@@ -100,9 +100,6 @@ namespace ShoppingCart.Web.Migrations
                 {
                     b.OwnsMany("ShoppingCart.Core.ShoppingCart.ShoppingCartItem", "Items", b1 =>
                         {
-                            b1.Property<Guid>("ShoppingCartId")
-                                .HasColumnType("uuid");
-
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("integer");
@@ -115,12 +112,17 @@ namespace ShoppingCart.Web.Migrations
                             b1.Property<int>("Quantity")
                                 .HasColumnType("integer");
 
+                            b1.Property<Guid>("ShoppingCartId")
+                                .HasColumnType("uuid");
+
                             b1.Property<decimal>("TotalPrice")
                                 .HasColumnType("numeric");
 
-                            b1.HasKey("ShoppingCartId", "Id");
+                            b1.HasKey("Id");
 
                             b1.HasIndex("ProductId");
+
+                            b1.HasIndex("ShoppingCartId");
 
                             b1.ToTable("ShoppingCartItem");
 

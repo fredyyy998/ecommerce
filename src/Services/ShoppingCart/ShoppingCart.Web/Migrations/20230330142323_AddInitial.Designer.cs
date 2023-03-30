@@ -12,7 +12,7 @@ using ShoppingCart.Infrastructure;
 namespace ShoppingCart.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230329093809_AddInitial")]
+    [Migration("20230330142323_AddInitial")]
     partial class AddInitial
     {
         /// <inheritdoc />
@@ -103,9 +103,6 @@ namespace ShoppingCart.Web.Migrations
                 {
                     b.OwnsMany("ShoppingCart.Core.ShoppingCart.ShoppingCartItem", "Items", b1 =>
                         {
-                            b1.Property<Guid>("ShoppingCartId")
-                                .HasColumnType("uuid");
-
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
                                 .HasColumnType("integer");
@@ -118,12 +115,17 @@ namespace ShoppingCart.Web.Migrations
                             b1.Property<int>("Quantity")
                                 .HasColumnType("integer");
 
+                            b1.Property<Guid>("ShoppingCartId")
+                                .HasColumnType("uuid");
+
                             b1.Property<decimal>("TotalPrice")
                                 .HasColumnType("numeric");
 
-                            b1.HasKey("ShoppingCartId", "Id");
+                            b1.HasKey("Id");
 
                             b1.HasIndex("ProductId");
+
+                            b1.HasIndex("ShoppingCartId");
 
                             b1.ToTable("ShoppingCartItem");
 
