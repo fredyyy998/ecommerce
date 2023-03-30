@@ -4,10 +4,13 @@ namespace Inventory.Core.DomainEvents;
 
 public class ProductStockUpdated : IDomainEvent
 {
-    public Product.Product Product { get; }
+    public Guid productId { get; }
+    
+    public int Stock { get; }
     
     public ProductStockUpdated(Product.Product product)
     {
-        Product = product;
+        productId = product.Id;
+        Stock = product.Stock;
     }
 }

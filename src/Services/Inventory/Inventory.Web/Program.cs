@@ -58,9 +58,9 @@ var builder = WebApplication.CreateBuilder(args);
     });
 
     builder.Services.AddSingleton<KafkaProducer>(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
-    builder.Services.AddScoped<INotificationHandler<ProductAddedByAdmin>, ProductAddedByAdminEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventHandler>();
     builder.Services.AddScoped<INotificationHandler<ProductRemovedByAdmin>, ProductRemovedByAdminEventHandler>();
-    builder.Services.AddScoped<INotificationHandler<ProductUpdatedByAdmin>, ProductUpdatedByAdminEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<ProductUpdatedByAdminEvent>, ProductUpdatedByAdminEventHandler>();
     builder.Services.AddScoped<INotificationHandler<ProductStockUpdated>, ProductStockUpdateEventHandler>();
     
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

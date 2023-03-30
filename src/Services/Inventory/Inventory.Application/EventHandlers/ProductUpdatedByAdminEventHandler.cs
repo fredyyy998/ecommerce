@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Inventory.Application.EventHandlers;
 
-public class ProductUpdatedByAdminEventHandler : INotificationHandler<ProductUpdatedByAdmin>
+public class ProductUpdatedByAdminEventHandler : INotificationHandler<ProductUpdatedByAdminEvent>
 {
     private readonly KafkaProducer _kafkaProducer;
     
@@ -13,8 +13,8 @@ public class ProductUpdatedByAdminEventHandler : INotificationHandler<ProductUpd
         _kafkaProducer = kafkaProducer;
     }
     
-    public async Task Handle(ProductUpdatedByAdmin notification, CancellationToken cancellationToken)
+    public async Task Handle(ProductUpdatedByAdminEvent notification, CancellationToken cancellationToken)
     {
-        _kafkaProducer.Publish<ProductUpdatedByAdmin>("inventory", "product-updated-by-admin", notification);
+        _kafkaProducer.Publish<ProductUpdatedByAdminEvent>("inventory", "product-updated-by-admin", notification);
     }
 }

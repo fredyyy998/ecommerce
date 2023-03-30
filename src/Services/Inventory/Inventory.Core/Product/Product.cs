@@ -28,7 +28,7 @@ public class Product : EntityRoot
             Stock = 0,
         };
 
-        product.AddDomainEvent(new ProductAddedByAdmin(product));
+        product.AddDomainEvent(new ProductAddedByAdminEvent(product));
         return product;
     }
 
@@ -41,14 +41,14 @@ public class Product : EntityRoot
 
         _informations.Add(ProductInformation.Create(testKey, testValue));
         
-        AddDomainEvent(new ProductUpdatedByAdmin(this));
+        AddDomainEvent(new ProductUpdatedByAdminEvent(this));
     }
 
     public void RemoveInformation(string key)
     {
         _informations.Remove(_informations.First(x => x.Key == key));
         
-        AddDomainEvent(new ProductUpdatedByAdmin(this));
+        AddDomainEvent(new ProductUpdatedByAdminEvent(this));
     }
 
     public void Update(string newName, string newDescription, decimal grossPrice)
@@ -57,7 +57,7 @@ public class Product : EntityRoot
         Description = newDescription;
         Price.UpdateGross(grossPrice);
         
-        AddDomainEvent(new ProductUpdatedByAdmin(this));
+        AddDomainEvent(new ProductUpdatedByAdminEvent(this));
     }
 
     public void AddStock(int value)
