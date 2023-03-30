@@ -29,6 +29,7 @@ public class ShoppingCartService : IShoppingCartService
         {
             // when the user currently has no active shopping cart, one will be created
             shoppingCart = ShoppingCart.Core.ShoppingCart.ShoppingCart.Create(customerId);
+            _shoppingBasketRepository.Create(shoppingCart);
         }
         
         shoppingCart.AddItem(product, quantity);
