@@ -29,4 +29,12 @@ public class ShoppingBasketController : Controller
         await _shoppingCartService.AddProductToShoppingCart(customerId, request.ProductId, request.Quantity);
         return Ok();
     }
+    
+    [HttpDelete("{customerId:guid}")]
+    public async Task<ActionResult> RemoveProductFromShoppingBasket(Guid customerId, [FromBody] RemoveItemFromShoppingCartRequestDto request)
+    {
+        await _shoppingCartService.RemoveProductFromShoppingCart(customerId, request.ProductId, request.Quantity);
+        return Ok();
+    }
+
 }
