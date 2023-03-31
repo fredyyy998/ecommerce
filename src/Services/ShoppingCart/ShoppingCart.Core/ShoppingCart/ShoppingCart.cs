@@ -49,7 +49,7 @@ public class ShoppingCart : EntityRoot
         {
             item = ShoppingCartItem.Create(product, quantity);
             _items.Add(item);
-            AddDomainEvent(new CustomerAddedProductToBasketEvent(product, quantity));
+            AddDomainEvent(new CustomerAddedProductToBasketEvent(Id, product, quantity));
         }
         product.RemoveStock(quantity);
         UpdatedAt = DateTime.UtcNow;

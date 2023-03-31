@@ -11,8 +11,9 @@ public class CustomerAddedProductToBasketEvent : IDomainEvent
     
     public int Quantity { get; }
     
-    public CustomerAddedProductToBasketEvent(Product.Product product, int quantity)
+    public CustomerAddedProductToBasketEvent(Guid shoppingCartId, Product.Product product, int quantity)
     {
+        ShoppingCartId = shoppingCartId;
         Product = product;
         Quantity = quantity;
     }
