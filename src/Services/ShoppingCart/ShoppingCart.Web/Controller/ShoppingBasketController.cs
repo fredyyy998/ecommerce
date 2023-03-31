@@ -36,5 +36,12 @@ public class ShoppingBasketController : Controller
         await _shoppingCartService.RemoveProductFromShoppingCart(customerId, request.ProductId, request.Quantity);
         return Ok();
     }
+    
+    [HttpPatch("{customerId:guid}")]
+    public async Task<ActionResult> CheckoutShoppingBasket(Guid customerId)
+    {
+        await _shoppingCartService.Checkout(customerId);
+        return Ok();
+    }
 
 }
