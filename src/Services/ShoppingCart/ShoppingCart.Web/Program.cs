@@ -1,8 +1,11 @@
 
 using System.Reflection;
+using System.Text;
 using Ecommerce.Common.Kafka;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Quartz;
 using ShoppingCart.Application.EventHandlers;
@@ -34,6 +37,18 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
+    });
+    
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:Secret").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
     });
     
     builder.Services.AddDbContext<DataContext>(options =>
