@@ -1,5 +1,8 @@
 ﻿
+using System.Security.Claims;
+using Account.Application.Exceptions;
 using Inventory.Application.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Application.Dtos;
 using ShoppingCart.Application.Services;
@@ -7,6 +10,7 @@ using ShoppingCart.Application.Services;
 namespace ShoppingCart.Web;
 
 [ApiController]
+[Authorize]
 [Route("/api/[controller]")]
 public class ShoppingBasketController : Controller
 {
@@ -17,18 +21,28 @@ public class ShoppingBasketController : Controller
         _shoppingCartService = shoppingCartService;
     }
     
-    [HttpGet("{customerId:guid}")]
-    public async Task<ActionResult> GetShoppingBasket(Guid customerId)
-    {
-        var shoppingBasket = await _shoppingCartService.GetActiveShoppingCart(customerId);
-        return Ok(shoppingBasket);
-    }
-    
-    [HttpPut("{customerId:guid}")]
-    public async Task<ActionResult> AddProductToShoppingBasket(Guid customerId, [FromBody] AddItemToShoppingCartRequestDto request)
+    [HttpGet()]
+    public async Task<ActionResult> GetShoppingBasket()
     {
         try
         {
+            var customerId = GetGuidFromClaims();
+            var shoppingBasket = await _shoppingCartService.GetActiveShoppingCart(customerId);
+            return Ok(shoppingBasket);
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
+
+    }
+    
+    [HttpPut()]
+    public async Task<ActionResult> AddProductToShoppingBasket([FromBody] AddItemToShoppingCartRequestDto request)
+    {
+        try
+        {
+            var customerId = GetGuidFromClaims();
             await _shoppingCartService.AddProductToShoppingCart(customerId, request.ProductId, request.Quantity);
             return Ok();
         }
@@ -38,11 +52,12 @@ public class ShoppingBasketController : Controller
         }
     }
     
-    [HttpDelete("{customerId:guid}")]
-    public async Task<ActionResult> RemoveProductFromShoppingBasket(Guid customerId, [FromBody] RemoveItemFromShoppingCartRequestDto request)
+    [HttpDelete()]
+    public async Task<ActionResult> RemoveProductFromShoppingBasket([FromBody] RemoveItemFromShoppingCartRequestDto request)
     {
         try
         {
+            var customerId = GetGuidFromClaims();
             await _shoppingCartService.RemoveProductFromShoppingCart(customerId, request.ProductId, request.Quantity);
             return Ok();
         }
@@ -52,11 +67,30 @@ public class ShoppingBasketController : Controller
         }
     }
     
-    [HttpPatch("{customerId:guid}")]
-    public async Task<ActionResult> CheckoutShoppingBasket(Guid customerId)
+    [HttpPatch()]
+    public async Task<ActionResult> CheckoutShoppingBasket()
     {
-        await _shoppingCartService.Checkout(customerId);
-        return Ok();
+        try
+        {
+            var customerId = GetGuidFromClaims();
+            await _shoppingCartService.Checkout(customerId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
+
+    }
+    
+    private Guid GetGuidFromClaims()
+    {
+        var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(customerId))
+        {
+            throw new UnauthorizedException("User not authorized.");
+        }
+        return Guid.Parse(customerId);
     }
 
     private ActionResult HandleException(Exception exception)
@@ -64,6 +98,7 @@ public class ShoppingBasketController : Controller
         return exception switch
         {
             EntityNotFoundException => NotFound(exception.Message),
+            UnauthorizedException => Unauthorized(exception.Message),
             _ => StatusCode(500)
         };
     }
