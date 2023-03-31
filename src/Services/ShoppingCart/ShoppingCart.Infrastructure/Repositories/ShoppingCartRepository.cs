@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Data.Entity;
 using ShoppingCart.Core.ShoppingCart;
 
 namespace ShoppingCart.Infrastructure.Repositories;
@@ -48,6 +48,14 @@ public class ShoppingCartRepository : IShoppingCartRepository
 
     public Core.ShoppingCart.ShoppingCart GetActiveShoppingCartByCustomer(Guid customerId)
     {
-        return _context.ShoppingCarts.FirstOrDefault(x => x.CustomerId == customerId && x.Status == State.Active);
+        // TODO there must be a better way to do this, but i really dont understand what is happening here
+        // when the products are not loaded like this the shopping cart items are not populated correctly
+        // somehow lazy loading is not working here
+        _context.Products.ToList();
+        var shoppingCart = _context.ShoppingCarts
+            .Include(s => s.Items.Select(p =>p.Product))
+            .FirstOrDefault(x => x.CustomerId == customerId && x.Status == State.Active);
+        
+        return shoppingCart;
     }
 }

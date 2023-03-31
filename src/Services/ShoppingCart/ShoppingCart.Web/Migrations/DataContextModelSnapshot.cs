@@ -41,7 +41,7 @@ namespace ShoppingCart.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ShoppingCart.Core.ShoppingCart.ShoppingCart", b =>
@@ -64,12 +64,12 @@ namespace ShoppingCart.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("ShoppingCart.Core.Product.Product", b =>
                 {
-                    b.OwnsOne("ShoppingCart.Core.Product.Price", "Price", b1 =>
+                    b.OwnsOne("ShoppingCart.Core.Product.Product.Price#ShoppingCart.Core.Product.Price", "Price", b1 =>
                         {
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uuid");
@@ -86,7 +86,7 @@ namespace ShoppingCart.Web.Migrations
 
                             b1.HasKey("ProductId");
 
-                            b1.ToTable("Products");
+                            b1.ToTable("Products", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
@@ -98,7 +98,7 @@ namespace ShoppingCart.Web.Migrations
 
             modelBuilder.Entity("ShoppingCart.Core.ShoppingCart.ShoppingCart", b =>
                 {
-                    b.OwnsMany("ShoppingCart.Core.ShoppingCart.ShoppingCartItem", "Items", b1 =>
+                    b.OwnsMany("ShoppingCart.Core.ShoppingCart.ShoppingCart.Items#ShoppingCart.Core.ShoppingCart.ShoppingCartItem", "Items", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
@@ -124,7 +124,7 @@ namespace ShoppingCart.Web.Migrations
 
                             b1.HasIndex("ShoppingCartId");
 
-                            b1.ToTable("ShoppingCartItem");
+                            b1.ToTable("ShoppingCartItem", (string)null);
 
                             b1.HasOne("ShoppingCart.Core.Product.Product", "Product")
                                 .WithMany()
