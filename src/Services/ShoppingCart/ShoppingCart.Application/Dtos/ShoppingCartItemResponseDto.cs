@@ -1,7 +1,7 @@
 ﻿namespace ShoppingCart.Application.Dtos;
 
 public record ShoppingCartItemResponseDto(
-    Guid Id,
+    Guid ProductId,
     string Name,
     string Description,
     decimal Price,

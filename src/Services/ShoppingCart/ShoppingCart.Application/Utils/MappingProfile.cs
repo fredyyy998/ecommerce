@@ -8,7 +8,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Core.ShoppingCart.ShoppingCart, ShoppingCartResponseDto>();
-        // TODO we will need to customize the mapping for ShoppingCartItem
-        CreateMap<Core.ShoppingCart.ShoppingCartItem, ShoppingCartItemResponseDto>();
+        CreateMap<Core.ShoppingCart.ShoppingCartItem, ShoppingCartItemResponseDto>().ConstructUsing(
+            x => new ShoppingCartItemResponseDto(x.Product.Id, x.Product.Name, x.Product.Description, x.TotalPrice,
+                x.Product.Price.CurrencyCode, x.Quantity));
     }
 }
