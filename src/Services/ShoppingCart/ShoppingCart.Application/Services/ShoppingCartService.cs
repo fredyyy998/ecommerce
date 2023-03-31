@@ -24,14 +24,13 @@ public class ShoppingCartService : IShoppingCartService
     public Task AddProductToShoppingCart(Guid customerId, Guid productId, int quantity)
     {
         var shoppingCart = GetActiveShoppingCartFromRepository(customerId);
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         if (shoppingCart == null)
         {
             // when the user currently has no active shopping cart, one will be created
             shoppingCart = ShoppingCart.Core.ShoppingCart.ShoppingCart.Create(customerId);
             _shoppingBasketRepository.Create(shoppingCart);
         }
-        
         shoppingCart.AddItem(product, quantity);
         _shoppingBasketRepository.Update(shoppingCart);
         return Task.CompletedTask;
@@ -44,7 +43,7 @@ public class ShoppingCartService : IShoppingCartService
         {
             throw new NoActiveShoppingBasketFoundException("No active shopping cart found for the customer.");
         }
-        var product = _productRepository.GetById(productId);
+        var product = GetProductFromRepository(productId);
         shoppingCart.RemoveQuantityOfItem(product, quantity);
         _shoppingBasketRepository.Update(shoppingCart);
         return Task.CompletedTask;
@@ -68,5 +67,15 @@ public class ShoppingCartService : IShoppingCartService
         shoppingCart.MarkAsOrdered();
         _shoppingBasketRepository.Update(shoppingCart);
         return Task.CompletedTask;
+    }
+    
+    private Product GetProductFromRepository(Guid productId)
+    {
+        var product = _productRepository.GetById(productId);
+        if (product == null)
+        {
+            throw new EntityNotFoundException("Product not found.");
+        }
+        return product;
     }
 }
