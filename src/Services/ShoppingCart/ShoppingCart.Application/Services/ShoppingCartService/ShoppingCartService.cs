@@ -78,4 +78,15 @@ public class ShoppingCartService : IShoppingCartService
         }
         return product;
     }
+
+    public Task TimeOutShoppingCarts()
+    {
+        var shoppingCarts = _shoppingBasketRepository.GetActiveShoppingCartsCreatedBefore(DateTime.Now.AddMinutes(-30));
+        foreach (var shoppingCart in shoppingCarts)
+        {
+            shoppingCart.MarkAsTimedOut();
+            _shoppingBasketRepository.Update(shoppingCart);
+        }
+        return Task.CompletedTask;
+    }
 }

@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
 using ShoppingCart.Core.Product;
@@ -40,6 +41,18 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddAutoMapper(typeof(MappingProfile));    
     builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+
+    builder.Services.AddQuartz(q =>
+    {
+        q.UseMicrosoftDependencyInjectionScopedJobFactory();
+        var jobKey = new JobKey("TimeOutShoppingCartsJob");
+        q.AddJob<TimeOutShoppingCartsJob>(opts => opts.WithIdentity(jobKey));
+        q.AddTrigger(opts => opts
+            .ForJob(jobKey)
+            .WithIdentity("TimeOutShoppingCartsJobTrigger")
+            .WithCronSchedule("0 */30 * ? * *"));
+    });
+    builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
 }
 
 var app = builder.Build();

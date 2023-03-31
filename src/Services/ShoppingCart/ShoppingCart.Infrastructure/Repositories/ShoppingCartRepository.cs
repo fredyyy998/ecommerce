@@ -58,4 +58,9 @@ public class ShoppingCartRepository : IShoppingCartRepository
         
         return shoppingCart;
     }
+    
+    public List<Core.ShoppingCart.ShoppingCart> GetActiveShoppingCartsCreatedBefore(DateTime date)
+    {
+        return _context.ShoppingCarts.Where(x => x.CreatedAt < date && x.Status == State.Active).ToList();
+    }
 }

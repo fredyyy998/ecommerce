@@ -8,4 +8,5 @@ public interface IShoppingCartRepository : IRepository<ShoppingCart>
     List<ShoppingCart> GetTimedOutShoppingCarts();
     List<ShoppingCart> GetShoppingCartsByCustomerId(Guid customerId);
     ShoppingCart GetActiveShoppingCartByCustomer(Guid customerId);
+    List<ShoppingCart> GetActiveShoppingCartsCreatedBefore(DateTime date);
 }

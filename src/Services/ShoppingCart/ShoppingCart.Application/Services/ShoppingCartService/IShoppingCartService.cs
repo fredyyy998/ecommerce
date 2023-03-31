@@ -8,4 +8,5 @@ public interface IShoppingCartService
     Task RemoveProductFromShoppingCart(Guid customerId, Guid productId, int quantity);
     Task<ShoppingCartResponseDto> GetActiveShoppingCart(Guid customerId);
     Task Checkout(Guid customerId);
+    Task TimeOutShoppingCarts();
 }
