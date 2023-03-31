@@ -2,11 +2,11 @@
 
 namespace ShoppingCart.Core.Events;
 
-public class ShoppingBasketTimedOutEvent : IDomainEvent
+public class ShoppingCartTimedOutEvent : IDomainEvent
 {
     public ShoppingCart.ShoppingCart ShoppingCart { get; }
     
-    public ShoppingBasketTimedOutEvent(ShoppingCart.ShoppingCart shoppingCart)
+    public ShoppingCartTimedOutEvent(ShoppingCart.ShoppingCart shoppingCart)
     {
         ShoppingCart = shoppingCart;
     }

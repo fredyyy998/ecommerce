@@ -141,7 +141,7 @@ public class ShoppingCartTest
         shoppingCart.MarkAsTimedOut();
         
         Assert.Single(shoppingCart.DomainEvents);
-        Assert.IsType<ShoppingBasketTimedOutEvent>(shoppingCart.DomainEvents.First());
+        Assert.IsType<ShoppingCartTimedOutEvent>(shoppingCart.DomainEvents.First());
     }
     
     [Fact]

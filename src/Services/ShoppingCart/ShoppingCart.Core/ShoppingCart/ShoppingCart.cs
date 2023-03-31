@@ -79,7 +79,7 @@ public class ShoppingCart : EntityRoot
         {
             item.Product.AddStock(item.Quantity);
         }
-        AddDomainEvent(new ShoppingBasketTimedOutEvent(this));
+        AddDomainEvent(new ShoppingCartTimedOutEvent(this));
     }
     
     public void MarkAsOrdered()
