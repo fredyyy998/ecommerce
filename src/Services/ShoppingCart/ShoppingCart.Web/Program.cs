@@ -1,10 +1,14 @@
 
 using System.Reflection;
+using Ecommerce.Common.Kafka;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using ShoppingCart.Application.EventHandlers;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
+using ShoppingCart.Core.Events;
 using ShoppingCart.Core.Product;
 using ShoppingCart.Core.ShoppingCart;
 using ShoppingCart.Infrastructure;
@@ -55,7 +59,10 @@ var builder = WebApplication.CreateBuilder(args);
     });
     builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
 
+    builder.Services.AddSingleton<KafkaProducer>(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+    builder.Services
+        .AddScoped<INotificationHandler<CustomerAddedProductToBasketEvent>, CustomerAddedProductToBasketEventHandler>();
 }
 
 var app = builder.Build();
