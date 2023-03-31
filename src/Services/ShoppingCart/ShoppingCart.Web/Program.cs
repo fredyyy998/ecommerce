@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Quartz;
@@ -53,6 +54,8 @@ var builder = WebApplication.CreateBuilder(args);
             .WithCronSchedule("0 */30 * ? * *"));
     });
     builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
+
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 }
 
 var app = builder.Build();
