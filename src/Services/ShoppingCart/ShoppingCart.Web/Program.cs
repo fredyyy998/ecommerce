@@ -63,6 +63,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     builder.Services
         .AddScoped<INotificationHandler<CustomerAddedProductToBasketEvent>, CustomerAddedProductToBasketEventHandler>();
+    builder.Services
+        .AddScoped<INotificationHandler<CustomerChangedProductQuantityInCartEvent>,
+            CustomerChangedProductQuantityInCartEventHandler>();
 }
 
 var app = builder.Build();
