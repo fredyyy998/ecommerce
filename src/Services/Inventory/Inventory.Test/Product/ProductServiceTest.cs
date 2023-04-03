@@ -3,6 +3,7 @@ using AutoMapper;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
 using Inventory.Core.Product;
+using MediatR;
 using Moq;
 using Xunit;
 
@@ -13,14 +14,15 @@ public class ProductServiceTest
     private readonly ProductService _productService;
     private readonly IMapper _mapper;
     private readonly Mock<IProductRepository> _productRepositoryMock;
-    
+    private readonly Mock<IMediator> _mockMediator;
+
     public ProductServiceTest()
     {
         var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
         _mapper = config.CreateMapper();
 
         _productRepositoryMock = new Mock<IProductRepository>();
-        _productService = new ProductService(_productRepositoryMock.Object, _mapper);
+        _productService = new ProductService(_productRepositoryMock.Object, _mapper, _mockMediator.Object);
     }
 
     [Fact]
