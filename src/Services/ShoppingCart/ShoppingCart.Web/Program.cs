@@ -89,6 +89,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddHostedService<KafkaListener>();
     builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
+    builder.Services.AddTransient<INotificationHandler<ProductRemovedByAdminEvent>, ProductRemovedByAdminEventConsumer>();
 }
 
 var app = builder.Build();

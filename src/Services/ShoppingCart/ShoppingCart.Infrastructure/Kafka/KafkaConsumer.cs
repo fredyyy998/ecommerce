@@ -67,6 +67,8 @@ public class KafkaListener : BackgroundService
         {
             case "product-added-by-admin":
                 return JsonConvert.DeserializeObject<ProductAddedByAdminEvent>(message.Value);
+            case "product-removed-by-admin":
+                return JsonConvert.DeserializeObject<ProductRemovedByAdminEvent>(message.Value);
             default:
                 throw new Exception("Unknown event type");
         }
