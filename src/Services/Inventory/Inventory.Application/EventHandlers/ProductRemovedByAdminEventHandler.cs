@@ -15,6 +15,6 @@ public class ProductRemovedByAdminEventHandler : INotificationHandler<ProductRem
     
     public async Task Handle(ProductRemovedByAdmin notification, CancellationToken cancellationToken)
     {
-        _kafkaProducer.Publish<ProductRemovedByAdmin>("inventory", "product-added-by-admin", notification);
+        _kafkaProducer.Publish<ProductRemovedByAdmin>("inventory", "product-removed-by-admin", notification);
     }
 }

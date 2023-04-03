@@ -2,7 +2,9 @@
 using AutoMapper;
 using Inventory.Application.Dtos;
 using Inventory.Application.Exceptions;
+using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
+using MediatR;
 
 namespace Inventory.Application.Services;
 
@@ -10,11 +12,13 @@ public class ProductService : IProductService
 {
     private readonly IMapper _mapper;
     private readonly IProductRepository _productRepository;
+    private readonly IMediator _mediator;
     
-    public ProductService(IProductRepository productRepository, IMapper mapper)
+    public ProductService(IProductRepository productRepository, IMapper mapper, IMediator mediator)
     {
         _productRepository = productRepository;
         _mapper = mapper;
+        _mediator = mediator;
     }
 
     public ProductResponseDto GetProduct(Guid productId)
@@ -71,6 +75,9 @@ public class ProductService : IProductService
     public void DeleteProduct(Guid productId)
     {
         _productRepository.Delete(productId);
+        // TODO this is a bit of an edge case, usually we would like to create the event in the product and public it after save
+        // but in this case the product does not exist anymore and the event does not exist anymore aswell, so for now we simply publish here
+        _mediator.Publish(new ProductRemovedByAdmin(productId));
     }
     
     private Product GetProductFromRepository(Guid productId)
