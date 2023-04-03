@@ -91,6 +91,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductRemovedByAdminEvent>, ProductRemovedByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductStockUpdatedByAdminEvent>, ProductStockUpdateByAdminEventConsumer>();
+    builder.Services.AddTransient<INotificationHandler<ProductUpdatedByAdminEvent>, ProductUpdatedByAdminEventConsumer>();
 }
 
 var app = builder.Build();
