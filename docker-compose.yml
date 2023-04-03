@@ -46,6 +46,14 @@ services:
     ports:
       - "8080:80"
 
+  web_account_service:
+    build: ./src/Services/Account
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8081:80"
+
 networks:
   kafka-net:
     driver: bridge
