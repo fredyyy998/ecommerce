@@ -6,13 +6,13 @@ namespace ShoppingCart.Test.ProductTest;
 public class ProductTest
 {
     [Fact]
-    public void Product_Stock_ShouldBeGreaterThanZero()
+    public void Product_Stock_ShouldNotBeSmallerThanZero_WhenCreating()
     {
         var id = Guid.NewGuid();
         var name = "Test";
         var description = "Test";
         var price = new Price(10, 10, "EUR");
-        var stock = 0;
+        var stock = -1;
 
         Assert.Throws<ProductDomainException>(() => Product.Create(id, name, description, price, stock));
     }

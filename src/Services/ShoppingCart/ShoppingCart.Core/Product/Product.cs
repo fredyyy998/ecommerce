@@ -15,7 +15,7 @@ public class Product : EntityRoot
 
     public static Product Create(Guid id, string name, string description, Price price, int stock)
     {
-        if (stock <= 0)
+        if (stock < 0)
         {
             throw new ProductDomainException("Stock must be greater than zero");
         }
