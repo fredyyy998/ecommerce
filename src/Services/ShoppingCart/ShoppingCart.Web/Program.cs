@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Quartz;
+using ShoppingCart.Application.EventConsumer;
 using ShoppingCart.Application.EventHandlers;
 using ShoppingCart.Application.Services;
 using ShoppingCart.Application.Utils;
@@ -15,6 +16,7 @@ using ShoppingCart.Core.Events;
 using ShoppingCart.Core.Product;
 using ShoppingCart.Core.ShoppingCart;
 using ShoppingCart.Infrastructure;
+using ShoppingCart.Infrastructure.Kafka;
 using ShoppingCart.Infrastructure.Repositories;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -84,6 +86,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventHandler>();
     builder.Services.AddScoped<INotificationHandler<ShoppingCartTimedOutEvent>, ShoppingCartTimedOutEventHandler>();
+    
+    builder.Services.AddHostedService<KafkaListener>();
+    builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
 }
 
 var app = builder.Build();
