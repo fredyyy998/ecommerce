@@ -1,35 +1,49 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
+using Microsoft.Extensions.Hosting;
 
 namespace Ecommerce.Common.Kafka;
 
-public class KafkaConsumer
+public abstract class KafkaConsumer<TKey, TMessage> : BackgroundService
 {
-    private readonly ConsumerConfig _config;
-    
-    public KafkaConsumer(string bootstrapServers, string clientId)
+    protected readonly IConsumer<TKey, TMessage> _consumer;
+
+    public KafkaConsumer(string bootstrapServer, string groupId, string topic)
     {
-        _config = new ConsumerConfig()
-        {    
-            BootstrapServers = bootstrapServers,
-            ClientId = clientId,
-            GroupId = "my-group-id",
+        var config = new ConsumerConfig
+        {
+            BootstrapServers = bootstrapServer,
+            GroupId = groupId,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
+
+        var builder = new ConsumerBuilder<TKey, TMessage>(config)
+            .Build();
+
+        builder.Subscribe(topic);
+
+        _consumer = builder;
     }
-    
-    public void Subscribe<T>(string topic, Action<T> handler)
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using (var consumer = new ConsumerBuilder<string, string>(_config).Build())
+        while (!stoppingToken.IsCancellationRequested)
         {
-            consumer.Subscribe(topic);
+            var consumeResult = _consumer.Consume(stoppingToken);
             
-            while (true)
+            
+            // Handle the message
+            if (consumeResult != null)
             {
-                var consumeResult = consumer.Consume();
-                var message = JsonSerializer.Deserialize<T>(consumeResult.Message.Value);
-                handler(message);
+                HandleResult(consumeResult);
             }
         }
     }
+
+    public override async Task StopAsync(CancellationToken stoppingToken)
+    {
+        _consumer.Close();
+        await base.StopAsync(stoppingToken);
+    }
+    
+    public abstract void HandleResult(ConsumeResult<TKey, TMessage> consumeResult);
 }
