@@ -63,4 +63,12 @@ public class ShoppingCartRepository : IShoppingCartRepository
     {
         return _context.ShoppingCarts.Where(x => x.CreatedAt < date && x.Status == State.Active).ToList();
     }
+
+    public void RemoveProductFromShoppingCart(Guid shoppingCartId, Guid productId)
+    {
+        var shoppingCart = GetById(shoppingCartId);
+        var item = shoppingCart.Items.FirstOrDefault(x => x.Product.Id == productId);
+        shoppingCart.RemoveQuantityOfItem(item.Product, item.Quantity);
+        Update(shoppingCart);
+    }
 }

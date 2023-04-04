@@ -86,6 +86,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventHandler>();
     builder.Services.AddScoped<INotificationHandler<ShoppingCartTimedOutEvent>, ShoppingCartTimedOutEventHandler>();
+    builder.Services
+        .AddScoped<INotificationHandler<ReservationCanceledDueToStockUpdateEvent>,
+            ReservationCanceledDueToStockUpdateEventHandler>();
     
     builder.Services.AddHostedService<KafkaListener>();
     builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
