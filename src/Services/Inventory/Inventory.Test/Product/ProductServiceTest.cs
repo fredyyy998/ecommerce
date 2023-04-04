@@ -22,6 +22,7 @@ public class ProductServiceTest
         _mapper = config.CreateMapper();
 
         _productRepositoryMock = new Mock<IProductRepository>();
+        _mockMediator = new Mock<IMediator>();
         _productService = new ProductService(_productRepositoryMock.Object, _mapper, _mockMediator.Object);
     }
 
