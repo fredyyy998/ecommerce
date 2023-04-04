@@ -90,7 +90,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddScoped<INotificationHandler<ReservationCanceledDueToStockUpdateEvent>,
             ReservationCanceledDueToStockUpdateEventHandler>();
     
-    builder.Services.AddHostedService<KafkaListener>();
+    builder.Services.AddHostedService<KafkaInventoryListener>();
     builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductRemovedByAdminEvent>, ProductRemovedByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductStockUpdatedByAdminEvent>, ProductStockUpdateByAdminEventConsumer>();

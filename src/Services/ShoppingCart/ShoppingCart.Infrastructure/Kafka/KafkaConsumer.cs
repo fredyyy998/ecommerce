@@ -1,66 +1,34 @@
 ﻿using Confluent.Kafka;
 using Ecommerce.Common.Core;
+using Ecommerce.Common.Kafka;
 using MediatR;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ShoppingCart.Core.Events;
 
 namespace ShoppingCart.Infrastructure.Kafka;
 
-public class KafkaListener : BackgroundService
+public class KafkaInventoryListener : KafkaConsumer<string, string>
 {
-
-    private readonly IConsumer<string, string> _consumer;
 
     private readonly IMediator _mediator;
     
-    public KafkaListener(IMediator mediator)
+    public KafkaInventoryListener(IConfiguration configuration, IMediator mediator) 
+        : base(configuration["Kafka:BootstrapServers"], configuration["Kafka:GroupId"], "inventory")
     {
         _mediator = mediator;
+    }
+
+    public override void HandleResult(ConsumeResult<string, string> consumeResult)
+    {
+        IDomainEvent eventData = GetEventData(consumeResult.Message);
         
-        var config = new ConsumerConfig
-        {
-            BootstrapServers = "localhost:9092",
-            GroupId = "my-group-id",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
+        Console.WriteLine(consumeResult.Message.Key);
+        Console.WriteLine(consumeResult.Message.Value);
 
-        var builder = new ConsumerBuilder<string, string>(config)
-            .Build();
-
-        builder.Subscribe("inventory");
-
-        _consumer = builder;
+        _mediator.Publish(eventData);
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            var consumeResult = _consumer.Consume(stoppingToken);
-            
-            
-            // Handle the message
-            if (consumeResult != null)
-            {
-                IDomainEvent eventData = GetEventData(consumeResult.Message);
-                
-                // Check if the message is relevant and trigger the appropriate side effects
-                Console.WriteLine("Received a hello message from Kafka!");
-                Console.WriteLine(consumeResult.Message.Key);
-                Console.WriteLine(consumeResult.Message.Value);
-
-                _mediator.Publish(eventData);
-            }
-        }
-    }
-
-    public override async Task StopAsync(CancellationToken stoppingToken)
-    {
-        _consumer.Close();
-        await base.StopAsync(stoppingToken);
-    }
-    
     private IDomainEvent GetEventData(Message<string, string> message)
     {
         switch (message.Key)
