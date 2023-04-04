@@ -51,7 +51,7 @@ public class ShoppingCart : EntityRoot
             _items.Add(item);
             AddDomainEvent(new CustomerAddedProductToBasketEvent(Id, product, quantity));
         }
-        product.RemoveStock(quantity);
+        product.Reservate(quantity, Id);
         UpdatedAt = DateTime.UtcNow;
     }
 
@@ -63,7 +63,7 @@ public class ShoppingCart : EntityRoot
             throw new ShoppingCartDomainException("Product not found in shopping cart.");
         }
         item.DecreaseQuantity(quantity);
-        product.AddStock(quantity);
+        product.Reservate(quantity, Id);
         AddDomainEvent(new CustomerChangedProductQuantityInCartEvent(this.Id, product, item.Quantity));
         if (item.Quantity == 0)
         {
@@ -77,7 +77,7 @@ public class ShoppingCart : EntityRoot
         Status = State.TimedOut;
         foreach (var item in _items)
         {
-            item.Product.AddStock(item.Quantity);
+            item.Product.CancelReservation(Id);
         }
         AddDomainEvent(new ShoppingCartTimedOutEvent(this));
     }
@@ -85,6 +85,10 @@ public class ShoppingCart : EntityRoot
     public void MarkAsOrdered()
     {
         Status = State.Ordered;
+        foreach (var item in _items)
+        {
+            item.Product.CommitReservation(Id);
+        }
         AddDomainEvent(new CustomerOrderedShoppingCartEvent(this));
     }
 }

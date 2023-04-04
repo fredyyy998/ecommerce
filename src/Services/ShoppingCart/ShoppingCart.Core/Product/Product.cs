@@ -64,7 +64,7 @@ public class Product : EntityRoot
     
     public bool HasSufficientStock(int quantity)
     {
-        return Stock - quantity >= 0;
+        return Stock - quantity - TotalReserved >= 0;
     }
 
     public void RemoveStock(int quantity)

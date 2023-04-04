@@ -66,43 +66,25 @@ public class ShoppingCartTest
         
         Assert.Throws<ShoppingCartDomainException>(() => shoppingCart.RemoveQuantityOfItem(product, 1));
     }
-
-    [Fact]
-    public void Product_Stock_Should_Decrease_When_Added_To_ShoppingCart()
-    {
-        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = GetProduct(2);
-        var quantity = 3;
-        
-        
-        Assert.Throws<ShoppingCartDomainException>(() => shoppingCart.AddItem(product, quantity));
-        Assert.Equal(2, product.Stock);
-        Assert.Empty(shoppingCart.Items);
-    }
     
     [Fact]
-    public void Product_Cannot_Be_Added_When_Stock_ProdcutStock_Is_Not_Sufficent()
+    public void Product_Reservation_Should_Be_Removed_When_Removed_From_ShoppingCart()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
         var product = GetProduct();
-        var quantity = 10;
-    }
-    
-    [Fact]
-    public void Product_Stock_Should_Increase_When_Removed_From_ShoppingCart()
-    {
-        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
-        var product = GetProduct();
+        var product2 = GetProduct();
         var quantity = 1;
         shoppingCart.AddItem(product, quantity);
+        shoppingCart.AddItem(product2, quantity);
         
         shoppingCart.RemoveQuantityOfItem(product, quantity);
         
-        Assert.Equal(10, product.Stock);
+        Assert.Equal(1, product.TotalReserved);
+        Assert.Equal(1, product.Reservations.Count);
     }
     
     [Fact]
-    public void On_ShoppingCart_TimeOut_All_Product_Return_To_Stock()
+    public void On_ShoppingCart_TimeOut_All_Product_Reservations_Are_Removed()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
         var product1 = GetProduct();
@@ -112,8 +94,10 @@ public class ShoppingCartTest
 
         shoppingCart.MarkAsTimedOut();
         
-        Assert.Equal(10, product1.Stock);
-        Assert.Equal(15, product2.Stock);
+        Assert.Equal(0, product1.TotalReserved);
+        Assert.Equal(0, product1.Reservations.Count);
+        Assert.Equal(0, product2.TotalReserved);
+        Assert.Equal(0, product2.Reservations.Count);
     }
 
     [Fact]
@@ -185,6 +169,20 @@ public class ShoppingCartTest
         Assert.Single(shoppingCart.DomainEvents);
         Assert.IsType<CustomerChangedProductQuantityInCartEvent>(shoppingCart.DomainEvents.First());
         Assert.Equal(8, ((CustomerChangedProductQuantityInCartEvent)shoppingCart.DomainEvents.First()).NewQuantity);
+    }
+
+    [Fact]
+    public void Order_ShoppingCart_Removes_Reservations_From_Stock()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct();
+        shoppingCart.AddItem(product, 5);
+        
+        shoppingCart.MarkAsOrdered();
+        
+        Assert.Equal(0, product.TotalReserved);
+        Assert.Equal(0, product.Reservations.Count);
+        Assert.Equal(5, product.Stock);
     }
     
     public Product GetProduct(int stock = 10)
