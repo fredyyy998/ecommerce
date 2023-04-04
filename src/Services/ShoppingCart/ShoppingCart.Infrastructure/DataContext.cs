@@ -26,6 +26,13 @@ public class DataContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.OwnsOne(p => p.Price);
+            
+            entity.OwnsMany(p => p.Reservations, r =>
+            {
+                r.WithOwner().HasForeignKey("ProductId");
+                r.Property<int>("Id").UseIdentityColumn();
+                r.HasKey("Id");
+            });
         });
         
         modelBuilder.Entity<Core.ShoppingCart.ShoppingCart>(entity =>
