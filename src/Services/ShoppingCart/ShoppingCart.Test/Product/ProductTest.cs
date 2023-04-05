@@ -19,9 +19,9 @@ public class ProductTest
     }
 
     [Theory]
-    [InlineData(0)]
+    [InlineData(-10)]
     [InlineData(-1)]
-    public void Product_Stock_ShouldBeGreaterThanZero_WhenUpdating(int updatedStock)
+    public void Product_Stock_Should_Not_Be_Smaller_Than_Zero_When_Updated(int updatedStock)
     {
         var name = "Test";
         var description = "Test";
