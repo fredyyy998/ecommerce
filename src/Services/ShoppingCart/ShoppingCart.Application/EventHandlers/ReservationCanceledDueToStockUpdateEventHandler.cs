@@ -15,7 +15,7 @@ public class ReservationCanceledDueToStockUpdateEventHandler : INotificationHand
     
     public Task Handle(ReservationCanceledDueToStockUpdateEvent notification, CancellationToken cancellationToken)
     {
-        _shoppingCartRepository.RemoveProductFromShoppingCart(notification.ProductId, notification.ShoppingCartId);
+        _shoppingCartRepository.RemoveProductFromShoppingCart(notification.ShoppingCartId, notification.ProductId);
         return Task.CompletedTask;
     }
 }
