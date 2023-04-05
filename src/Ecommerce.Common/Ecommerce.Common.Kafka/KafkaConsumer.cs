@@ -33,7 +33,6 @@ public abstract class KafkaConsumer<TKey, TMessage> : BackgroundService
                 var consumeResult = _consumer.Consume(stoppingToken);
                 if (consumeResult != null)
                     HandleResult(consumeResult);
-                consumeResult = null;
             }
         });
     }
