@@ -26,17 +26,16 @@ public abstract class KafkaConsumer<TKey, TMessage> : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        await Task.Run(() =>
         {
-            var consumeResult = _consumer.Consume(stoppingToken);
-            
-            
-            // Handle the message
-            if (consumeResult != null)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                HandleResult(consumeResult);
+                var consumeResult = _consumer.Consume(stoppingToken);
+                if (consumeResult != null)
+                    HandleResult(consumeResult);
+                consumeResult = null;
             }
-        }
+        });
     }
 
     public override async Task StopAsync(CancellationToken stoppingToken)
