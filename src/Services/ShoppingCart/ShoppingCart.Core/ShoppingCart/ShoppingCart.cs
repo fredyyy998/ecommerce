@@ -63,11 +63,15 @@ public class ShoppingCart : EntityRoot
             throw new ShoppingCartDomainException("Product not found in shopping cart.");
         }
         item.DecreaseQuantity(quantity);
-        product.Reservate(quantity, Id);
+        
         AddDomainEvent(new CustomerChangedProductQuantityInCartEvent(this.Id, product, item.Quantity));
         if (item.Quantity == 0)
         {
             _items.Remove(item);
+        }
+        else
+        {
+            product.Reservate(quantity, Id);
         }
         UpdatedAt = DateTime.UtcNow;
     }
