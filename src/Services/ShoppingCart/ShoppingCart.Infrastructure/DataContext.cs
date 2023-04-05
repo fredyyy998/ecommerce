@@ -56,6 +56,9 @@ public class DataContext : DbContext
         
         var domainEvents = domainEntities.SelectMany(x => x.Entity.DomainEvents).ToList();
 
+        foreach (var domainEntity in domainEntities)
+            domainEntity.Entity.ClearEvents();
+        
         foreach (var domainEvent in domainEvents)
             _mediator.Publish(domainEvent);
         
