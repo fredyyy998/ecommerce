@@ -13,7 +13,7 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper" Version="12.0.1" />
-      <PackageReference Include="ecommerce.common.kafka" Version="1.0.1" />
+      <PackageReference Include="ecommerce.common.kafka" Version="1.0.2" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
       <PackageReference Include="Quartz" Version="3.6.2" />
       <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
