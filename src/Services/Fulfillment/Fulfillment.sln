@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FulFillment.Core", "FulFillment.Core\FulFillment.Core.csproj", "{7E4C68F2-53DA-499C-BB08-CE91EC22B906}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fulfillment.Test", "Fulfillment.Test\Fulfillment.Test.csproj", "{7A4EF7AE-8EA4-460F-8291-41743D9E114C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fulfillment.Core", "Fulfillment.Core\Fulfillment.Core.csproj", "{FE81F52E-972C-4FBB-90A1-E9396CF55CCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7E4C68F2-53DA-499C-BB08-CE91EC22B906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E4C68F2-53DA-499C-BB08-CE91EC22B906}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E4C68F2-53DA-499C-BB08-CE91EC22B906}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E4C68F2-53DA-499C-BB08-CE91EC22B906}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A4EF7AE-8EA4-460F-8291-41743D9E114C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A4EF7AE-8EA4-460F-8291-41743D9E114C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A4EF7AE-8EA4-460F-8291-41743D9E114C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A4EF7AE-8EA4-460F-8291-41743D9E114C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE81F52E-972C-4FBB-90A1-E9396CF55CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE81F52E-972C-4FBB-90A1-E9396CF55CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE81F52E-972C-4FBB-90A1-E9396CF55CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE81F52E-972C-4FBB-90A1-E9396CF55CCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
