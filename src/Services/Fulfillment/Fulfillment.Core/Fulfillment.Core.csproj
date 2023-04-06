@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ecommerce.common.core" Version="1.0.0" />
+    </ItemGroup>
+
 </Project>
