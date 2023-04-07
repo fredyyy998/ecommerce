@@ -1,5 +1,10 @@
 using System.Text;
+using Fulfillment.Application.Services;
+using Fulfillment.Application.Utlis;
+using Fulfillment.Core.Buyer;
+using Fulfillment.Core.Order;
 using Fulfillment.Infrastructure;
+using Fulfillment.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -42,6 +47,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
             b => b.MigrationsAssembly("Fulfillment.Web")));
+
+    builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+    builder.Services.AddAutoMapper(typeof(MappingProfile));
+    builder.Services.AddScoped<IOrderService, OrderService>();
+    
 }
 
 var app = builder.Build();
