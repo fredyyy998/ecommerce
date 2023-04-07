@@ -21,4 +21,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Fulfillment.Core\Fulfillment.Core.csproj" />
+    </ItemGroup>
+
 </Project>
