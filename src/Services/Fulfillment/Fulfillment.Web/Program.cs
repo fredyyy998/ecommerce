@@ -41,7 +41,7 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddDbContext<DataContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-            b => b.MigrationsAssembly("Order.Web")));
+            b => b.MigrationsAssembly("Fulfillment.Web")));
 }
 
 var app = builder.Build();
