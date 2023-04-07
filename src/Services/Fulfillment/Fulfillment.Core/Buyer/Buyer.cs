@@ -6,8 +6,8 @@ public class Buyer : EntityRoot
 
 {
     public PersonalInformation PersonalInformation { get; set; }
-    Address ShippingAddress { get; set; }
-    PaymentInformation PaymentInformation { get; set; }
+    public Address ShippingAddress { get; set; }
+    public PaymentInformation PaymentInformation { get; set; }
     
     public Buyer(string firstName, string lastName, string email, Address shippingAddress, PaymentInformation paymentInformation)
     {
