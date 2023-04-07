@@ -3,6 +3,7 @@
 namespace Fulfillment.Core.Buyer;
 
 public class Buyer : EntityRoot
+
 {
     public PersonalInformation PersonalInformation { get; set; }
     Address ShippingAddress { get; set; }

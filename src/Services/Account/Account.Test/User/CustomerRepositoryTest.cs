@@ -21,8 +21,8 @@ public class CustomerRepositoryTest
         
         _mediatorMock = new Mock<IMediator>();
 
-        _dbContext = new DataContext(options);
-        _customerRepository = new CustomerRepository(_dbContext, _mediatorMock.Object);
+        _dbContext = new DataContext(options, _mediatorMock.Object);
+        _customerRepository = new CustomerRepository(_dbContext);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class CustomerRepositoryTest
 
         _customerRepository.Update(customer);
 
-        _mediatorMock.Verify(m => m.Publish(It.IsAny<INotification>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+        _mediatorMock.Verify(m => m.Publish(It.IsAny<INotification>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
     
     [Fact]
@@ -65,6 +65,6 @@ public class CustomerRepositoryTest
 
         _customerRepository.Delete(customer.Id);
 
-        _mediatorMock.Verify(m => m.Publish(It.IsAny<INotification>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+        _mediatorMock.Verify(m => m.Publish(It.IsAny<INotification>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
     }
 }
