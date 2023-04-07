@@ -1,7 +1,7 @@
+
 using System.Text;
 using Fulfillment.Application.Services;
 using Fulfillment.Application.Utlis;
-using Fulfillment.Core.Buyer;
 using Fulfillment.Core.Order;
 using Fulfillment.Infrastructure;
 using Fulfillment.Infrastructure.Repositories;
@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -58,11 +59,8 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     app.UseCors("corsapp");
     app.UseExceptionHandler("/error");
