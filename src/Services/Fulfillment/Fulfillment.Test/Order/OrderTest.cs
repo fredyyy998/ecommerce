@@ -207,14 +207,6 @@ public class OrderTest
     
     private Order CreateOrder()
     {
-        var buyer = CreateBuyer();
-        return Order.Create(buyer);
-    }
-    
-    private Buyer CreateBuyer()
-    {
-        var address = new Address("Test", "Test", "Test", "Test");
-        var paymentInformation = new PaymentInformation(address);
-        return new Buyer("Test", "Test", "Test", address, paymentInformation);
+        return Order.Create(Guid.NewGuid());
     }
 }

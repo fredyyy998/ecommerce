@@ -5,7 +5,7 @@ namespace Fulfillment.Core.Order;
 
 public class Order : EntityRoot
 {
-    public Buyer.Buyer Buyer { get; private set; }
+    public Guid BuyerId { get; private set; }
 
     private List<OrderItem> _products;
     
@@ -17,12 +17,12 @@ public class Order : EntityRoot
     
     public OrderState State { get; private set; }
 
-    public static Order Create(Buyer.Buyer buyer)
+    public static Order Create(Guid buyerId)
     {
         return new Order()
         {
             Id = Guid.NewGuid(),
-            Buyer = buyer,
+            BuyerId = buyerId,
             _products = new List<OrderItem>(),
             TotalPrice = new Price(0, 0, 19, "EUR"),
             State = OrderState.Created,
