@@ -9,12 +9,15 @@ public class Buyer : EntityRoot
     public Address ShippingAddress { get; set; }
     public PaymentInformation PaymentInformation { get; set; }
     
-    public Buyer(string firstName, string lastName, string email, Address shippingAddress, PaymentInformation paymentInformation)
+    public static Buyer Create(string firstName, string lastName, string email, Address shippingAddress, PaymentInformation paymentInformation)
     {
-        Id = Guid.NewGuid();
-        PersonalInformation = new PersonalInformation(firstName, lastName, email);
-        ShippingAddress = shippingAddress;
-        PaymentInformation = paymentInformation;
+        return new Buyer()
+        {
+            Id = Guid.NewGuid(),
+            PersonalInformation = new PersonalInformation(firstName, lastName, email),
+            ShippingAddress = shippingAddress,
+            PaymentInformation = paymentInformation,
+        };
     }
     
     public void UpdatePersonalInformation(string firstName, string lastName, string email)

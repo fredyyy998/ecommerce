@@ -9,7 +9,7 @@ public class PersonalInformation
         Email = email;
     }
 
-    private string FirstName { get; set; }
-    private string LastName { get; set; }
-    private string Email { get; set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string Email { get; private set; }
 }

@@ -4,8 +4,10 @@ namespace Fulfillment.Core.Buyer;
 
 public class PaymentInformation : ValueObject
 { 
-    public Address Address { get; private set; }
-
+    public Address Address { get; protected set; }
+    
+    protected PaymentInformation() { }
+    
     public PaymentInformation(Address address)
     {
         Address = address;

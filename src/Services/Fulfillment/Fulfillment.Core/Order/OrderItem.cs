@@ -10,16 +10,20 @@ public class OrderItem : ValueObject
     public int Quantity { get; private set; }
     public Price TotalPrice { get; private set; }
     
-    public OrderItem(string name, Price price, int quantity)
+    public static OrderItem Create(string name, Price price, int quantity)
     {
-        Name = name;
-        Price = price;
-        Quantity = quantity;
-        TotalPrice = new Price(
-            price.GrossPrice * quantity,
-            price.NetPrice * quantity,
-            price.Tax,
-            price.Currency);
+        return new OrderItem
+        {
+            ProductId = Guid.NewGuid().ToString(),
+            Name = name,
+            Price = price,
+            Quantity = quantity,
+            TotalPrice = new Price(
+                price.GrossPrice * quantity,
+                price.NetPrice * quantity,
+                price.Tax,
+                price.Currency)
+        };
     }
     
     protected override IEnumerable<object> GetEqualityComponents()
