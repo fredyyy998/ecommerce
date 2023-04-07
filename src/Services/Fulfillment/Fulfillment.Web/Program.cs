@@ -1,3 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
@@ -7,6 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHttpContextAccessor();
 
+    
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey =
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:Secret").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 }
 
 var app = builder.Build();
@@ -20,6 +36,9 @@ var app = builder.Build();
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
     app.MapControllers();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
     
     app.Run();
 }
