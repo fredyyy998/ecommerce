@@ -31,7 +31,7 @@ public class ProfileService : IProfileService
     {
         var customer = GetExistingCustomerById(customerId);
         
-        customer.UpdateAddress(customerUpdateDto.Address.Street, customerUpdateDto.Address.City, customerUpdateDto.Address.Zip, customerUpdateDto.Address.Country);
+        customer.UpdateAddress(customerUpdateDto.Address.Street, customerUpdateDto.Address.Zip, customerUpdateDto.Address.City, customerUpdateDto.Address.Country);
         customer.UpdatePersonalInformation(customerUpdateDto.PersonalInformation.FirstName, customerUpdateDto.PersonalInformation.LastName, customerUpdateDto.PersonalInformation.DateOfBirth);
 
         if (customerUpdateDto.PaymentInformation is not null)
