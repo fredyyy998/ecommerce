@@ -36,7 +36,7 @@ public class ProfileService : IProfileService
 
         if (customerUpdateDto.PaymentInformation is not null)
         {
-            customer.UpdatePaymentInformation(customerUpdateDto.PaymentInformation.Address.Street, customerUpdateDto.PaymentInformation.Address.City, customerUpdateDto.PaymentInformation.Address.Zip, customerUpdateDto.PaymentInformation.Address.Country);
+            customer.UpdatePaymentInformation(customerUpdateDto.PaymentInformation.Address.Street, customerUpdateDto.PaymentInformation.Address.Zip, customerUpdateDto.PaymentInformation.Address.City, customerUpdateDto.PaymentInformation.Address.Country);
         }
         
         _customerRepository.Update(customer);
