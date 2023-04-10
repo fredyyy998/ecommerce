@@ -20,11 +20,6 @@ jobs:
 
     - name: Build and test Account Service
       run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=testresults.trx" --configuration Release
-      
-    - uses: actions/upload-artifact@v2
-      with:
-        name: TestResults
-        path: src/Services/Account/Account.Test/TestResults/testresults.trx
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
@@ -37,7 +32,6 @@ jobs:
       
     - uses: dorny/test-reporter@v1
       with:
-        artifact: TestResults
         name: Tests
         path: '*.trx'
         reporter: dotnet-trx
