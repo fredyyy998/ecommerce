@@ -27,4 +27,4 @@ jobs:
 
       - name: Publish package
         run: |
-          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Core/bin/Release/Ecommerce.Common.Core.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Core/bin/Release/Ecommerce.Common.Core.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
