@@ -22,12 +22,11 @@ jobs:
         run: dotnet restore
 
       - name: Build package
-        run: dotnet pack -c Release
+        run: dotnet pack src/Ecommerce.Common -c Release
 
       - name: Publish package
-        uses: nuget/setup-nuget@v1
         with:
           nuget-api-key: ${{ secrets.GITHUB_TOKEN  }}
           nuget-version: '6.3.0.128'
         run: |
-          dotnet nuget push *.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget src/Ecommerce.Common push *.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
