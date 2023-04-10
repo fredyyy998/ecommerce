@@ -29,9 +29,4 @@ jobs:
 
     - name: Build and test Fulfillment Service
       run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "console;verbosity=detailed" --configuration Release
-      
-    - uses: dorny/test-reporter@v1
-      with:
-        name: Tests
-        path: '*.trx'
-        reporter: dotnet-trx
+    
