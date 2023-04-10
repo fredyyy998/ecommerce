@@ -23,7 +23,7 @@ jobs:
       
     - uses: actions/upload-artifact@v2
       with:
-        name: Test Results
+        name: TestResults
         path: src/Services/Account/Account.Test/TestResults/testresults.trx
 
     - name: Build and test Inventory Service
