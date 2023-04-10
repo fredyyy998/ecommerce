@@ -14,6 +14,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.400'
+        
+    - name: Configure NuGet
+      run: nuget sources add -name "GitHub" -source "https://nuget.pkg.github.com/fredyyy998/index.json" -username fredyyy998 -password ${{ secrets.NUGET_API_KEY }}
 
     - name: Build and test Account Service
       run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "console;verbosity=detailed" --configuration Release
