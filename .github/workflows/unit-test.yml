@@ -1,5 +1,5 @@
 name: Unit Test
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test:
@@ -14,9 +14,19 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.400'
+          
+    - name: Configure NuGet
+      run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
 
     - name: Build and test Account Service
-      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=testresults.trx" --configuration Release
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+
+    - name: Build and test Shopping Cart Service
+      run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+
+    - name: Build and test Fulfillment Service
+      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+    
