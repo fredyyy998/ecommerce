@@ -23,3 +23,6 @@ jobs:
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+
+    - name: Build and test Shopping Service
+      run: dotnet test src/Services/Shopping/Shopping.Test/Shopping.Test.csproj --logger "console;verbosity=detailed" --configuration Release
