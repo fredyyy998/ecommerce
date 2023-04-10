@@ -37,6 +37,12 @@ public class ProductRepository : IProductRepository
 
     public ICollection<Product> Search(string search)
     {
-        return _context.Products.Where(p => p.Name.Contains(search) || p.Description.Contains(search)).ToList();
+        // query for products with stock
+        var query = _context.Products.Where(p => p.Stock > 0);
+        if (search != null)
+        {
+            query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
+        }
+        return query.ToList();
     }
 }
