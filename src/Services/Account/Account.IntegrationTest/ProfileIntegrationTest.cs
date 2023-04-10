@@ -4,6 +4,7 @@ using System.Text;
 using Account.Application.Dtos;
 using Account.Core.User;
 using Account.Infrastructure;
+using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Account.IntegrationTest;
@@ -147,6 +148,63 @@ public class ProfileIntegrationTest : IClassFixture<CustomWebApplicationFactory<
             var db = scopedServices.GetRequiredService<DataContext>();
             var customer = db.Customers.FirstOrDefault();
             Assert.Null(customer);
+        }
+    }
+    
+    [Fact]
+    public async Task Message_Is_Published_To_Kafka_On_Successful_Update()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var token = await ObtainJwtToken();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        var content = new StringContent(
+            @"{
+                ""address"": {
+                    ""street"": ""steet"",
+                    ""city"": ""city"",
+                    ""zip"": ""12345"",
+                    ""country"": ""Germany""
+                },
+                ""personalInformation"": {
+                    ""firstName"": ""tester"",
+                    ""lastName"": ""test"",
+                    ""dateOfBirth"": ""24.06.1998""
+                },
+                ""paymentInformation"": {
+                ""address"": {
+                    ""street"": ""street"",
+                    ""city"": ""city"",
+                    ""zip"": ""12345"",
+                    ""country"": ""Germany""
+                }
+            }
+        }",
+            Encoding.UTF8,
+            "application/json");
+        
+        var config = new ConsumerConfig()
+        {
+            BootstrapServers = "localhost:9092",
+            GroupId = "test-update-consumer-group",
+            AutoOffsetReset = AutoOffsetReset.Latest,
+        };
+
+        
+        using (var consumer = new ConsumerBuilder<string, string>(config).Build())
+        {
+            consumer.Subscribe("account");
+            
+            // Act
+            var resutl = await client.PutAsync($"/api/CustomerProfiles/", content);
+
+            // Wait for the message to be consumed
+            var consumeResult = await Task.Run(() => consumer.Consume(TimeSpan.FromSeconds(10)));
+
+            // Assert
+            Assert.NotNull(consumeResult.Value);
+            Assert.Equal("customer-edited", consumeResult.Message.Key);
         }
     }
 
