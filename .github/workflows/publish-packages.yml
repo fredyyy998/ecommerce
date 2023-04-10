@@ -1,6 +1,7 @@
 ﻿name: NuGet Package
 
 on:
+  workflow_dispatch:
   release:
     types: [created]
 
@@ -26,4 +27,4 @@ jobs:
 
       - name: Publish package
         run: |
-          dotnet nuget src/Ecommerce.Common push *.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget push "src/Ecommerce.Common.Core/bin/Release/Ecommerce.Common.Core.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
