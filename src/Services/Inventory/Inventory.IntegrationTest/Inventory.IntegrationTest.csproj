@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Inventory.Infrastructure\Inventory.Infrastructure.csproj" />
+      <ProjectReference Include="..\Inventory.Web\Inventory.Web.csproj" />
     </ItemGroup>
 
 </Project>
