@@ -24,7 +24,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Test Results
-        path: TestResults
+        path: src/Services/Account/Account.Test/TestResults/testresults.trx
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
