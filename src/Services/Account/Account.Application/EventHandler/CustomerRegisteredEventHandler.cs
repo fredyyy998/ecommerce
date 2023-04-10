@@ -15,6 +15,6 @@ public class CustomerRegisteredEventHandler : INotificationHandler<CustomerRegis
 
     public async Task Handle(CustomerRegisteredEvent notification, CancellationToken cancellationToken)
     {
-        _messageBus.Publish<CustomerRegisteredEvent>("customer", "customer-registration", notification);
+        _messageBus.Publish<CustomerRegisteredEvent>("account", "customer-registration", notification);
     }
 }
