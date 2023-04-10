@@ -1,0 +1,33 @@
+﻿name: NuGet Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.400' # change this to match your version of .NET Core SDK
+
+      - name: Restore packages
+        run: dotnet restore
+
+      - name: Build package
+        run: dotnet pack -c Release
+
+      - name: Publish package
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-api-key: ${{ secrets.GITHUB_TOKEN  }}
+          nuget-version: '6.3.0.128'
+        run: |
+          dotnet nuget push *.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
