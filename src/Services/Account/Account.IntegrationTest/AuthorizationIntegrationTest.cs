@@ -3,9 +3,9 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
-using Account.Application.Dtos;
 using Account.Core.User;
 using Account.Infrastructure;
+using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Account.IntegrationTest;
@@ -126,6 +126,43 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.Result.StatusCode);
         Assert.Equal("Email already exists", await response.Result.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Message_Is_Published_To_Kafka_On_Successful_Registration()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        var content = new StringContent(
+            @"{
+                ""Email"": ""newRegistered@gmx.de"",
+                ""Password"": ""testPassword""
+            }",
+            Encoding.UTF8,
+            "application/json");
+        
+        var config = new ConsumerConfig
+        {
+            BootstrapServers = "localhost:9092",
+            GroupId = "test-consumer-group",
+            AutoOffsetReset = AutoOffsetReset.Earliest
+        };
+
+        
+        using (var consumer = new ConsumerBuilder<string, string>(config).Build())
+        {
+            consumer.Subscribe("account");
+            
+            // Act
+            await client.PostAsync($"/api/Authentication/register", content);
+
+            // Wait for the message to be consumed
+            var consumeResult = await Task.Run(() => consumer.Consume(TimeSpan.FromSeconds(10)));
+            
+            // Assert
+            Assert.NotNull(consumeResult.Value);
+            Assert.Equal("customer-registration", consumeResult.Message.Key);
+        }
     }
 }
 
