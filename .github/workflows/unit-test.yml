@@ -16,7 +16,7 @@ jobs:
         dotnet-version: '6.0.400'
 
     - name: Build and test Account Service
-      run: dotnet test src/Services/Account/Account.Test/Account.Tests.csproj --logger "console;verbosity=detailed" --configuration Release
+      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "console;verbosity=detailed" --configuration Release
 
     - name: Build and test Inventory Service
-      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Tests.csproj --logger "console;verbosity=detailed" --configuration Release
+      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
