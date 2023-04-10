@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.400' # change this to match your version of .NET Core SDK
+          dotnet-version: '6.0.400'
 
       - name: Restore packages
         run: dotnet restore
@@ -25,8 +25,5 @@ jobs:
         run: dotnet pack src/Ecommerce.Common -c Release
 
       - name: Publish package
-        with:
-          nuget-api-key: ${{ secrets.GITHUB_TOKEN  }}
-          nuget-version: '6.3.0.128'
         run: |
           dotnet nuget src/Ecommerce.Common push *.nupkg --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
