@@ -26,3 +26,6 @@ jobs:
 
     - name: Build and test Shopping Cart Service
       run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+
+    - name: Build and test Fulfillment Service
+      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "console;verbosity=detailed" --configuration Release
