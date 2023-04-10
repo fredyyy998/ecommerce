@@ -20,7 +20,7 @@ jobs:
           dotnet-version: '6.0.400'
 
       - name: Restore packages
-        run: dotnet src/Ecommerce.Common restore
+        run: dotnet restore src/Ecommerce.Common
 
       - name: Build package
         run: dotnet pack src/Ecommerce.Common -c Release
