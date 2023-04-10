@@ -27,12 +27,12 @@ jobs:
 
       - name: Publish package
         run: |
-          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Core/bin/Release/Ecommerce.Common.Core.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Core/bin/Release/*.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
       
       - name: Publish package
         run: |
-          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Kafka/bin/Release/Ecommerce.Common.Kafka.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Kafka/bin/Release/*.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
       
       - name: Publish package
         run: |
-          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Web/bin/Release/Ecommerce.Common.Web.1.0.0.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
+          dotnet nuget push "src/Ecommerce.Common/Ecommerce.Common.Web/bin/Release/*.nupkg" --skip-duplicate --api-key ${{ secrets.PACKAGE_DEPLOY_KEY  }} --source https://nuget.pkg.github.com/fredyyy998/index.json
