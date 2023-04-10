@@ -127,7 +127,7 @@ public class ProfileIntegrationTest : IClassFixture<CustomWebApplicationFactory<
     }
     
     [Fact]
-    public async Task Delelte_Request_Is_Persisted_To_Database()
+    public async Task Delete_Request_Is_Persisted_To_Database()
     {
         // Arrange
         var client = _factory.CreateClient();

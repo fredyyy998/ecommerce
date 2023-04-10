@@ -42,7 +42,7 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
     }
 
     [Fact]
-    public async Task SuccessfullyLogsIn()
+    public async Task Successful_Log_In_With_Existing_Credentials()
     {
         // Arrange
         var client = _factory.CreateClient();
@@ -62,7 +62,7 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
     }
 
     [Fact]
-    public async Task BadRequest_When_UserDoes_Not_Exist()
+    public async Task BadRequest_On_Login_When_User_Does_Not_Exist()
     {
         // Arrange
         var client = _factory.CreateClient();
@@ -78,7 +78,7 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
     }
     
     [Fact]
-    public async Task User_Is_Persisted_On_Registration()
+    public async Task User_Is_Persisted_On_Successful_Registration()
     {
         // Arrange
         var client = _factory.CreateClient();
@@ -111,7 +111,7 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
 
     
     [Fact]
-    public async Task BadRequest_When_Email_Already_Exists()
+    public async Task BadRequest_When_Email_Already_Exists_On_Registration()
     {
         // Arrange
         var client = _factory.CreateClient();
