@@ -22,10 +22,12 @@ jobs:
 
 
       - name: Restore packages
-        run: dotnet restore  src/Services/Account/Account.Web
+        run: dotnet restore Account.Web
+        working-directory: src/Services/Account
 
       - name: Build package
-        run: dotnet build src/Services/Account/Account.Web -c Release
+        run: dotnet build Account.Web -c Release
+        working-directory: src/Services/Account
 
       - name: Login to container registry
         uses: docker/login-action@v1
@@ -35,7 +37,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           
       - name: build and push
+        working-directory: src/Services/Account
         run: |
-          docker build ./src/Services/Account -t ghcr.io/fredyyy998/ecommerce/account:latest
+          docker build . -t ghcr.io/fredyyy998/ecommerce/account:latest
           docker run ghcr.io/fredyyy998/ecommerce/account:latest
           docker push ghcr.io/fredyyy998/ecommerce/account:latest
