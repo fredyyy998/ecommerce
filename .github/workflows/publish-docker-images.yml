@@ -26,7 +26,7 @@ jobs:
         working-directory: src/Services/Account
 
       - name: Build package
-        run: dotnet build Account.Web -c Release
+        run: dotnet publish Account.Web -c Release
         working-directory: src/Services/Account
 
       - name: Login to container registry
