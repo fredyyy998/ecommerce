@@ -1,4 +1,4 @@
-name: NuGet Package
+name: Docker images
 
 on:
   workflow_dispatch:
