@@ -45,7 +45,6 @@ jobs:
     
     - uses: dorny/test-reporter@v1
       with:
-        artifact: 'TestResultAccount'
         name: 'UnitTests'
         path: '*.trx'
         reporter: 'dotnet-trx'
