@@ -29,10 +29,13 @@ jobs:
 
     - name: Build and test Fulfillment Service
       run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=$(pwd)/TestResult/Fulfillment.trx" --configuration Release
-        
+  
+    - name: Display structure of downloaded files
+      run: ls -R     
+      
     - name: Archive test results
       uses: actions/upload-artifact@v3
       with:
         name: TestResults
-        path: TestResults/*.trx
+        path: '$(pwd)/TestResults/*.trx'
         
