@@ -36,6 +36,13 @@ jobs:
     - name: Build and test Fulfillment Service
       run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=TestResultFulfillment.trx" --configuration Release
           
+    - uses: actions/download-artifact@v3
+      with:
+        name: TestResultAccount
+        
+    - name: Display structure of downloaded files
+      run: ls -R
+    
     - uses: dorny/test-reporter@v1
       with:
         artifact: 'TestResultAccount'
