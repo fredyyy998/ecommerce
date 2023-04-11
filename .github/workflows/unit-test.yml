@@ -42,3 +42,15 @@ jobs:
         name: TestResults
         path: src/Services/Inventory/Inventory.Test/TestResults/TestResultInventory.trx
         
+    - name: Archive ShoppingCart Service test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResults
+        path: src/Services/ShoppingCart/ShoppingCart.Test/TestResults/TestResultShoppingCart.trx
+
+    - name: Archive Fulfillment Service test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResults
+        path: src/Services/Fulfillment/Fulfillment.Test/TestResults/TestResultFulfillment.trx
+        
