@@ -54,3 +54,13 @@ jobs:
         name: TestResults
         path: src/Services/Fulfillment/Fulfillment.Test/TestResults/TestResultFulfillment.trx
         
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dorny/test-reporter@v1
+        with:
+          artifact: 'TestResults'
+          name: 'UnitTests'
+          path: '*.trx'
+          reporter: 'dotnet-trx'
+        
