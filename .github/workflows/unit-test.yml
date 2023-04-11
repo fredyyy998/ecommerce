@@ -19,16 +19,16 @@ jobs:
       run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
 
     - name: Build and test Account Service
-      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=TestResultAccount.trx" --configuration Release
+      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=$(pwd)/TestResult/Account.trx" --configuration Release
 
     - name: Build and test Inventory Service
-      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "trx;LogFileName=TestResultInventory.trx" --configuration Release
+      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "trx;LogFileName=$(pwd)/TestResult/Inventory.trx" --configuration Release
 
     - name: Build and test Shopping Cart Service
-      run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "trx;LogFileName=TestResultShoppingCart.trx" --configuration Release
+      run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "trx;LogFileName=$(pwd)/TestResult/ShoppingCart.trx" --configuration Release
 
     - name: Build and test Fulfillment Service
-      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=TestResultFulfillment.trx" --configuration Release
+      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=$(pwd)/TestResult/Fulfillment.trx" --configuration Release
         
     - name: Archive Account Service test results
       uses: actions/upload-artifact@v3
@@ -58,9 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: dorny/test-reporter@v1
+        if: always()
         with:
-          artifact: 'TestResults'
           name: 'UnitTests'
-          path: '*.trx'
+          path: 'TestResult/*.trx'
           reporter: 'dotnet-trx'
         
