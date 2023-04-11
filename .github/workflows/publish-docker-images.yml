@@ -1,4 +1,4 @@
-﻿name: NuGet Package
+name: NuGet Package
 
 on:
   workflow_dispatch:
@@ -29,7 +29,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-            - name: Build the hello-docker Docker image
           
       - name: build and push
         run: |
