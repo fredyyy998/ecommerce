@@ -36,6 +36,6 @@ jobs:
           
       - name: build and push
         run: |
-          docker build ./src/Services/Account/Account.Web -t ghcr.io/fredyyy998/ecommerce/Account:latest
-          docker run ghcr.io/fredyyy998/ecommerce/Account:latest
-          docker push ghcr.io/fredyyy998/ecommerce/Account:latest
+          docker build ./src/Services/Account/Account.Web -t ghcr.io/fredyyy998/ecommerce/account:latest
+          docker run ghcr.io/fredyyy998/ecommerce/account:latest
+          docker push ghcr.io/fredyyy998/ecommerce/account:latest
