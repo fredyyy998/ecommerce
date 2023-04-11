@@ -44,5 +44,4 @@ jobs:
         working-directory: src/Services/Account
         run: |
           docker build . -t ghcr.io/fredyyy998/ecommerce/account:latest
-          docker run ghcr.io/fredyyy998/ecommerce/account:latest
           docker push ghcr.io/fredyyy998/ecommerce/account:latest
