@@ -19,14 +19,19 @@ jobs:
       run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
 
     - name: Build and test Account Service
-      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=testresults.trx" --configuration Release
+      run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=TestResultAccount.trx" --configuration Release
 
     - name: Build and test Inventory Service
-      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+      run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "trx;LogFileName=TestResultInventory.trx" --configuration Release
 
     - name: Build and test Shopping Cart Service
-      run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "console;verbosity=detailed" --configuration Release
+      run: dotnet test src/Services/ShoppingCart/ShoppingCart.Test/ShoppingCart.Test.csproj --logger "trx;LogFileName=TestResultShoppingCart.trx" --configuration Release
 
     - name: Build and test Fulfillment Service
-      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "console;verbosity=detailed" --configuration Release
-    
+      run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=TestResultFulfillment.trx" --configuration Release
+          
+    - uses: dorny/test-reporter@v1
+      with:
+        name: UnitTests
+        path: 'src/Services/Account/Account.Test/TestResults/TestResultAccount.trx'
+        reporter: 'dotnet-trx'
