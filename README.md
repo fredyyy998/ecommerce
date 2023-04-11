@@ -11,6 +11,13 @@ The services share code via the Common project. Currently that is provided local
 1. Pack the project with `dotnet pack -o {direcotry path}`
 2. Reference the local package directory
 
+
+## Status
+
+[![NuGet Package](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-packages.yml/badge.svg)](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-packages.yml)
+
+[![UnitTest](https://github.com/fredyyy998/ecommerce/actions/workflows/unit-test.yml/badge.svg)](https://github.com/fredyyy998/ecommerce/actions/workflows/unit-test.yml)
+
 ## Project Structure
 
 The soruce code is structured as following:
