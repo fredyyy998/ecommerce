@@ -39,7 +39,7 @@ services:
 
 
   web_inventory_service:
-    build: ./src/Services/Inventory
+    image: ghcr.io/fredyyy998/ecommerce/inventory:latest
     depends_on:
       - db
       - kafka
@@ -47,7 +47,7 @@ services:
       - "8080:80"
 
   web_account_service:
-    build: ./src/Services/Account
+    image: ghcr.io/fredyyy998/ecommerce/account:latest
     depends_on:
       - db
       - kafka
