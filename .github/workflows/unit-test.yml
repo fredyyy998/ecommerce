@@ -33,12 +33,12 @@ jobs:
     - name: Archive Account Service test results
       uses: actions/upload-artifact@v3
       with:
-        name: TestResultAccount
+        name: TestResults
         path: src/Services/Account/Account.Test/TestResults/TestResultAccount.trx
         
     - name: Archive Inventory Service test results
       uses: actions/upload-artifact@v3
       with:
-        name: TestResultAccount
+        name: TestResults
         path: src/Services/Inventory/Inventory.Test/TestResults/TestResultInventory.trx
         
