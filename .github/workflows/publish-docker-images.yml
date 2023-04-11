@@ -37,6 +37,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Display structure of downloaded files
+        working-directory: src/Services/Account
         run: ls -R     
           
       - name: build and push
