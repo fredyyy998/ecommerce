@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.400'
+          
+      - name: Configure NuGet
+        run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
+
 
       - name: Restore packages
         run: dotnet restore  src/Services/Account/Account.Web
