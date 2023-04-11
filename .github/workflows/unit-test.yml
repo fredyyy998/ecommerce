@@ -1,4 +1,4 @@
-name: Unit Test
+name: UnitTest
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
@@ -20,12 +20,6 @@ jobs:
 
     - name: Build and test Account Service
       run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=TestResultAccount.trx" --configuration Release
-      
-    - name: Archive Account Service test results
-      uses: actions/upload-artifact@v3
-      with:
-        name: TestResultAccount
-        path: src/Services/Account/Account.Test/TestResults/TestResultAccount.trx
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "trx;LogFileName=TestResultInventory.trx" --configuration Release
@@ -35,16 +29,16 @@ jobs:
 
     - name: Build and test Fulfillment Service
       run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=TestResultFulfillment.trx" --configuration Release
-          
-    - uses: actions/download-artifact@v3
+        
+    - name: Archive Account Service test results
+      uses: actions/upload-artifact@v3
       with:
         name: TestResultAccount
-
-    - name: Display structure of downloaded files
-      run: ls -R      
-    
-    - uses: dorny/test-reporter@v1
+        path: src/Services/Account/Account.Test/TestResults/TestResultAccount.trx
+        
+    - name: Archive Inventory Service test results
+      uses: actions/upload-artifact@v3
       with:
-        name: 'UnitTests'
-        path: '*.trx'
-        reporter: 'dotnet-trx'
+        name: TestResultAccount
+        path: src/Services/Inventory/Inventory.Test/TestResults/TestResultInventory.trx
+        
