@@ -48,4 +48,4 @@ jobs:
         name: 'UnitTests'
         path: '*.trx'
         reporter: 'dotnet-trx'
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.REPO_ACCESS_KEY }}
