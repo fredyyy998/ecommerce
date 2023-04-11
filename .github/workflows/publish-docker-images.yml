@@ -18,10 +18,10 @@ jobs:
           dotnet-version: '6.0.400'
 
       - name: Restore packages
-        run: dotnet restore src/Ecommerce.Common
+        run: dotnet restore  src/Services/Account/Account.Web
 
       - name: Build package
-        run: dotnet pack src/Services/Account/Account.Web -c Release
+        run: dotnet build src/Services/Account/Account.Web -c Release
 
       - name: Login to container registry
         uses: docker/login-action@v1
