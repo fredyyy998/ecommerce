@@ -20,6 +20,12 @@ jobs:
 
     - name: Build and test Account Service
       run: dotnet test src/Services/Account/Account.Test/Account.Test.csproj --logger "trx;LogFileName=TestResultAccount.trx" --configuration Release
+      
+    - name: Archive Account Service test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestResultAccount
+        path: src/Services/Account/Account.Test/TestResults/TestResultAccount.trx
 
     - name: Build and test Inventory Service
       run: dotnet test src/Services/Inventory/Inventory.Test/Inventory.Test.csproj --logger "trx;LogFileName=TestResultInventory.trx" --configuration Release
@@ -30,10 +36,9 @@ jobs:
     - name: Build and test Fulfillment Service
       run: dotnet test src/Services/Fulfillment/Fulfillment.Test/Fulfillment.Test.csproj --logger "trx;LogFileName=TestResultFulfillment.trx" --configuration Release
           
-    - name: Create Test Report for Account Service
-      uses: zyborg/dotnet-tests-report@v1
+    - uses: dorny/test-reporter@v1
       with:
-        project_path: src/Services/Account/Account.Test
-        report_name: AccountTest
-        report_title: AccountTest
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        artifact: 'TestResultAccount'
+        name: 'UnitTests'
+        path: '*.trx'
+        reporter: 'dotnet-trx'
