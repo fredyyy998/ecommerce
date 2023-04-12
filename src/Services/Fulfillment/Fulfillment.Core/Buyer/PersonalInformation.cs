@@ -8,8 +8,13 @@ public class PersonalInformation
         LastName = lastName;
         Email = email;
     }
+    
+    public PersonalInformation(string email)
+    {
+        Email = email;
+    }
 
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public string? FirstName { get; private set; }
+    public string? LastName { get; private set; }
     public string Email { get; private set; }
 }
