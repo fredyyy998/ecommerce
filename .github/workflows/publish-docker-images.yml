@@ -53,7 +53,7 @@ jobs:
       - name: Configure NuGet
         run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
 
-      - name: Build account release
+      - name: Build inventory release
         run: dotnet publish Inventory.Web -c Release
         working-directory: src/Services/Inventory
 
@@ -86,7 +86,7 @@ jobs:
       - name: Configure NuGet
         run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
 
-      - name: Build account release
+      - name: Build shopping-cart release
         run: dotnet publish ShoppingCart.Web -c Release
         working-directory: src/Services/ShoppingCart
 
@@ -97,8 +97,41 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build and push inventory image
+      - name: build and push shopping-cart image
         working-directory: src/Services/ShoppingCart
         run: |
           docker build . -t ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
           docker push ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
+          
+  build-and-publish-fulfillment:
+    name: Build and Publish fulfillment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.400'
+
+      - name: Configure NuGet
+        run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
+
+      - name: Build fulfillment release
+        run: dotnet publish Fulfillment.Web -c Release
+        working-directory: src/Services/Fulfillment
+
+      - name: Login to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build and push fulfillment image
+        working-directory: src/Services/Fulfillment
+        run: |
+          docker build . -t ghcr.io/fredyyy998/ecommerce/fulfillment:latest
+          docker push ghcr.io/fredyyy998/ecommerce/fulfillment:latest
