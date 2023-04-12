@@ -65,6 +65,8 @@ var builder = WebApplication.CreateBuilder(args);
         .AddScoped<INotificationHandler<AdministratorShippedOrderEvent>, AdministratorShippedOrderEventHandler>();
     builder.Services
         .AddScoped<INotificationHandler<BuyerSubmittedOrderEvent>, BuyerSubmittedOrderEventHandler>();
+
+    builder.Services.AddHostedService<KafkaAccountConsumer>();
 }
 
 var app = builder.Build();
