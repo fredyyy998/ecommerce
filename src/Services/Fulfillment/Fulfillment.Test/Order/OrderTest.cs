@@ -1,4 +1,5 @@
 ﻿using Fulfillment.Core.Buyer;
+using Fulfillment.Core.DomainEvents;
 using Fulfillment.Core.Exceptions;
 using Fulfillment.Core.Order;
 
@@ -204,6 +205,45 @@ public class OrderTest
     }
 
     #endregion
+    
+    [Fact]
+    public void BuyerSubmittedOrderEvent_Is_Added_When_Order_Is_Submitted()
+    {
+        var order = CreateOrder();
+        order.ClearEvents();
+        
+        order.ChangeState(OrderState.Submitted);
+
+        Assert.Single(order.DomainEvents);
+        Assert.IsType<BuyerSubmittedOrderEvent>(order.DomainEvents.First());
+    }
+    
+    [Fact]
+    public void BuyerPaidOrderEvent_Is_Added_When_Order_Is_Paid()
+    {
+        var order = CreateOrder();
+        order.ChangeState(OrderState.Submitted);
+        order.ClearEvents();
+        
+        order.ChangeState(OrderState.Paid);
+
+        Assert.Single(order.DomainEvents);
+        Assert.IsType<BuyerPaidOrderEvent>(order.DomainEvents.First());
+    }
+    
+    [Fact]
+    public void AdministratorShippedOrderEvent_Is_Added_When_Order_Is_Shipped()
+    {
+        var order = CreateOrder();
+        order.ChangeState(OrderState.Submitted);
+        order.ChangeState(OrderState.Paid);
+        order.ClearEvents();
+        
+        order.ChangeState(OrderState.Shipped);
+
+        Assert.Single(order.DomainEvents);
+        Assert.IsType<AdministratorShippedOrderEvent>(order.DomainEvents.First());
+    }
     
     private Order CreateOrder()
     {

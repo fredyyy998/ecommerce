@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using Fulfillment.Core.DomainEvents;
 using Fulfillment.Core.Exceptions;
 
 namespace Fulfillment.Core.Order;
@@ -48,12 +49,15 @@ public class Order : EntityRoot
         } else if (State == OrderState.Created && state == OrderState.Submitted)
         {
             State = state;
+            AddDomainEvent(new BuyerSubmittedOrderEvent(this));
         } else if (State == OrderState.Submitted && state == OrderState.Paid)
         {
             State = state;
+            AddDomainEvent(new BuyerPaidOrderEvent(Id, BuyerId, DateTime.Now));
         } else if (State == OrderState.Paid && state == OrderState.Shipped)
         {
             State = state;
+            AddDomainEvent(new AdministratorShippedOrderEvent(this));
         } else if (State == OrderState.Shipped && state == OrderState.Delivered)
         {
             State = state;
