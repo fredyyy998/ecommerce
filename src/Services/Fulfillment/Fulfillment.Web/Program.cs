@@ -1,10 +1,14 @@
 
 using System.Text;
+using Ecommerce.Common.Kafka;
+using Fulfillment.Application.EventHandler;
 using Fulfillment.Application.Services;
 using Fulfillment.Application.Utlis;
+using Fulfillment.Core.DomainEvents;
 using Fulfillment.Core.Order;
 using Fulfillment.Infrastructure;
 using Fulfillment.Infrastructure.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -54,6 +58,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddScoped<IOrderService, OrderService>();
     
+    builder.Services.AddSingleton(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
+    builder.Services
+        .AddScoped<INotificationHandler<AdministratorShippedOrderEvent>, AdministratorShippedOrderEventHandler>();
 }
 
 var app = builder.Build();
