@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using Ecommerce.Common.Kafka;
+using Fulfillment.Application.EventConsumer;
 using Fulfillment.Application.EventHandler;
 using Fulfillment.Application.Services;
 using Fulfillment.Application.Utlis;
@@ -67,6 +68,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddScoped<INotificationHandler<BuyerSubmittedOrderEvent>, BuyerSubmittedOrderEventHandler>();
 
     builder.Services.AddHostedService<KafkaAccountConsumer>();
+    builder.Services.AddScoped<INotificationHandler<BuyerPaidOrderEvent>, BuyerPaidOrderEventConsumer>();
 }
 
 var app = builder.Build();
