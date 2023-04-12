@@ -1,5 +1,7 @@
-﻿using Fulfillment.Core.Buyer;
+﻿using Ecommerce.Common.Core;
+using Fulfillment.Core.Buyer;
 using Fulfillment.Core.Order;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fulfillment.Infrastructure;
@@ -9,9 +11,12 @@ public class DataContext : DbContext
     public DbSet<Buyer> Buyers { get; set; }
     
     public DbSet<Order> Orders { get; set; }
+
+    private readonly IMediator _mediator;
     
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public DataContext(DbContextOptions<DataContext> options, IMediator mediator) : base(options)
     {
+        _mediator = mediator;
         // necessary to save DateTime
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
@@ -48,5 +53,24 @@ public class DataContext : DbContext
                 p.OwnsOne(i => i.TotalPrice);
             });
         });
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var result = base.SaveChangesAsync(cancellationToken);
+
+        var domainEntities = this.ChangeTracker
+            .Entries<EntityRoot>()
+            .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
+        
+        var domainEvents = domainEntities.SelectMany(x => x.Entity.DomainEvents).ToList();
+
+        foreach (var domainEntity in domainEntities)
+            domainEntity.Entity.ClearEvents();
+        
+        foreach (var domainEvent in domainEvents)
+            _mediator.Publish(domainEvent);
+        
+        return result;
     }
 }
