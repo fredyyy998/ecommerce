@@ -72,6 +72,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
     builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventConsumer>();
+    builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventConsumer>();
 }
 
 var app = builder.Build();
