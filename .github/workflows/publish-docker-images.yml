@@ -69,3 +69,36 @@ jobs:
         run: |
           docker build . -t ghcr.io/fredyyy998/ecommerce/inventory:latest
           docker push ghcr.io/fredyyy998/ecommerce/inventory:latest
+
+  build-and-publish-shopping-cart:
+    name: Build and Publish shopping-cart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.400'
+
+      - name: Configure NuGet
+        run: dotnet nuget add source --username fredyyy998 --password ${{ secrets.PACKAGE_DEPLOY_KEY }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/fredyyy998/index.json"
+
+      - name: Build account release
+        run: dotnet publish ShoppingCart.Web -c Release
+        working-directory: src/Services/ShoppingCart
+
+      - name: Login to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build and push inventory image
+        working-directory: src/Services/ShoppingCart
+        run: |
+          docker build . -t ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
+          docker push ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
