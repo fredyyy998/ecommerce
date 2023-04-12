@@ -4,11 +4,11 @@ namespace Fulfillment.Core.DomainEvents;
 
 public class LogisticProviderDeliveredOrderEvent : IDomainEvent
 {
-    Guid OrderId { get; }
+    public Guid OrderId { get; }
     
-    Guid BuyerId { get; }
+    public Guid BuyerId { get; }
     
-    DateTime DeliveredAt { get; }
+    public DateTime DeliveredAt { get; }
     
     public LogisticProviderDeliveredOrderEvent(Order.Order order)
     {
