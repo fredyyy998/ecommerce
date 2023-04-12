@@ -209,7 +209,7 @@ var order = CreateSubmittedOrder();
         var shipmentAddress = new Address("street", "12345", "city", "country");
         order.ClearEvents();
 
-        order.SubmitOrder(shipmentAddress);
+        order.Submit(shipmentAddress);
 
         Assert.Single(order.DomainEvents);
         Assert.IsType<BuyerSubmittedOrderEvent>(order.DomainEvents.First());
@@ -249,7 +249,7 @@ var order = CreateSubmittedOrder();
     {
         var order = CreateOrder();
         var address = new Address("street", "12345", "city", "country");
-        order.SubmitOrder(address);
+        order.Submit(address);
         return order;
     }
 }
