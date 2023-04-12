@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using Fulfillment.Core.Buyer;
 using Fulfillment.Core.DomainEvents;
 using Fulfillment.Core.Exceptions;
 
@@ -13,6 +14,8 @@ public class Order : EntityRoot
     public IReadOnlyCollection<OrderItem> Products => _products.AsReadOnly();
     
     public Price TotalPrice { get; private set; }
+
+    public Address ShipmentAddress { get; private set; }
 
     public DateTime OrderDate { get; private set; }
     
@@ -46,11 +49,8 @@ public class Order : EntityRoot
         if (state == OrderState.Cancelled && State != OrderState.Delivered)
         {
             State = state;
-        } else if (State == OrderState.Created && state == OrderState.Submitted)
-        {
-            State = state;
-            AddDomainEvent(new BuyerSubmittedOrderEvent(this));
-        } else if (State == OrderState.Submitted && state == OrderState.Paid)
+        }
+        else if (State == OrderState.Submitted && state == OrderState.Paid)
         {
             State = state;
             AddDomainEvent(new BuyerPaidOrderEvent(Id, BuyerId, DateTime.Now));
@@ -65,5 +65,18 @@ public class Order : EntityRoot
         {
             throw new OrderDomainException($"This state change from {State.ToString()} to {state.ToString()} is not allowed.");
         }
+    }
+
+    public void SubmitOrder(Address shipmentAddress)
+    {
+        if (State != OrderState.Created)
+        {
+            throw new OrderDomainException($"This state change from {State.ToString()} to {OrderState.Submitted} is not allowed."); 
+        }
+        
+        ShipmentAddress = shipmentAddress;
+
+        State = OrderState.Submitted;
+        AddDomainEvent(new BuyerSubmittedOrderEvent(this));
     }
 }

@@ -69,8 +69,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Submitted_To_Created()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+var order = CreateSubmittedOrder();
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Created));
     }
@@ -78,8 +77,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Submitted_To_Shipped()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+var order = CreateSubmittedOrder();
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Shipped));
     }
@@ -87,8 +85,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Submitted_To_Delivered()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Delivered));
     }
@@ -96,8 +93,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Submitted_To_Submitted()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Submitted));
     }
@@ -105,8 +101,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Paid_To_Created()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Created));
@@ -115,8 +110,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Paid_To_Submitted()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Submitted));
@@ -125,8 +119,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Paid_To_Delivered()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Delivered));
@@ -135,8 +128,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Paid_To_Paid()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
 
         Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Paid));
@@ -145,8 +137,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Shipped_To_Created()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ChangeState(OrderState.Shipped);
 
@@ -156,8 +147,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Shipped_To_Submitted()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ChangeState(OrderState.Shipped);
 
@@ -167,8 +157,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Shipped_To_Paid()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ChangeState(OrderState.Shipped);
 
@@ -178,8 +167,7 @@ public class OrderTest
     [Fact]
     public void Does_Not_Allow_State_Change_From_Shipped_To_Shipped()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ChangeState(OrderState.Shipped);
 
@@ -195,8 +183,7 @@ public class OrderTest
     [InlineData(OrderState.Cancelled)]
     public void Does_Not_Allow_State_Change_From_Delivered_To_any_other(OrderState state)
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ChangeState(OrderState.Shipped);
         order.ChangeState(OrderState.Delivered);
@@ -204,15 +191,25 @@ public class OrderTest
         Assert.Throws<OrderDomainException>(() => order.ChangeState(state));
     }
 
+    [Fact]
+    public void Customer_Cannot_Submit_Order_Without_Payment_And_Shipment()
+    {
+        var order = CreateOrder();
+
+        Assert.Throws<OrderDomainException>(() => order.ChangeState(OrderState.Submitted));
+    }
+        
+        
     #endregion
     
     [Fact]
     public void BuyerSubmittedOrderEvent_Is_Added_When_Order_Is_Submitted()
     {
         var order = CreateOrder();
+        var shipmentAddress = new Address("street", "12345", "city", "country");
         order.ClearEvents();
-        
-        order.ChangeState(OrderState.Submitted);
+
+        order.SubmitOrder(shipmentAddress);
 
         Assert.Single(order.DomainEvents);
         Assert.IsType<BuyerSubmittedOrderEvent>(order.DomainEvents.First());
@@ -221,8 +218,7 @@ public class OrderTest
     [Fact]
     public void BuyerPaidOrderEvent_Is_Added_When_Order_Is_Paid()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ClearEvents();
         
         order.ChangeState(OrderState.Paid);
@@ -234,8 +230,7 @@ public class OrderTest
     [Fact]
     public void AdministratorShippedOrderEvent_Is_Added_When_Order_Is_Shipped()
     {
-        var order = CreateOrder();
-        order.ChangeState(OrderState.Submitted);
+        var order = CreateSubmittedOrder();
         order.ChangeState(OrderState.Paid);
         order.ClearEvents();
         
@@ -244,9 +239,17 @@ public class OrderTest
         Assert.Single(order.DomainEvents);
         Assert.IsType<AdministratorShippedOrderEvent>(order.DomainEvents.First());
     }
-    
+
     private Order CreateOrder()
     {
         return Order.Create(Guid.NewGuid());
+    }
+    
+    private Order CreateSubmittedOrder()
+    {
+        var order = CreateOrder();
+        var address = new Address("street", "12345", "city", "country");
+        order.SubmitOrder(address);
+        return order;
     }
 }
