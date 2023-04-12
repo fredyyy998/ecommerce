@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Fulfillment.Application.Dtos;
 using Fulfillment.Application.Exceptions;
 using Fulfillment.Application.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -62,7 +63,21 @@ public class OrdersController : Controller
         }
     }
     
-    
+    [HttpPut("{id}/state/submit")]
+    public async Task<IActionResult> SubmitOrder(Guid id, [FromBody] SubmitOrderRequestDto submitOrderRequestDto)
+    {
+        try
+        {
+            await _orderService.SubmitOrder(id, submitOrderRequestDto);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
+    }
+
+
     private IActionResult HandleException(Exception exception)
     {
         if (exception is EntityNotFoundException)
