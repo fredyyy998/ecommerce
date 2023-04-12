@@ -10,7 +10,7 @@ namespace Fulfillment.Web;
 [ApiController]
 [Authorize]
 [Route("/api/[controller]")]
-public class OrdersController : Controller
+public class OrdersController : BaseController
 {
     private readonly IOrderService _orderService;
     
@@ -77,16 +77,6 @@ public class OrdersController : Controller
         }
     }
 
-
-    private IActionResult HandleException(Exception exception)
-    {
-        if (exception is EntityNotFoundException)
-        {
-            return NotFound(exception.Message);
-        }
-        return BadRequest(exception.Message);
-    }
-    
     private Guid GetGuidFromClaims()
     {
         var buyerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
