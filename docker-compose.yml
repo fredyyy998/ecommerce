@@ -53,6 +53,22 @@ services:
       - kafka
     ports:
       - "8081:80"
+  
+  web_shopping_cart_service:
+    image: ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8082:80"
+  
+  web_fulfillment_service:
+    image: ghcr.io/fredyyy998/ecommerce/fulfillment:latest
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8083:80"
 
 volumes:
   db-data:
