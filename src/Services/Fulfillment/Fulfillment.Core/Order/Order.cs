@@ -67,7 +67,7 @@ public class Order : EntityRoot
         }
     }
 
-    public void SubmitOrder(Address shipmentAddress)
+    public void Submit(Address shipmentAddress)
     {
         if (State != OrderState.Created)
         {
