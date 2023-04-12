@@ -68,6 +68,7 @@ var builder = WebApplication.CreateBuilder(args);
         .AddScoped<INotificationHandler<BuyerSubmittedOrderEvent>, BuyerSubmittedOrderEventHandler>();
 
     builder.Services.AddHostedService<KafkaAccountConsumer>();
+    builder.Services.AddHostedService<KafkaShoppingCartConsumer>();
     builder.Services.AddScoped<INotificationHandler<BuyerPaidOrderEvent>, BuyerPaidOrderEventConsumer>();
     builder.Services
         .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
