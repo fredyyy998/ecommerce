@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using System.Text;
 using Ecommerce.Common.Kafka;
 using Fulfillment.Application.EventHandler;
@@ -59,6 +60,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IOrderService, OrderService>();
     
     builder.Services.AddSingleton(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     builder.Services
         .AddScoped<INotificationHandler<AdministratorShippedOrderEvent>, AdministratorShippedOrderEventHandler>();
 }
