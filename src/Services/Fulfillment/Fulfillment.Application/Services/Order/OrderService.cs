@@ -56,6 +56,7 @@ public class OrderService : IOrderService
 
         var address = new Address(submitOrderRequestDto.Street, submitOrderRequestDto.Zip, submitOrderRequestDto.City, submitOrderRequestDto.Country);
         orderResult.Submit(address);
+        _orderRepository.UpdateAsync(orderResult);
     }
 
     private async Task ChangeState(Guid orderId, OrderState state)
