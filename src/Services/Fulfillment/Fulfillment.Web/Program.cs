@@ -69,13 +69,13 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddHostedService<KafkaAccountConsumer>();
     builder.Services.AddHostedService<KafkaShoppingCartConsumer>();
-    builder.Services.AddScoped<INotificationHandler<BuyerPaidOrderEvent>, BuyerPaidOrderEventConsumer>();
+    builder.Services.AddTransient<INotificationHandler<BuyerPaidOrderEvent>, BuyerPaidOrderEventConsumer>();
     builder.Services
-        .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
-    builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventConsumer>();
-    builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventConsumer>();
+        .AddTransient<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
+    builder.Services.AddTransient<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventConsumer>();
+    builder.Services.AddTransient<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventConsumer>();
     builder.Services
-        .AddScoped<INotificationHandler<LogisticProviderDeliveredOrderEvent>,
+        .AddTransient<INotificationHandler<LogisticProviderDeliveredOrderEvent>,
             LogisticProviderDeliveredOrderEventConsumer>();
 }
 
