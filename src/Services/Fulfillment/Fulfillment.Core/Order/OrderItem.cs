@@ -10,19 +10,19 @@ public class OrderItem : ValueObject
     public int Quantity { get; private set; }
     public Price TotalPrice { get; private set; }
     
-    public static OrderItem Create(string name, Price price, int quantity)
+    public static OrderItem Create(Guid productId, string name, decimal grossPrice, decimal netPrice, string currencyCode, decimal tax, int quantity)
     {
         return new OrderItem
         {
-            ProductId = Guid.NewGuid().ToString(),
+            ProductId = productId.ToString(),
             Name = name,
-            Price = price,
+            Price = new Price(grossPrice, netPrice, tax, currencyCode),
             Quantity = quantity,
             TotalPrice = new Price(
-                price.GrossPrice * quantity,
-                price.NetPrice * quantity,
-                price.Tax,
-                price.Currency)
+                grossPrice * quantity,
+                netPrice * quantity,
+                tax,
+                currencyCode)
         };
     }
     

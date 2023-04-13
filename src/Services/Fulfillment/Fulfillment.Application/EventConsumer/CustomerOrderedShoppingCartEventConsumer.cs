@@ -22,7 +22,8 @@ public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<Cus
             var order = Order.Create(notification.CustomerId);
             foreach (var item in notification.Items)
             {
-                order.AddOrderItem(item);  
+                // TODO TAX is hard coded and not given from event
+                order.AddOrderItem(OrderItem.Create(item.ProductId, item.Name, item.GrossPrice, item.NetPrice, item.CurrencyCode, 19, item.Quantity));  
             }
             
             orderRepository.SaveAsync(order);

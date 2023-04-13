@@ -11,7 +11,8 @@ public class OrderTest
     public void Calculates_Total_Price_On_Adding_Order_Item()
     {
         var price = new Price(10, 10, 19, "EUR");
-        var orderItem = OrderItem.Create("Test", price, 2);
+        var orderItem = OrderItem.Create(Guid.NewGuid(), "Test", price.GrossPrice, price.NetPrice, price.Currency,
+            price.Tax, 2);
         var order = CreateOrder();
 
         order.AddOrderItem(orderItem);
@@ -24,7 +25,7 @@ public class OrderTest
     public void OrderItems_Can_Be_Added_In_Created_Stage()
     {
         var price = new Price(10, 10, 19, "EUR");
-        var orderItem = OrderItem.Create("Test", price, 2);
+        var orderItem = OrderItem.Create(Guid.NewGuid(), "Test", price.GrossPrice, price.NetPrice, price.Currency, price.Tax,  2);
         var order = CreateOrder();
         
         order.AddOrderItem(orderItem);
