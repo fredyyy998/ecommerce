@@ -1,10 +1,10 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Ecommerce.Common.Core;
 using Ecommerce.Common.Kafka;
 using Fulfillment.Core.DomainEvents;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Fulfillment.Infrastructure;
 
@@ -20,12 +20,19 @@ public class KafkaShoppingCartConsumer : KafkaConsumer<string, string>
     
     public override void HandleResult(ConsumeResult<string, string> consumeResult)
     {
-        IDomainEvent eventData = GetEventData(consumeResult.Message);
+        try
+        {
+            IDomainEvent eventData = GetEventData(consumeResult.Message);
         
-        Console.WriteLine(consumeResult.Message.Key);
-        Console.WriteLine(consumeResult.Message.Value);
+            Console.WriteLine(consumeResult.Message.Key);
+            Console.WriteLine(consumeResult.Message.Value);
         
-        _mediator.Publish(eventData);
+            _mediator.Publish(eventData);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
     
     private IDomainEvent GetEventData(Message<string, string> message)
@@ -33,7 +40,7 @@ public class KafkaShoppingCartConsumer : KafkaConsumer<string, string>
         switch (message.Key)
         {
             case "customer-ordered-shopping-cart":
-                return JsonSerializer.Deserialize<CustomerOrderedShoppingCartEvent>(message.Value);
+                return JsonConvert.DeserializeObject<CustomerOrderedShoppingCartEvent>(message.Value);
 
             default:
                 throw new Exception("Unknown event type");
