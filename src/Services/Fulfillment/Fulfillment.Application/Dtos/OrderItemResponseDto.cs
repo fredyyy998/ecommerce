@@ -4,6 +4,6 @@ namespace Fulfillment.Application.Dtos;
 
 public record OrderItemResponseDto(
     Guid ProductId,
-    string ProductName,
+    string Name,
     int Quantity,
     Price TotalPrice);
