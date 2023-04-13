@@ -26,8 +26,19 @@ public class DataContext : DbContext
         modelBuilder.Entity<Buyer>(entity =>
         {
 
-            entity.OwnsOne(c => c.PersonalInformation);
-            entity.OwnsOne(b => b.ShippingAddress);
+            entity.OwnsOne(c => c.PersonalInformation, pi =>
+            {
+                pi.Property(p => p.FirstName);
+                pi.Property(p => p.LastName);
+                pi.Property(p => p.Email);
+            });
+            entity.OwnsOne(c => c.ShippingAddress, address =>
+            {
+                address.Property(a => a.Street);
+                address.Property(a => a.City);
+                address.Property(a => a.Zip);
+                address.Property(a => a.Country);
+            });
             
             entity.OwnsOne(c => c.PaymentInformation, pi =>
             {
@@ -51,6 +62,13 @@ public class DataContext : DbContext
                 p.HasKey("Id");
                 p.OwnsOne(i => i.Price);
                 p.OwnsOne(i => i.TotalPrice);
+            });
+            entity.OwnsOne(o => o.ShipmentAddress, address =>
+            {
+                address.Property(a => a.Street);
+                address.Property(a => a.City);
+                address.Property(a => a.Zip);
+                address.Property(a => a.Country);
             });
         });
     }
