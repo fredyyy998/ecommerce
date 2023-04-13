@@ -8,6 +8,11 @@ public class AdministratorShippedOrderEventHandler : INotificationHandler<Admini
 {
     private readonly KafkaProducer _kafkaProducer;
     
+    public AdministratorShippedOrderEventHandler(KafkaProducer kafkaProducer)
+    {
+        _kafkaProducer = kafkaProducer;
+    }
+    
     public Task Handle(AdministratorShippedOrderEvent notification, CancellationToken cancellationToken)
     {
         _kafkaProducer.Publish("fulfillment", "administrator-shipped-order", notification);
