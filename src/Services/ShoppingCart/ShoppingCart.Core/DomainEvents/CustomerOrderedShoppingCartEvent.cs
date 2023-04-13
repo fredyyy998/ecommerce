@@ -9,9 +9,9 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
     
     public Guid CustomerId { get; }
     
-    private List<ShoppingCartItem> _items;
+    private List<ShoppingCartItemDto> _items;
 
-    public IReadOnlyCollection<ShoppingCartItem> Items => _items.AsReadOnly();
+    public IReadOnlyCollection<ShoppingCartItemDto> Items => _items.AsReadOnly();
     
     public DateTime CreatedAt { get; }
 
@@ -21,8 +21,33 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
     {
         ShoppingCartId = shoppingCart.Id;
         CustomerId = shoppingCart.CustomerId;
-        _items = shoppingCart.Items.ToList();
         CreatedAt = shoppingCart.CreatedAt;
         UpdatedAt = shoppingCart.UpdatedAt;
+        _items = shoppingCart.Items.Select(ShoppingCartItemDto.FromShoppingCartItem).ToList();
+    }
+}
+
+public class ShoppingCartItemDto
+{
+    public Guid ProductId { get; private set; }
+    public string Name { get; private set; }
+    public decimal NetPrice { get; private set; }
+    public decimal GrossPrice { get; private set; }
+    public string CurrencyCode { get; private set; }
+    public int Quantity { get; private set; }
+    public decimal TotalPrice { get; private set; }
+    
+    public static ShoppingCartItemDto FromShoppingCartItem(ShoppingCartItem shoppingCartItem)
+    {
+        return new ShoppingCartItemDto
+        {
+            ProductId = shoppingCartItem.Product.Id,
+            Name = shoppingCartItem.Product.Name,
+            NetPrice = shoppingCartItem.Product.Price.NetPrice,
+            GrossPrice = shoppingCartItem.Product.Price.GrossPrice,
+            CurrencyCode = shoppingCartItem.Product.Price.CurrencyCode,
+            Quantity = shoppingCartItem.Quantity,
+            TotalPrice = shoppingCartItem.TotalPrice
+        };
     }
 }
