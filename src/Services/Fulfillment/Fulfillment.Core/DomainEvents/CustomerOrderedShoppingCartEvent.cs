@@ -1,5 +1,4 @@
 ﻿using Ecommerce.Common.Core;
-using Fulfillment.Core.Order;
 
 namespace Fulfillment.Core.DomainEvents;
 
@@ -9,15 +8,15 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
     
     public Guid CustomerId { get; }
     
-    private List<OrderItem> _items;
+    private List<ShoppingCartItemDto> _items;
 
-    public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
+    public IReadOnlyCollection<ShoppingCartItemDto> Items => _items.AsReadOnly();
     
     public DateTime CreatedAt { get; }
 
     public DateTime? UpdatedAt { get; }
     
-    public CustomerOrderedShoppingCartEvent(Guid shoppingCartId, Guid customerId, List<OrderItem> items, DateTime createdAt, DateTime? updatedAt)
+    public CustomerOrderedShoppingCartEvent(Guid shoppingCartId, Guid customerId, List<ShoppingCartItemDto> items, DateTime createdAt, DateTime? updatedAt)
     {
         ShoppingCartId = shoppingCartId;
         CustomerId = customerId;
