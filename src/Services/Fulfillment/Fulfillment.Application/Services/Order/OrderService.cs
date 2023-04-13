@@ -64,6 +64,7 @@ public class OrderService : IOrderService
         var orderResult = await GetOrderFromRepository(orderId);
 
         orderResult.ChangeState(state);
+        _orderRepository.UpdateAsync(orderResult);
     }
     
     private async Task<Order> GetOrderFromRepository(Guid orderId)
