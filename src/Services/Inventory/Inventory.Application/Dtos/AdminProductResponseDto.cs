@@ -8,5 +8,5 @@ public record AdminProductResponseDto(
     string Description,
     PriceDto Price,
     int Stock,
-    IReadOnlyCollection<ProductInformation> Information
+    IReadOnlyCollection<ProductInformation> Informations
 );
