@@ -6,6 +6,7 @@ using Fulfillment.Application.EventConsumer;
 using Fulfillment.Application.EventHandler;
 using Fulfillment.Application.Services;
 using Fulfillment.Application.Utlis;
+using Fulfillment.Core.Buyer;
 using Fulfillment.Core.DomainEvents;
 using Fulfillment.Core.Order;
 using Fulfillment.Infrastructure;
@@ -56,6 +57,7 @@ var builder = WebApplication.CreateBuilder(args);
             b => b.MigrationsAssembly("Fulfillment.Web")));
 
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+    builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
 
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddScoped<IOrderService, OrderService>();
