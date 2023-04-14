@@ -1,4 +1,5 @@
 ﻿using Ecommerce.Common.Core;
+using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,10 @@ public class DataContext : DbContext
             .Entries<EntityRoot>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
+        domainEntities
+            .SelectMany(x => MergeDomainEvents(x.Entity))
+            .ToList();
+        
         var domainEvents = domainEntities
             .SelectMany(x => x.Entity.DomainEvents)
             .ToList();
@@ -44,5 +49,24 @@ public class DataContext : DbContext
             _mediator.Publish(domainEvent);
 
         return result;
+    }
+
+    private List<IDomainEvent> MergeDomainEvents(EntityRoot entityRoot)
+    {
+        var domainEvents = entityRoot.DomainEvents.ToList();
+        domainEvents = MergeProductUpdatedByAdminEvent(domainEvents);
+
+        return domainEvents;
+    }
+
+    // only the last updated event is relevant since that's the current product, there is no need to publish the previous ones
+    private List<IDomainEvent> MergeProductUpdatedByAdminEvent(List<IDomainEvent> domainEvents)
+    {
+        var productUpdatedEvents = domainEvents
+            .Where(e => e.GetType() == typeof(ProductUpdatedByAdminEvent))
+            .Take(domainEvents.Count - 1)
+            .ToList();
+        domainEvents.RemoveAll(e => productUpdatedEvents.Contains(e));
+        return domainEvents;
     }
 }
