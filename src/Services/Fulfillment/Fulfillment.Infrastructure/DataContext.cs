@@ -28,16 +28,16 @@ public class DataContext : DbContext
 
             entity.OwnsOne(c => c.PersonalInformation, pi =>
             {
-                pi.Property(p => p.FirstName);
-                pi.Property(p => p.LastName);
+                pi.Property(p => p.FirstName).IsRequired(false);
+                pi.Property(p => p.LastName).IsRequired(false);
                 pi.Property(p => p.Email);
             });
             entity.OwnsOne(c => c.ShippingAddress, address =>
             {
-                address.Property(a => a.Street);
-                address.Property(a => a.City);
-                address.Property(a => a.Zip);
-                address.Property(a => a.Country);
+                address.Property(a => a.Street).IsRequired(false);
+                address.Property(a => a.City).IsRequired(false);
+                address.Property(a => a.Zip).IsRequired(false);
+                address.Property(a => a.Country).IsRequired(false);
             });
             
             entity.OwnsOne(c => c.PaymentInformation, pi =>
