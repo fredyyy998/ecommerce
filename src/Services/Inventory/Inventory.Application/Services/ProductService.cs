@@ -55,6 +55,12 @@ public class ProductService : IProductService
     {
         var product = GetProductFromRepository(productId);
         product.Update(productUpdateDto.Name, productUpdateDto.Description, productUpdateDto.GrossPrice);
+        // remove all existing information
+        product.Informations.ToList().ForEach(x => product.RemoveInformation(x.Key));
+        foreach (var keyValuePair in productUpdateDto.ProductInformation)
+        {
+            product.AddInformation(keyValuePair.Key, keyValuePair.Value);
+        }
         _productRepository.Update(product);
     }
 
