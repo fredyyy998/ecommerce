@@ -23,8 +23,8 @@ public class ProductTest
         
         product.AddInformation("Test key", "test value");
         
-        Assert.Equal("Test key", product.Information.First().Key);
-        Assert.Equal("test value", product.Information.First().Value);
+        Assert.Equal("Test key", product.Informations.First().Key);
+        Assert.Equal("test value", product.Informations.First().Value);
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public class ProductTest
         product.AddInformation("Test key", "test value");
         
         Assert.Throws<InvalidOperationException>(() => product.AddInformation("Test key", "test value"));
-        Assert.Equal(product.Information.Count, 1);
+        Assert.Equal(product.Informations.Count, 1);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class ProductTest
         
         product.RemoveInformation("Test key");
         
-        Assert.Empty(product.Information);
+        Assert.Empty(product.Informations);
     }
     
     [Fact]

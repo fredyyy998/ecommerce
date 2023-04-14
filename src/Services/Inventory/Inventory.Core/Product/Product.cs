@@ -13,7 +13,7 @@ public class Product : EntityRoot
 
     private List<ProductInformation> _informations = new ();
     
-    public IReadOnlyCollection<ProductInformation> Information => _informations.AsReadOnly();
+    public IReadOnlyCollection<ProductInformation> Informations => _informations.AsReadOnly();
     
     public int Stock { get; set; }
 

@@ -23,7 +23,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.OwnsOne(p => p.Price);
-            entity.OwnsMany(p => p.Information);
+            entity.OwnsMany(p => p.Informations);
         });
     }
 

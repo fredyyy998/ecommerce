@@ -23,7 +23,7 @@ public class ProductAddedByAdminEvent : IDomainEvent
         Name = product.Name;
         Description = product.Description;
         Price = product.Price;
-        Information = product.Information;
+        Information = product.Informations;
         Stock = product.Stock;
     }
 }
