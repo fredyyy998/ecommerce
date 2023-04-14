@@ -8,6 +8,7 @@ public class MappingProfile : AutoMapper.Profile
     public MappingProfile()
     {
         CreateMap<Product, ProductResponseDto>();
+        CreateMap<Product, AdminProductResponseDto>();
         CreateMap<Price, PriceDto>();
     }
 }

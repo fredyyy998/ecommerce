@@ -27,6 +27,12 @@ public class ProductService : IProductService
         return _mapper.Map<Product, ProductResponseDto>(product);
     }
 
+    public AdminProductResponseDto GetAdminProduct(Guid productId)
+    {
+        var product = GetProductFromRepository(productId);
+        return _mapper.Map<Product, AdminProductResponseDto>(product);
+    }
+
     public ICollection<ProductResponseDto> SearchProduct(string searchString)
     {
         var products = _productRepository.Search(searchString);

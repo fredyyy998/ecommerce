@@ -19,7 +19,7 @@ public class ProductManagement : BaseController
     {
         try
         {
-            var product = _productService.GetProduct(id);
+            var product = _productService.GetAdminProduct(id);
             return Ok(product);
         }
         catch (Exception e)
