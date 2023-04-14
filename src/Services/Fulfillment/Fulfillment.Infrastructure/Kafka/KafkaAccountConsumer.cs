@@ -1,10 +1,10 @@
-﻿using System.Text.Json;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Ecommerce.Common.Core;
 using Ecommerce.Common.Kafka;
 using Fulfillment.Core.DomainEvents;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Fulfillment.Infrastructure;
 
@@ -33,9 +33,9 @@ public class KafkaAccountConsumer : KafkaConsumer<string, string>
         switch (message.Key)
         {
             case "customer-registered":
-                return JsonSerializer.Deserialize<CustomerRegisteredEvent>(message.Value);
+                return JsonConvert.DeserializeObject<CustomerRegisteredEvent>(message.Value);
             case "customer-edited":
-                return JsonSerializer.Deserialize<CustomerEditedEvent>(message.Value);
+                return JsonConvert.DeserializeObject<CustomerEditedEvent>(message.Value);
             default:
                 throw new Exception("Unknown event type");
         }
