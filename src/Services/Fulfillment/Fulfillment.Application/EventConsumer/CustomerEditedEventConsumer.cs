@@ -20,7 +20,7 @@ public class CustomerEditedEventConsumer : INotificationHandler<CustomerEditedEv
         {
             var customerRepository = scope.ServiceProvider.GetRequiredService<IBuyerRepository>();
             var customer = await customerRepository.FindByIdAsync(notification.CustomerId);
-            customer.UpdatePersonalInformation(notification.PersonalInformation.FirstName, notification.PersonalInformation.LastName, notification.PersonalInformation.Email);
+            customer.UpdatePersonalInformation(notification.PersonalInformation.FirstName, notification.PersonalInformation.LastName, notification.Email);
             customer.UpdateShippingAddress(notification.Address.Street, notification.Address.Zip, notification.Address.City, notification.Address.Country);
             customer.UpdatePaymentInformation(notification.PaymentInformation.Address.Street, notification.PaymentInformation.Address.Zip, notification.PaymentInformation.Address.City, notification.PaymentInformation.Address.Country);
             customerRepository.UpdateAsync(customer);
