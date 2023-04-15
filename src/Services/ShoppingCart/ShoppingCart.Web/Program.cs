@@ -20,6 +20,8 @@ using ShoppingCart.Infrastructure.Kafka;
 using ShoppingCart.Infrastructure.Repositories;
 using Swashbuckle.AspNetCore.Filters;
 
+var  LocalDevelopmentOrigins = "_localDevelopmentOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
@@ -95,10 +97,23 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddTransient<INotificationHandler<ProductRemovedByAdminEvent>, ProductRemovedByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductStockUpdatedByAdminEvent>, ProductStockUpdateByAdminEventConsumer>();
     builder.Services.AddTransient<INotificationHandler<ProductUpdatedByAdminEvent>, ProductUpdatedByAdminEventConsumer>();
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: LocalDevelopmentOrigins,
+            policy  =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
 }
 
 var app = builder.Build();
 {
+    app.UseCors(LocalDevelopmentOrigins);
+    
     app.UseSwagger();
     app.UseSwaggerUI();
 

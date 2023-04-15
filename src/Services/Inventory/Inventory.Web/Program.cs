@@ -16,6 +16,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
+var  LocalDevelopmentOrigins = "_localDevelopmentOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
@@ -66,10 +68,24 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
     // builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: LocalDevelopmentOrigins,
+            policy  =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
 }
 
 var app = builder.Build();
 {
+    // allow cors
+    app.UseCors(LocalDevelopmentOrigins);
+    
     // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
