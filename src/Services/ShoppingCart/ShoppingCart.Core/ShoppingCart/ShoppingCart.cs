@@ -75,7 +75,7 @@ public class ShoppingCart : EntityRoot
         }
         UpdatedAt = DateTime.UtcNow;
     }
-    
+
     public void MarkAsTimedOut()
     {
         Status = State.TimedOut;
@@ -94,5 +94,15 @@ public class ShoppingCart : EntityRoot
             item.Product.CommitReservation(Id);
         }
         AddDomainEvent(new CustomerOrderedShoppingCartEvent(this));
+    }
+
+    public void RemoveItem(Product.Product product)
+    {
+        var item = _items.FirstOrDefault(x => x.Product.Id == product.Id);
+        if (item == null)
+        {
+            throw new ShoppingCartDomainException("Product not found in shopping cart.");
+        }
+        RemoveQuantityOfItem(product, item.Quantity);
     }
 }

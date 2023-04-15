@@ -52,13 +52,13 @@ public class ShoppingBasketController : Controller
         }
     }
     
-    [HttpDelete()]
-    public async Task<ActionResult> RemoveProductFromShoppingBasket([FromBody] RemoveItemFromShoppingCartRequestDto request)
+    [HttpDelete("product/{productId:guid}")]
+    public async Task<ActionResult> RemoveProductFromShoppingBasket(Guid productId)
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            await _shoppingCartService.RemoveProductFromShoppingCart(customerId, request.ProductId, request.Quantity);
+            await _shoppingCartService.RemoveProductFromShoppingCart(customerId, productId);
             return Ok();
         }
         catch (Exception e)

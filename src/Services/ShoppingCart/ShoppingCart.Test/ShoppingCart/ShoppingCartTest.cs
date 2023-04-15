@@ -185,6 +185,18 @@ public class ShoppingCartTest
         Assert.Equal(5, product.Stock);
     }
     
+    [Fact]
+    public void Remove_Item_From_Shopping_Cart_Removes_All_Items()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct();
+        shoppingCart.AddItem(product, 5);
+        
+        shoppingCart.RemoveItem(product);
+        
+        Assert.Empty(shoppingCart.Items);
+    }
+    
     public Product GetProduct(int stock = 10)
     {
         return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), stock);

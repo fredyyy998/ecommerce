@@ -36,7 +36,7 @@ public class ShoppingCartService : IShoppingCartService
         return Task.CompletedTask;
     }
 
-    public Task RemoveProductFromShoppingCart(Guid customerId, Guid productId, int quantity)
+    public Task RemoveProductFromShoppingCart(Guid customerId, Guid productId)
     {
         var shoppingCart = GetActiveShoppingCartFromRepository(customerId);
         if (shoppingCart == null)
@@ -44,7 +44,7 @@ public class ShoppingCartService : IShoppingCartService
             throw new NoActiveShoppingBasketFoundException("No active shopping cart found for the customer.");
         }
         var product = GetProductFromRepository(productId);
-        shoppingCart.RemoveQuantityOfItem(product, quantity);
+        shoppingCart.RemoveItem(product);
         _shoppingBasketRepository.Update(shoppingCart);
         return Task.CompletedTask;
     }
