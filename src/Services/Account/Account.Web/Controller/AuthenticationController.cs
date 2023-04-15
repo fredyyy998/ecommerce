@@ -52,7 +52,7 @@ public class AuthenticationController : Controller
         try
         {
             var jwtToken = _authenticationService.AuthenticateUser(email, password);
-            return Ok(jwtToken);
+            return Ok(new { token = jwtToken});
         }
         catch (InvalidLoginException e)
         {
