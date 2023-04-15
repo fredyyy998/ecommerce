@@ -18,6 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
@@ -72,10 +74,25 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventHandler>();
     
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+    
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: MyAllowSpecificOrigins,
+            policy  =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
 }
 
 var app = builder.Build();
 {
+    // allow cors
+    app.UseCors(MyAllowSpecificOrigins);
+
     // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
