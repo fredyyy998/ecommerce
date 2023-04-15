@@ -66,7 +66,7 @@ public class AuthenticationControllerTest
         var result = _authenticationController.LoginCustomer(email, password);
         
         Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(token, ((OkObjectResult)result).Value);
+        Assert.Equivalent(new { token = token }, ((OkObjectResult)result).Value);
     }
 
     [Fact]
