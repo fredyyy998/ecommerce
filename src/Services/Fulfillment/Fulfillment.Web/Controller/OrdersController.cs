@@ -76,6 +76,26 @@ public class OrdersController : BaseController
             return HandleException(e);
         }
     }
+    
+    /// <summary>
+    /// This is just a utitlity api for now until the payment is implemented accordingly
+    /// The api change the state of the order to payed
+    /// </summary>
+    /// <param name="id">The guid of the order that changes the state to payed</param>
+    /// <returns>Returns wether the request succeded or not</returns>
+    [HttpPut("{id}/state/pay")]
+    public async Task<IActionResult> PayOrder(Guid id)
+    {
+        try
+        {
+            await _orderService.PayOrder(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
+    }
 
     private Guid GetGuidFromClaims()
     {
