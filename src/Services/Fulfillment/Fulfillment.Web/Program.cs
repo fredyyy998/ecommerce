@@ -19,6 +19,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 
+var  LocalDevelopmentOrigins = "_localDevelopmentOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
@@ -79,10 +81,23 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddTransient<INotificationHandler<LogisticProviderDeliveredOrderEvent>,
             LogisticProviderDeliveredOrderEventConsumer>();
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(name: LocalDevelopmentOrigins,
+            policy  =>
+            {
+                policy.WithOrigins("http://localhost:4200")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
 }
 
 var app = builder.Build();
 {
+    app.UseCors(LocalDevelopmentOrigins);
+    
     // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
