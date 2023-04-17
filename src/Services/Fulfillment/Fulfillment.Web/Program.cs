@@ -1,6 +1,7 @@
 
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using Ecommerce.Common.Kafka;
 using Fulfillment.Application.EventConsumer;
 using Fulfillment.Application.EventHandler;
@@ -26,7 +27,10 @@ var builder = WebApplication.CreateBuilder(args);
     ConfigurationManager configuration = builder.Configuration;
 
     // Add services to the container.
-    builder.Services.AddControllers();
+    builder.Services.AddControllers().AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen(options =>
