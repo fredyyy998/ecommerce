@@ -37,13 +37,13 @@ public class ShoppingBasketController : Controller
 
     }
     
-    [HttpPut()]
-    public async Task<ActionResult> AddProductToShoppingBasket([FromBody] AddItemToShoppingCartRequestDto request)
+    [HttpPut("items/{productId:guid}")]
+    public async Task<ActionResult> AddProductToShoppingBasket(Guid productId, [FromBody] int quantity)
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            await _shoppingCartService.AddProductToShoppingCart(customerId, request.ProductId, request.Quantity);
+            await _shoppingCartService.AddProductToShoppingCart(customerId, productId, quantity);
             return Ok();
         }
         catch (Exception e)
@@ -52,7 +52,7 @@ public class ShoppingBasketController : Controller
         }
     }
     
-    [HttpDelete("product/{productId:guid}")]
+    [HttpDelete("items/{productId:guid}")]
     public async Task<ActionResult> RemoveProductFromShoppingBasket(Guid productId)
     {
         try
@@ -67,7 +67,7 @@ public class ShoppingBasketController : Controller
         }
     }
     
-    [HttpPatch()]
+    [HttpPatch("state/checkout")]
     public async Task<ActionResult> CheckoutShoppingBasket()
     {
         try
