@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Account.Web;
 
+/// <summary>
+/// Authentication for the application users
+/// </summary>
 [ApiController]
 [Route("/api/[controller]")]
+[Produces("application/json")]
 public class AuthenticationController : Controller
 {
     private IAuthenticationService _authenticationService;
@@ -17,8 +21,27 @@ public class AuthenticationController : Controller
         _authenticationService = authenticationService;
     }
     
+    /// <summary>
+    /// Registers a new customer
+    /// </summary>
+    /// <param name="customerDto">The email and the clear text password for the customer.</param>
+    /// <returns>A newly generated customer</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///      Post /api/authentication/register
+    ///     {
+    ///         "email": "maxmusterman@mail.com",
+    ///         "password": "abc123"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <response code="200">Returns the newly created customer</response>
+    /// <response code="400">If the email already exists or the data is invalid</response>
     [HttpPost]
     [Route("register")]
+    [ProducesResponseType(typeof(CustomerResponseDto),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
     public IActionResult RegisterCustomer(CustomerCreateDto customerDto)
     {
         try
@@ -45,14 +68,34 @@ public class AuthenticationController : Controller
         }
     }
     
+    /// <summary>
+    /// Logs a user into his account
+    /// </summary>
+    /// <param name="email">The email of the customer</param>
+    /// <param name="password">The clear text password of the customer</param>
+    /// <returns>A jwt token</returns>
+    ///  <remarks>
+    /// Sample request:
+    ///
+    ///     Post /api/authentication/login
+    ///     {
+    ///         "email": "maxmusterman@mail.com,
+    ///         "password": "abc123"
+    ///     }
+    ///
+    /// </remarks>
+    /// <response code="200">Returns the jwt token</response>
+    /// <response code="400">If anything is invalid, for anonymous reasons</response>
     [HttpPost]
     [Route("login")]
+    [ProducesResponseType(typeof(JwtResponseDto),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
     public IActionResult LoginCustomer(string email, string password)
     {
         try
         {
             var jwtToken = _authenticationService.AuthenticateUser(email, password);
-            return Ok(new { token = jwtToken});
+            return Ok(new JwtResponseDto(jwtToken));
         }
         catch (InvalidLoginException e)
         {

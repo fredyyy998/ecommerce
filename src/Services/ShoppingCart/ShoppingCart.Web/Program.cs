@@ -32,6 +32,13 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen(options =>
     {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "ShoppingCart Service API", Version = "v1",
+            Description = "The ShoppingCart service is a microservice of the Ecommerce application [Github](https://github.com/fredyyy998/ecommerce). It is responsible for managing the shopping carts of the customers.",
+            
+        });
+        
         options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
         {
             Description = "Standard authorization header using the Bearer scheme (\"bearer {token}\"",
@@ -41,8 +48,11 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
+        
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
     });
-    
+
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters()

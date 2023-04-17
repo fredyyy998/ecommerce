@@ -30,6 +30,14 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddSwaggerGen();
     builder.Services.AddSwaggerGen(options =>
     {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Account Service API", Version = "v1",
+            Description = "The account service is a microservice of the Ecommerce application (https://github.com/fredyyy998/ecommerce). It is responsible for managing the user accounts of the application.",
+            
+        });
+        
+        
         options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
         {
             Description = "Standard authorization header using the Bearer scheme (\"bearer {token}\"",
@@ -39,6 +47,9 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
+        
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
     });
 
     builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
