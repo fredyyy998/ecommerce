@@ -70,8 +70,8 @@ public class ProductManagement : BaseController
         }
     }
     
-    [HttpPut("{id}/stock/add")]
-    public IActionResult AddStock(Guid id, int quantity)
+    [HttpPost("{id}/stock/add")]
+    public IActionResult AddStock(Guid id, [FromBody] int quantity)
     {
         try
         {
@@ -84,8 +84,8 @@ public class ProductManagement : BaseController
         }
     }
     
-    [HttpPut("{id}/stock/remove")]
-    public IActionResult RemoveStock(Guid id, int quantity)
+    [HttpPost("{id}/stock/remove")]
+    public IActionResult RemoveStock(Guid id, [FromBody] int quantity)
     {
         try
         {
