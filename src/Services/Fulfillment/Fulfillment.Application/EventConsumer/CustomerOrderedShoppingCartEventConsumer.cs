@@ -26,7 +26,7 @@ public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<Cus
                 order.AddOrderItem(OrderItem.Create(item.ProductId, item.Name, item.GrossPrice, item.NetPrice, item.CurrencyCode, 19, item.Quantity));  
             }
             
-            orderRepository.SaveAsync(order);
+            await orderRepository.SaveAsync(order);
         }
     }
 }
