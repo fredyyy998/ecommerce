@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using AutoMapper;
+﻿using AutoMapper;
 using Inventory.Application.Dtos;
 using Inventory.Application.Exceptions;
 using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
+using Inventory.Core.Utility;
 using MediatR;
 
 namespace Inventory.Application.Services;
@@ -33,10 +33,20 @@ public class ProductService : IProductService
         return _mapper.Map<Product, AdminProductResponseDto>(product);
     }
 
-    public ICollection<ProductResponseDto> SearchProduct(string searchString)
+    public PagedList<ProductResponseDto> GetProducts(ProductParameters productParameters, out object metadata)
     {
-        var products = _productRepository.Search(searchString);
-        return _mapper.Map<ICollection<Product>, List<ProductResponseDto>>(products);
+        var products = _productRepository.GetAvailableProducts(productParameters.PageNumber, productParameters.PageSize, productParameters.Search);
+        
+        metadata = new
+        {
+            products.TotalCount,
+            products.PageSize,
+            products.CurrentPage,
+            products.TotalPages,
+            products.HasNext,
+            products.HasPrevious
+        };
+        return _mapper.Map<PagedList<Product>, PagedList<ProductResponseDto>>(products);
     }
 
     public void ReserveProduct(Guid productId, int quantity)

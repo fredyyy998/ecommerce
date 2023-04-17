@@ -1,8 +1,9 @@
 ﻿using Ecommerce.Common.Core;
+using Inventory.Core.Utility;
 
 namespace Inventory.Core.Product;
 
 public interface IProductRepository : IRepository<Product>
 {
-    ICollection<Product> Search(string search);
+    PagedList<Product> GetAvailableProducts(int pageNumber, int pageSize, string? searchString);
 }

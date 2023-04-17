@@ -1,4 +1,5 @@
 ﻿using Inventory.Core.Product;
+using Inventory.Core.Utility;
 
 namespace Inventory.Infrastructure.Repository;
 
@@ -35,7 +36,7 @@ public class ProductRepository : IProductRepository
         _context.SaveChanges();
     }
 
-    public ICollection<Product> Search(string search)
+    public PagedList<Product> GetAvailableProducts(int pageNumber, int pageSize, string? search)
     {
         // query for products with stock
         var query = _context.Products.Where(p => p.Stock > 0);
@@ -43,6 +44,9 @@ public class ProductRepository : IProductRepository
         {
             query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
         }
-        return query.ToList();
+        return PagedList<Product>.ToPagedList(query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize),
+                pageNumber, pageSize);
     }
 }

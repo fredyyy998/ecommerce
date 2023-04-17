@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using AutoMapper;
+using Inventory.Application.Dtos;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
 using Inventory.Core.Product;
+using Inventory.Core.Utility;
 using MediatR;
 using Moq;
 using Xunit;
@@ -31,10 +33,18 @@ public class ProductServiceTest
     {
         // Arrange
         var product = Product.Create("test", "test", 1);
-        _productRepositoryMock.Setup(x => x.Search("test")).Returns(new List<Product> {product});
+        var productParameters = new ProductParameters();
+        productParameters.Search = "test";
+        productParameters.PageNumber = 1;
+        productParameters.PageSize = 20;
+        _productRepositoryMock.Setup(x => x.GetAvailableProducts(productParameters.PageNumber, productParameters.PageSize, productParameters.Search))
+            .Returns(new PagedList<Product>(new List<Product>
+        {
+            product
+        }, 1, 1, 1));
         
         // Act
-        var foundProducts = _productService.SearchProduct("test");
+        var foundProducts = _productService.GetProducts(productParameters, out var metadata);
         // Assert
         Assert.Equal(1, foundProducts.Count);
     }

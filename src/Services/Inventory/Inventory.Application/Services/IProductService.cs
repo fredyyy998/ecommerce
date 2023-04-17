@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using Inventory.Application.Dtos;
+using Inventory.Core.Product;
+using Inventory.Core.Utility;
 
 namespace Inventory.Application.Services;
 
@@ -7,7 +9,7 @@ public interface IProductService
 {
     ProductResponseDto GetProduct(Guid productId);
     AdminProductResponseDto GetAdminProduct(Guid productId);
-    ICollection<ProductResponseDto> SearchProduct(string searchString);
+    PagedList<ProductResponseDto> GetProducts(ProductParameters productParameters, out object metadata);
     
     void ReserveProduct(Guid productId, int quantity);
     
