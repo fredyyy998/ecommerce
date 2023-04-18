@@ -130,6 +130,98 @@ namespace ShoppingCart.Web.Migrations
 
             modelBuilder.Entity("ShoppingCart.Core.ShoppingCart.ShoppingCart", b =>
                 {
+                    b.OwnsOne("ShoppingCart.Core.ShoppingCart.ShoppingCartCheckout", "ShoppingCartCheckout", b1 =>
+                        {
+                            b1.Property<Guid>("ShoppingCartId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("CustomerId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("FirstName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("LastName")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("ShoppingCartId");
+
+                            b1.ToTable("ShoppingCarts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ShoppingCartId");
+
+                            b1.OwnsOne("ShoppingCart.Core.ShoppingCart.Address", "BillingAddress", b2 =>
+                                {
+                                    b2.Property<Guid>("ShoppingCartCheckoutShoppingCartId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<string>("City")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Country")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Street")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("ZipCode")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.HasKey("ShoppingCartCheckoutShoppingCartId");
+
+                                    b2.ToTable("ShoppingCarts");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ShoppingCartCheckoutShoppingCartId");
+                                });
+
+                            b1.OwnsOne("ShoppingCart.Core.ShoppingCart.Address", "ShippingAddress", b2 =>
+                                {
+                                    b2.Property<Guid>("ShoppingCartCheckoutShoppingCartId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<string>("City")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Country")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("Street")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.Property<string>("ZipCode")
+                                        .IsRequired()
+                                        .HasColumnType("text");
+
+                                    b2.HasKey("ShoppingCartCheckoutShoppingCartId");
+
+                                    b2.ToTable("ShoppingCarts");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ShoppingCartCheckoutShoppingCartId");
+                                });
+
+                            b1.Navigation("BillingAddress")
+                                .IsRequired();
+
+                            b1.Navigation("ShippingAddress")
+                                .IsRequired();
+                        });
+
                     b.OwnsMany("ShoppingCart.Core.ShoppingCart.ShoppingCartItem", "Items", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -171,6 +263,9 @@ namespace ShoppingCart.Web.Migrations
                         });
 
                     b.Navigation("Items");
+
+                    b.Navigation("ShoppingCartCheckout")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -16,7 +16,9 @@ public class ShoppingCartCheckout : ValueObject
     
     public Address BillingAddress { get; private set; }
     
-    public ShoppingCartCheckout(Guid customerId, string firstName, string lastName, string email, Address shippingAddress, Address? billingAddress)
+    public ShoppingCartCheckout() { }
+    
+    public ShoppingCartCheckout(Guid customerId, string firstName, string lastName, string email, Address shippingAddress, Address billingAddress)
     {
         CustomerId = customerId;
         FirstName = firstName;

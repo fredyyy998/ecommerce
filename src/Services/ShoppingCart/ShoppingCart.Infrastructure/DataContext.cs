@@ -43,6 +43,28 @@ public class DataContext : DbContext
                 i.Property<int>("Id").UseIdentityColumn();
                 i.HasKey("Id");
             });
+            
+            entity.OwnsOne(s => s.ShoppingCartCheckout, co =>
+            {
+                co.Property(c => c.CustomerId);
+                co.Property(c => c.FirstName);
+                co.Property(c => c.LastName);
+                co.Property(c => c.Email);
+                co.OwnsOne(c => c.ShippingAddress, sa =>
+                {
+                    sa.Property(a => a.Street);
+                    sa.Property(a => a.City);
+                    sa.Property(a => a.ZipCode);
+                    sa.Property(a => a.Country);
+                });
+                co.OwnsOne(c => c.BillingAddress, ba =>
+                {
+                    ba.Property(a => a.Street);
+                    ba.Property(a => a.City);
+                    ba.Property(a => a.ZipCode);
+                    ba.Property(a => a.Country);
+                });
+            });
         });
     }
 
