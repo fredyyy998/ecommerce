@@ -72,6 +72,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
     builder.Services
         .AddScoped<INotificationHandler<AdministratorShippedOrderEvent>, AdministratorShippedOrderEventHandler>();
+    builder.Services.AddScoped<INotificationHandler<OrderCancelledEvent>, OrderCancelledEventHandler>();
 
     builder.Services.AddHostedService<KafkaAccountConsumer>();
     builder.Services.AddHostedService<KafkaShoppingCartConsumer>();

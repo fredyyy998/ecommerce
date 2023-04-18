@@ -50,6 +50,7 @@ public class Order : EntityRoot
         if (state == OrderState.Cancelled && State != OrderState.Delivered)
         {
             State = state;
+            AddDomainEvent(new OrderCancelledEvent(this));
         }
         else if (State == OrderState.Submitted && state == OrderState.Paid)
         {
