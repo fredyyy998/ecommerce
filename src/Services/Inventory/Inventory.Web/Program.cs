@@ -2,12 +2,14 @@
 using System.Reflection;
 using System.Text;
 using Ecommerce.Common.Kafka;
+using Inventory.Application.EventConsumer;
 using Inventory.Application.EventHandlers;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
 using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
 using Inventory.Infrastructure;
+using Inventory.Infrastructure.Kafka;
 using Inventory.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -67,7 +69,10 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
-    // builder.Services.InstallServices(configuration, typeof(IServiceInstaller).Assembly);
+    builder.Services.AddHostedService<ShoppingCartConsumer>();
+    builder.Services
+        .AddTransient<
+            INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
     
     builder.Services.AddCors(options =>
     {
