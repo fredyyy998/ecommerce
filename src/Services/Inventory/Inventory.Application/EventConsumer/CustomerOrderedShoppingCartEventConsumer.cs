@@ -2,28 +2,38 @@
 using Inventory.Core.Product;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Inventory.Application.EventConsumer;
 
 public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<CustomerOrderedShoppingCartEvent>
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<CustomerOrderedShoppingCartEventConsumer> _logger;
     
-    public CustomerOrderedShoppingCartEventConsumer(IServiceScopeFactory serviceScopeFactory)
+    public CustomerOrderedShoppingCartEventConsumer(IServiceScopeFactory serviceScopeFactory, ILogger<CustomerOrderedShoppingCartEventConsumer> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
     
     public Task Handle(CustomerOrderedShoppingCartEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-            foreach (var item in notification.Items)
+            try
             {
-                var product = productRepository.GetById(item.ProductId);
-                product.RemoveStock(item.Quantity);
-                productRepository.Update(product);
+                var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
+                foreach (var item in notification.Items)
+                {
+                    var product = productRepository.GetById(item.ProductId);
+                    product.RemoveStock(item.Quantity);
+                    productRepository.Update(product);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while handling CustomerOrderedShoppingCartEvent");
             }
             return Task.CompletedTask;
         }

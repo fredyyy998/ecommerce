@@ -13,12 +13,12 @@ namespace Fulfillment.Web;
 public class OrdersController : BaseController
 {
     private readonly IOrderService _orderService;
-    
+
     public OrdersController(IOrderService orderService)
     {
         _orderService = orderService;
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetOrder(Guid id)
     {

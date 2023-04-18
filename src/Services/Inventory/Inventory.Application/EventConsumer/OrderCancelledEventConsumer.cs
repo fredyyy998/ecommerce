@@ -2,28 +2,38 @@
 using Inventory.Core.Product;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Inventory.Application.EventConsumer;
 
 public class OrderCancelledEventConsumer : INotificationHandler<OrderCancelledEvent>
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly ILogger<OrderCancelledEventConsumer> _logger;
     
-    public OrderCancelledEventConsumer(IServiceScopeFactory serviceScopeFactory)
+    public OrderCancelledEventConsumer(IServiceScopeFactory serviceScopeFactory, ILogger<OrderCancelledEventConsumer> logger)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _logger = logger;
     }
     
     public Task Handle(OrderCancelledEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
-            var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-            foreach (var item in notification.Items)
+            try
             {
-                var product = productRepository.GetById(item.ProductId);
-                product.AddStock(item.Quantity);
-                productRepository.Update(product);
+                var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
+                foreach (var item in notification.Items)
+                {
+                    var product = productRepository.GetById(item.ProductId);
+                    product.AddStock(item.Quantity);
+                    productRepository.Update(product);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while handling OrderCancelledEvent");
             }
             return Task.CompletedTask;
         }
