@@ -50,15 +50,6 @@ public class OrderService : IOrderService
         await ChangeState(orderId, OrderState.Cancelled);
     }
 
-    public async Task SubmitOrder(Guid orderId, SubmitOrderRequestDto submitOrderRequestDto)
-    {
-        var orderResult = await GetOrderFromRepository(orderId);
-
-        var address = new Address(submitOrderRequestDto.Street, submitOrderRequestDto.Zip, submitOrderRequestDto.City, submitOrderRequestDto.Country);
-        orderResult.Submit(address);
-        _orderRepository.UpdateAsync(orderResult);
-    }
-
     private async Task ChangeState(Guid orderId, OrderState state)
     {
         var orderResult = await GetOrderFromRepository(orderId);

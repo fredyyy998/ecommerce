@@ -2,7 +2,6 @@
 
 public enum OrderState
 {
-    Created,
     Submitted,
     Paid,
     Shipped,

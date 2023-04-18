@@ -19,7 +19,7 @@ public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<Cus
         using (var scope = _serviceScopeFactory.CreateScope())
         {
             var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
-            var order = Order.Create(notification.CustomerId);
+            var order = Order.Create(notification.CustomerId, notification.ShoppingCartCheckout.ShippingAddress);
             foreach (var item in notification.Items)
             {
                 // TODO TAX is hard coded and not given from event

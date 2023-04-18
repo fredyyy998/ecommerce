@@ -62,21 +62,7 @@ public class OrdersController : BaseController
             return HandleException(e);
         }
     }
-    
-    [HttpPut("{id}/state/submit")]
-    public async Task<IActionResult> SubmitOrder(Guid id, [FromBody] SubmitOrderRequestDto submitOrderRequestDto)
-    {
-        try
-        {
-            await _orderService.SubmitOrder(id, submitOrderRequestDto);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return HandleException(e);
-        }
-    }
-    
+
     /// <summary>
     /// This is just a utitlity api for now until the payment is implemented accordingly
     /// The api change the state of the order to payed

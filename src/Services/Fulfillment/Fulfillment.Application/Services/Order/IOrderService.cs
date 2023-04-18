@@ -12,6 +12,5 @@ public interface IOrderService
     Task ShipOrder(Guid orderId);
     Task DeliverOrder(Guid orderId);
     Task CancelOrder(Guid orderId);
-    Task SubmitOrder(Guid orderId, SubmitOrderRequestDto submitOrderRequestDto);
 }
 

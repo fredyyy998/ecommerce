@@ -6,16 +6,16 @@ public class Address : ValueObject
 {
     public string Street { get; private set; }
     
-    public string Zip { get; private set; }
+    public string ZipCode { get; private set; }
     
     public string City { get; private set; }
     
     public string Country { get; private set; }
     
-    public Address(string street, string zip, string city, string country)
+    public Address(string street, string zipCode, string city, string country)
     {
         Street = street;
-        Zip = zip;
+        ZipCode = zipCode;
         City = city;
         Country = country;
     }
@@ -23,7 +23,7 @@ public class Address : ValueObject
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Street;
-        yield return Zip;
+        yield return ZipCode;
         yield return City;
         yield return Country;
     }

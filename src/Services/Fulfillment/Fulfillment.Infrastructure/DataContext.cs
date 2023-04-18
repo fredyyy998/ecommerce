@@ -36,7 +36,7 @@ public class DataContext : DbContext
             {
                 address.Property(a => a.Street).IsRequired(false);
                 address.Property(a => a.City).IsRequired(false);
-                address.Property(a => a.Zip).IsRequired(false);
+                address.Property(a => a.ZipCode).IsRequired(false);
                 address.Property(a => a.Country).IsRequired(false);
             });
             
@@ -46,7 +46,7 @@ public class DataContext : DbContext
                 {
                     address.Property(a => a.Street).IsRequired(false);
                     address.Property(a => a.City).IsRequired(false);
-                    address.Property(a => a.Zip).IsRequired(false);
+                    address.Property(a => a.ZipCode).IsRequired(false);
                     address.Property(a => a.Country).IsRequired(false);
                 });
             });
@@ -67,7 +67,7 @@ public class DataContext : DbContext
             {
                 address.Property(a => a.Street);
                 address.Property(a => a.City);
-                address.Property(a => a.Zip);
+                address.Property(a => a.ZipCode);
                 address.Property(a => a.Country);
             });
         });

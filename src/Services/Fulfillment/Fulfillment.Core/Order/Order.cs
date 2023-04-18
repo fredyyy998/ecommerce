@@ -21,7 +21,7 @@ public class Order : EntityRoot
     
     public OrderState State { get; private set; }
 
-    public static Order Create(Guid buyerId)
+    public static Order Create(Guid buyerId, Address shippingAddress)
     {
         return new Order()
         {
@@ -29,8 +29,9 @@ public class Order : EntityRoot
             BuyerId = buyerId,
             _products = new List<OrderItem>(),
             TotalPrice = new Price(0, 0, 19, "EUR"),
-            State = OrderState.Created,
-            OrderDate = DateTime.Now
+            State = OrderState.Submitted,
+            OrderDate = DateTime.Now,
+            ShipmentAddress = shippingAddress
         };
     }
     
@@ -65,18 +66,5 @@ public class Order : EntityRoot
         {
             throw new OrderDomainException($"This state change from {State.ToString()} to {state.ToString()} is not allowed.");
         }
-    }
-
-    public void Submit(Address shipmentAddress)
-    {
-        if (State != OrderState.Created)
-        {
-            throw new OrderDomainException($"This state change from {State.ToString()} to {OrderState.Submitted} is not allowed."); 
-        }
-        
-        ShipmentAddress = shipmentAddress;
-
-        State = OrderState.Submitted;
-        AddDomainEvent(new BuyerSubmittedOrderEvent(this));
     }
 }

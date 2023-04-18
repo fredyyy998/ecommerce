@@ -12,15 +12,18 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
 
     public IReadOnlyCollection<ShoppingCartItemDto> Items => _items.AsReadOnly();
     
+    public ShoppingCartCheckoutDto ShoppingCartCheckout { get; }
+    
     public DateTime CreatedAt { get; }
 
     public DateTime? UpdatedAt { get; }
     
-    public CustomerOrderedShoppingCartEvent(Guid shoppingCartId, Guid customerId, List<ShoppingCartItemDto> items, DateTime createdAt, DateTime? updatedAt)
+    public CustomerOrderedShoppingCartEvent(Guid shoppingCartId, Guid customerId, List<ShoppingCartItemDto> items, ShoppingCartCheckoutDto shoppingCartCheckout, DateTime createdAt, DateTime? updatedAt)
     {
         ShoppingCartId = shoppingCartId;
         CustomerId = customerId;
         _items = items;
+        ShoppingCartCheckout = shoppingCartCheckout;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }

@@ -69,7 +69,7 @@ namespace Fulfillment.Web.Migrations
                             b1.Property<string>("Street")
                                 .HasColumnType("text");
 
-                            b1.Property<string>("Zip")
+                            b1.Property<string>("ZipCode")
                                 .HasColumnType("text");
 
                             b1.HasKey("BuyerId");
@@ -106,7 +106,7 @@ namespace Fulfillment.Web.Migrations
                                     b2.Property<string>("Street")
                                         .HasColumnType("text");
 
-                                    b2.Property<string>("Zip")
+                                    b2.Property<string>("ZipCode")
                                         .HasColumnType("text");
 
                                     b2.HasKey("PaymentInformationBuyerId");
@@ -173,7 +173,7 @@ namespace Fulfillment.Web.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("Zip")
+                            b1.Property<string>("ZipCode")
                                 .IsRequired()
                                 .HasColumnType("text");
 
