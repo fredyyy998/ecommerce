@@ -73,7 +73,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddTransient<
             INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventConsumer>();
-    
+
+    builder.Services.AddHostedService<FulfillmentConsumer>();
+    builder.Services
+        .AddTransient<
+            INotificationHandler<OrderCancelledEvent>, OrderCancelledEventConsumer>();
+
     builder.Services.AddCors(options =>
     {
         options.AddPolicy(name: LocalDevelopmentOrigins,
