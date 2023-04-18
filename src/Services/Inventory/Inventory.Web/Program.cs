@@ -29,6 +29,12 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen(options =>
     {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "Inventory Service API", Version = "v1",
+            Description = "The Inventory service is a microservice of the Ecommerce application [Github](https://github.com/fredyyy998/ecommerce). It is responsible for managing the products of the application and searching for available offerings."
+        });
+        
         options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
         {
             Description = "Standard authorization header using the Bearer scheme (\"bearer {token}\"",
@@ -38,6 +44,8 @@ var builder = WebApplication.CreateBuilder(args);
         });
 
         options.OperationFilter<SecurityRequirementsOperationFilter>();
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
     });
     
     builder.Services.AddDbContext<DataContext>(options =>
