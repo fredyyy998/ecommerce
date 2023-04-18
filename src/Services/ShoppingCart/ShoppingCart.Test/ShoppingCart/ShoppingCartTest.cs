@@ -1,6 +1,7 @@
 ﻿using ShoppingCart.Core.Events;
 using ShoppingCart.Core.Exceptions;
 using ShoppingCart.Core.Product;
+using ShoppingCart.Core.ShoppingCart;
 
 namespace ShoppingCart.Test.ShoppingCart;
 
@@ -101,14 +102,15 @@ public class ShoppingCartTest
     }
 
     [Fact]
-    public void OrderedShoppingCartEvent_is_added_on_order()
+    public void OrderedShoppingCartEvent_is_added_on_Checkout()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
         var product = GetProduct();
         shoppingCart.AddItem(product, 5);
         shoppingCart.ClearEvents();
+        var shoppingCartCheckout = GetShoppingCartCheckout();
         
-        shoppingCart.MarkAsOrdered();
+        shoppingCart.Checkout(shoppingCartCheckout);
         
         Assert.Single(shoppingCart.DomainEvents);
         Assert.IsType<CustomerOrderedShoppingCartEvent>(shoppingCart.DomainEvents.First());
@@ -172,13 +174,14 @@ public class ShoppingCartTest
     }
 
     [Fact]
-    public void Order_ShoppingCart_Removes_Reservations_From_Stock()
+    public void Checkout_ShoppingCart_Removes_Reservations_From_Stock()
     {
         var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
         var product = GetProduct();
         shoppingCart.AddItem(product, 5);
+        var shoppingCartCheckout = GetShoppingCartCheckout();
         
-        shoppingCart.MarkAsOrdered();
+        shoppingCart.Checkout(shoppingCartCheckout);
         
         Assert.Equal(0, product.TotalReserved);
         Assert.Equal(0, product.Reservations.Count);
@@ -197,8 +200,26 @@ public class ShoppingCartTest
         Assert.Empty(shoppingCart.Items);
     }
     
+    [Fact]
+    public void Checkout_ShoppingCart_Sets_Ordered_Status()
+    {
+        var shoppingCart = Core.ShoppingCart.ShoppingCart.Create(Guid.NewGuid());
+        var product = GetProduct();
+        shoppingCart.AddItem(product, 5);
+        var shoppingCartCheckout = GetShoppingCartCheckout();
+
+        shoppingCart.Checkout(shoppingCartCheckout);
+        
+        Assert.Equal(State.Ordered, shoppingCart.Status);
+    }
+    
     public Product GetProduct(int stock = 10)
     {
         return Product.Create(Guid.NewGuid(), "Test", "Test", new Price(10, 10, "EUR"), stock);
+    }
+    
+    private ShoppingCartCheckout GetShoppingCartCheckout()
+    {
+        return new ShoppingCartCheckout(Guid.NewGuid(), "first", "last", "email", new Address("street", "zip", "city", "country"));
     }
 }

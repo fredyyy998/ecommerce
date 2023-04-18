@@ -131,12 +131,12 @@ public class ShoppingCartController : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> CheckoutShoppingCart()
+    public async Task<ActionResult> CheckoutShoppingCart([FromBody] CheckoutRequestDto checkoutRequestDto)
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            await _shoppingCartService.Checkout(customerId);
+            await _shoppingCartService.Checkout(customerId, checkoutRequestDto);
             return NoContent();
         }
         catch (Exception e)

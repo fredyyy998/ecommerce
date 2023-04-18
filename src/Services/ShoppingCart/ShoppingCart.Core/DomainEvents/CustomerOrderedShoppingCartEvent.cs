@@ -13,6 +13,8 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
 
     public IReadOnlyCollection<ShoppingCartItemDto> Items => _items.AsReadOnly();
     
+    public ShoppingCartCheckout ShoppingCartCheckout { get; }
+    
     public DateTime CreatedAt { get; }
 
     public DateTime? UpdatedAt { get; }
@@ -24,6 +26,7 @@ public class CustomerOrderedShoppingCartEvent : IDomainEvent
         CreatedAt = shoppingCart.CreatedAt;
         UpdatedAt = shoppingCart.UpdatedAt;
         _items = shoppingCart.Items.Select(ShoppingCartItemDto.FromShoppingCartItem).ToList();
+        ShoppingCartCheckout = shoppingCart.ShoppingCartCheckout;
     }
 }
 

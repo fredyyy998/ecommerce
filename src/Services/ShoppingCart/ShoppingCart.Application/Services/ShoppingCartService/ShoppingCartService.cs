@@ -61,10 +61,18 @@ public class ShoppingCartService : IShoppingCartService
         return shoppingCart;
     }
 
-    public Task Checkout(Guid customerId)
+    public Task Checkout(Guid customerId, CheckoutRequestDto checkoutRequestDto)
     {
         var shoppingCart = GetActiveShoppingCartFromRepository(customerId);
-        shoppingCart.MarkAsOrdered();
+        var address = new Address(checkoutRequestDto.ShippingAddress.Street, checkoutRequestDto.ShippingAddress.City, checkoutRequestDto.ShippingAddress.ZipCode, checkoutRequestDto.ShippingAddress.Country);
+        Address billingAddress = null;
+        if (checkoutRequestDto.BillingAddress != null)
+        {
+            billingAddress = new Address(checkoutRequestDto.BillingAddress.Street, checkoutRequestDto.BillingAddress.City, checkoutRequestDto.BillingAddress.ZipCode, checkoutRequestDto.BillingAddress.Country);
+        }
+        var checkout = new ShoppingCartCheckout(checkoutRequestDto.CustomerId, checkoutRequestDto.FirstName, checkoutRequestDto.LastName, checkoutRequestDto.Email, address, billingAddress);
+        
+        shoppingCart.Checkout(checkout);
         _shoppingBasketRepository.Update(shoppingCart);
         return Task.CompletedTask;
     }

@@ -14,6 +14,8 @@ public class ShoppingCart : EntityRoot
     
     public State Status { get; private set; }
     
+    public ShoppingCartCheckout ShoppingCartCheckout { get; private set; }
+    
     public DateTime CreatedAt { get; private set; }
     
     public DateTime? UpdatedAt { get; private set; }
@@ -85,16 +87,6 @@ public class ShoppingCart : EntityRoot
         }
         AddDomainEvent(new ShoppingCartTimedOutEvent(this));
     }
-    
-    public void MarkAsOrdered()
-    {
-        Status = State.Ordered;
-        foreach (var item in _items)
-        {
-            item.Product.CommitReservation(Id);
-        }
-        AddDomainEvent(new CustomerOrderedShoppingCartEvent(this));
-    }
 
     public void RemoveItem(Product.Product product)
     {
@@ -104,5 +96,21 @@ public class ShoppingCart : EntityRoot
             throw new ShoppingCartDomainException("Product not found in shopping cart.");
         }
         RemoveQuantityOfItem(product, item.Quantity);
+    }
+
+    public void Checkout(ShoppingCartCheckout shoppingCartCheckout)
+    {
+        ShoppingCartCheckout = shoppingCartCheckout;
+        MarkAsOrdered();
+    }
+    
+    private void MarkAsOrdered()
+    {
+        Status = State.Ordered;
+        foreach (var item in _items)
+        {
+            item.Product.CommitReservation(Id);
+        }
+        AddDomainEvent(new CustomerOrderedShoppingCartEvent(this));
     }
 }

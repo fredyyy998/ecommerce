@@ -4,5 +4,6 @@ public enum State
 {
     Active,
     TimedOut,
-    Ordered
+    Ordered,
+    Completed,
 }
