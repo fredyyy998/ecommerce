@@ -14,7 +14,7 @@ public interface IProductService
 
     Task UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto);
     
-    Task CreateProduct(ProductCreateDto productCreateDto);
+    Task<AdminProductResponseDto> CreateProduct(ProductCreateDto productCreateDto);
     
     Task DeleteProduct(Guid productId);
     

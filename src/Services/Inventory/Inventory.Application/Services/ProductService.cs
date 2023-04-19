@@ -74,10 +74,11 @@ public class ProductService : IProductService
         await _productRepository.Update(product);
     }
 
-    public async Task CreateProduct(ProductCreateDto productCreateDto)
+    public async Task<AdminProductResponseDto> CreateProduct(ProductCreateDto productCreateDto)
     {
         var product = Product.Create(productCreateDto.Name, productCreateDto.Description, productCreateDto.GrossPrice);
-        await _productRepository.Create(product);
+        product = await _productRepository.Create(product);
+        return _mapper.Map<Product, AdminProductResponseDto>(product);
     }
     
     public async Task AddStock(Guid productId, int quantity)

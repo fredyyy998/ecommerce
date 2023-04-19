@@ -88,7 +88,7 @@ public class ProductManagement : BaseController
     ///     }
     ///
     /// </remarks>
-    /// <response code="204">If the product was created successfully</response>
+    /// <response code="201">If the product was created successfully</response>
     /// <response code="401">If the user is not authorized</response>
     /// <response code="500">If an internal server error occurs</response>
     [HttpPost()]
@@ -96,9 +96,11 @@ public class ProductManagement : BaseController
     {
         try
         {
-            // TODO respond with created product and return CreatedAtAction
-            await _productService.CreateProduct(productRequestDto);
-            return NoContent();
+            var product = await _productService.CreateProduct(productRequestDto);
+            return CreatedAtAction(
+                nameof(GetProduct),
+                new { productId = product.Id },
+                productRequestDto);
         }
         catch (Exception e)
         {
