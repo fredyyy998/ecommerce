@@ -37,9 +37,9 @@ public class AuthenticationService : IAuthenticationService
         _jwtInformation = jwtInformation;
     }
     
-    public CustomerResponseDto RegisterCustomer(CustomerCreateDto userDto)
+    public async Task<CustomerResponseDto> RegisterCustomer(CustomerCreateDto userDto)
     {
-        if (_customerRepository.EmailExists(userDto.Email))
+        if (await _customerRepository.EmailExists(userDto.Email))
         {
             throw new EmailAlreadyExistsException(userDto.Email);
         }
@@ -51,23 +51,24 @@ public class AuthenticationService : IAuthenticationService
         }
         
         var user = Customer.Create(userDto.Email, userDto.Password);
-        _customerRepository.Create(user);
+        user = await _customerRepository.Create(user);
         return _mapper.Map<CustomerResponseDto>(user);
     }
     
-    public string AuthenticateUser(string email, string password)
+    public async Task<JwtResponseDto> AuthenticateUser(string email, string password)
     {
-        User user = _customerRepository.GetByEmail(email);
-        if (_administratorRepository.EmailExists(email))
+        User user = await _customerRepository.GetByEmail(email);
+        if (await _administratorRepository.EmailExists(email))
         {
-            user = _administratorRepository.GetAdministrator(email);
+            user = await _administratorRepository.GetAdministrator(email);
         }
         if (user is null ||user.Password.Verify(password) == false)
         {
             throw new InvalidLoginException(email);
         }
 
-        return GenerateJwt(user);
+        var token = GenerateJwt(user);
+        return new JwtResponseDto(token);
     }
     
     private string GenerateJwt(User user)

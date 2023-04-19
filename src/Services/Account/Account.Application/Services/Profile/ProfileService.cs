@@ -19,17 +19,17 @@ public class ProfileService : IProfileService
         _mapper = mapper;
     }
     
-    public CustomerResponseDto GetProfile(Guid customerId)
+    public async Task<CustomerResponseDto> GetProfile(Guid customerId)
     {
-        var customer = GetExistingCustomerById(customerId);
+        var customer = await GetExistingCustomerById(customerId);
         return _mapper.Map<CustomerResponseDto>(customer);
     }
 
 
 
-    public void UpdateProfile(Guid customerId, CustomerUpdateDto customerUpdateDto)
+    public async Task UpdateProfile(Guid customerId, CustomerUpdateDto customerUpdateDto)
     {
-        var customer = GetExistingCustomerById(customerId);
+        var customer = await GetExistingCustomerById(customerId);
         
         customer.UpdateAddress(customerUpdateDto.Address.Street, customerUpdateDto.Address.Zip, customerUpdateDto.Address.City, customerUpdateDto.Address.Country);
         customer.UpdatePersonalInformation(customerUpdateDto.PersonalInformation.FirstName, customerUpdateDto.PersonalInformation.LastName, customerUpdateDto.PersonalInformation.DateOfBirth);
@@ -39,18 +39,18 @@ public class ProfileService : IProfileService
             customer.UpdatePaymentInformation(customerUpdateDto.PaymentInformation.Address.Street, customerUpdateDto.PaymentInformation.Address.Zip, customerUpdateDto.PaymentInformation.Address.City, customerUpdateDto.PaymentInformation.Address.Country);
         }
         
-        _customerRepository.Update(customer);
+        await _customerRepository.Update(customer);
     }
 
-    public void DeleteProfile(Guid customerId)
+    public async Task DeleteProfile(Guid customerId)
     {
-        var customer = GetExistingCustomerById(customerId);
-        _customerRepository.Delete(customerId);
+        await GetExistingCustomerById(customerId);
+        await _customerRepository.Delete(customerId);
     }
     
-    private Customer GetExistingCustomerById(Guid customerId)
+    private async Task<Customer> GetExistingCustomerById(Guid customerId)
     {
-        var customer = _customerRepository.GetById(customerId);
+        var customer = await _customerRepository.GetById(customerId);
         if (customer is null)
         {
             throw new EntityNotFoundException("Customer not found");

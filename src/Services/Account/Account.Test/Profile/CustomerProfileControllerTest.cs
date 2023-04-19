@@ -22,38 +22,39 @@ public class CustomerProfileControllerTest
     }
 
     [Fact]
-    public void GetProfile_WhenCalled_With_Set_Token_ReturnsOk()
+    public async Task GetProfile_WhenCalled_With_Set_Token_ReturnsOk()
     {
         var customerId = Guid.NewGuid();
         var customer = new CustomerResponseDto(customerId, "test@mail.de", null, null, null);
-        _profileServiceMock.Setup(x => x.GetProfile(customerId)).Returns(customer);
+        _profileServiceMock.Setup(x => x.GetProfile(customerId))
+            .ReturnsAsync(customer);
         SetupHttpContextWithCustomerSub(customerId);
 
-        var result = _customerProfilesController.GetProfile();
+        var result = await _customerProfilesController.GetProfile();
         
         Assert.IsType<OkObjectResult>(result);
         Assert.Equal(customer, ((OkObjectResult)result).Value);
     }
 
     [Fact]
-    public void GetProfile_With_not_existing_user_returns_404()
+    public async Task GetProfile_With_not_existing_user_returns_404()
     {
         var customerId = Guid.NewGuid();
         var customer = new CustomerResponseDto(customerId, "test@mail.de", null, null, null);
         _profileServiceMock.Setup(x => x.GetProfile(customerId)).Throws(new EntityNotFoundException("Customer not found"));
         SetupHttpContextWithCustomerSub(customerId);
 
-        var result = _customerProfilesController.GetProfile();
+        var result = await _customerProfilesController.GetProfile();
         
         Assert.IsType<NotFoundObjectResult>(result);
     }
     
     [Fact]
-    public void GetProfile_with_unset_token_returns_Unauthorized()
+    public async Task GetProfile_with_unset_token_returns_Unauthorized()
     {
         SetupHttpContext(new ClaimsIdentity());
         
-        var result = _customerProfilesController.GetProfile();
+        var result = await _customerProfilesController.GetProfile();
         
         Assert.IsType<UnauthorizedObjectResult>(result);
     }

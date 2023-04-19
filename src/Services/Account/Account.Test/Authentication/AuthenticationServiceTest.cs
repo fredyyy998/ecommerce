@@ -48,13 +48,13 @@ public class AuthenticationTests
         var customer = new CustomerCreateDto("customer@test.de", "abc123");
         var customer2 = new CustomerCreateDto("customer@test.de", "123abc");
         _customerRepository.SetupSequence(x => x.EmailExists(customer.Email))
-            .Returns(false)
-            .Returns(true);
+            .ReturnsAsync(false)
+            .ReturnsAsync(true);
 
 
         _authenticationService.RegisterCustomer(customer);
 
-        Assert.Throws<EmailAlreadyExistsException>(() => _authenticationService.RegisterCustomer(customer2));
+        Assert.ThrowsAsync<EmailAlreadyExistsException>(() => _authenticationService.RegisterCustomer(customer2));
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class AuthenticationTests
     {
         var customer = new CustomerCreateDto("invalidMail", "abc123");
 
-        Assert.Throws<ValidationException>(() => _authenticationService.RegisterCustomer(customer));
+        Assert.ThrowsAsync<ValidationException>(() => _authenticationService.RegisterCustomer(customer));
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class AuthenticationTests
     {
         var customer = new CustomerCreateDto("test@test.de", "abc");
 
-        Assert.Throws<ValidationException>(() => _authenticationService.RegisterCustomer(customer));
+        Assert.ThrowsAsync<ValidationException>(() => _authenticationService.RegisterCustomer(customer));
     }
 
     [Fact]
@@ -79,9 +79,10 @@ public class AuthenticationTests
         var email = "test@test.de";
         var password = "abc123";
         var customer = Customer.Create(email, password);
-        _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns((Customer) null);
+        _customerRepository.Setup(x => x.GetByEmail(customer.Email))
+            .ReturnsAsync((Customer) null);
         
-        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, password));
+        Assert.ThrowsAsync<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, password));
     }
     
     [Fact]
@@ -90,8 +91,9 @@ public class AuthenticationTests
         var email = "test@test.de";
         var password = "abc123";
         var customer = Customer.Create(email, password);
-        _customerRepository.Setup(x => x.GetByEmail(customer.Email)).Returns(customer);
+        _customerRepository.Setup(x => x.GetByEmail(customer.Email))
+            .ReturnsAsync(customer);
         
-        Assert.Throws<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, "abc12345"));
+        Assert.ThrowsAsync<InvalidLoginException>(() => _authenticationService.AuthenticateUser(email, "abc12345"));
     }
 }

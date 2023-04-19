@@ -32,12 +32,12 @@ public class CustomerProfilesController : Controller
     [ProducesResponseType(typeof(CustomerResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult GetProfile()
+    public async Task<IActionResult> GetProfile()
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            var customer = _profileService.GetProfile(customerId);
+            var customer = await _profileService.GetProfile(customerId);
             return Ok(customer);
         }
         catch (Exception e)
@@ -59,12 +59,12 @@ public class CustomerProfilesController : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult UpdateProfile(CustomerUpdateDto customerUpdateDto)
+    public async Task<IActionResult> UpdateProfile(CustomerUpdateDto customerUpdateDto)
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            _profileService.UpdateProfile(customerId, customerUpdateDto);
+            await _profileService.UpdateProfile(customerId, customerUpdateDto);
             return NoContent();
         }
         catch (Exception e)
@@ -85,12 +85,12 @@ public class CustomerProfilesController : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult DeleteProfile()
+    public async Task<IActionResult> DeleteProfile()
     {
         try
         {
             var customerId = GetGuidFromClaims();
-            _profileService.DeleteProfile(customerId);
+            await _profileService.DeleteProfile(customerId);
             return NoContent();
         }
         catch (Exception e)

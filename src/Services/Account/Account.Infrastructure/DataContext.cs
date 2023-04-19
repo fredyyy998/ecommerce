@@ -58,11 +58,11 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<Administrator>(entity => entity.OwnsOne(c => c.Password));
     }
-    
-    public override int SaveChanges()
-    {
-        var result = base.SaveChanges();
 
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        var result = await base.SaveChangesAsync(cancellationToken);
+        
         var domainEntities = this.ChangeTracker
             .Entries<EntityRoot>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());

@@ -2,6 +2,6 @@
 
 public interface IAdministratorRepository
 {
-    Administrator GetAdministrator(string email);
-    bool EmailExists(string email);
+    Task<Administrator> GetAdministrator(string email);
+    Task<bool> EmailExists(string email);
 }

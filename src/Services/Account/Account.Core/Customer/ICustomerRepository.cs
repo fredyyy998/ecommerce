@@ -4,6 +4,6 @@ namespace Account.Core.User;
 
 public interface ICustomerRepository : IRepository<Customer>
 {
-    Customer GetByEmail(string email);
-    bool EmailExists(string email);
+    Task<Customer> GetByEmail(string email);
+    Task<bool> EmailExists(string email);
 }

@@ -25,12 +25,13 @@ public class ProfileServiceTest
     }
     
     [Fact]
-    public void Customer_can_view_their_profile()
+    public async Task Customer_can_view_their_profile()
     {
         var customer = Customer.Create("customer@test.de", "abc123");
-        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+        _customerRepository.Setup(x => x.GetById(customer.Id))
+            .Returns(Task.FromResult(customer));
         
-        var profile = _profileService.GetProfile(customer.Id);
+        var profile = await _profileService.GetProfile(customer.Id);
         
         Assert.Equal(customer.Id, profile.Id);
         Assert.Equal(customer.Email, profile.Email);
@@ -40,10 +41,11 @@ public class ProfileServiceTest
     public void Customer_gets_EntityNotFoundException_when_customer_does_not_exist()
     {
         var notPersistedCustomer = Customer.Create("customer@test.de", "abc123");
-        _customerRepository.Setup(x => x.GetById(It.IsAny<Guid>())).Returns((Customer) null);
+        _customerRepository.Setup(x => x.GetById(It.IsAny<Guid>()))
+            .ReturnsAsync((Customer) null);
 
         
-        Assert.Throws<EntityNotFoundException>(() => _profileService.GetProfile(notPersistedCustomer.Id));
+        Assert.ThrowsAsync<EntityNotFoundException>(() => _profileService.GetProfile(notPersistedCustomer.Id));
     }
 
     [Fact]
@@ -54,7 +56,8 @@ public class ProfileServiceTest
         var updatePersonalInfo = new PersonalInformationDto("firstName", "lastName", "01.01.2000");
         var paymentInformation = new PaymentInformationDto(new AddressDto("street", "city", "zip", "country"));
         var updateDto = new CustomerUpdateDto(updateAddress, updatePersonalInfo, paymentInformation);
-        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+        _customerRepository.Setup(x => x.GetById(customer.Id))
+            .ReturnsAsync(customer);
 
         _profileService.UpdateProfile(customer.Id, updateDto);
 
@@ -68,7 +71,8 @@ public class ProfileServiceTest
         var updateAddress = new AddressDto("street", "city", "zip", "country");
         var updatePersonalInfo = new PersonalInformationDto("firstName", "lastName", "01.01.2000");
         var updateDto = new CustomerUpdateDto(updateAddress, updatePersonalInfo, null);
-        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+        _customerRepository.Setup(x => x.GetById(customer.Id))
+            .ReturnsAsync(customer);
 
         _profileService.UpdateProfile(customer.Id, updateDto);
 
@@ -79,7 +83,8 @@ public class ProfileServiceTest
     public void Customer_can_delete_their_profile()
     {
         var customer = Customer.Create("customer@test.de", "avce123");
-        _customerRepository.Setup(x => x.GetById(customer.Id)).Returns(customer);
+        _customerRepository.Setup(x => x.GetById(customer.Id))
+            .ReturnsAsync(customer);
         _customerRepository.Setup(x => x.Delete(customer.Id));
         
         _profileService.DeleteProfile(customer.Id);

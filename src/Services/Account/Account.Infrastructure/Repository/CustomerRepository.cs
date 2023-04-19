@@ -1,7 +1,6 @@
-﻿using Account.Core.Events;
-using Account.Core.User;
+﻿using Account.Core.User;
 using Ecommerce.Common.Core;
-using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Account.Infrastructure.Repository;
 
@@ -13,38 +12,45 @@ public class CustomerRepository : ICustomerRepository
     {
         _dbContext = dbContext;
     }
-    
-    public void Create(Customer customer)
+
+    public async Task<PagedList<Customer>> FindAll(PaginationParameter paginationParameter)
+    {
+        var query = _dbContext.Customers.AsQueryable();
+        return PagedList<Customer>.ToPagedList(query, paginationParameter.PageNumber, paginationParameter.PageSize);
+    }
+
+    public async Task<Customer> Create(Customer customer)
     {
         _dbContext.Customers.Add(customer);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
+        return await GetById(customer.Id);
     }
 
-    public Customer GetByEmail(string email)
+    public Task<Customer> GetByEmail(string email)
     {
-        return _dbContext.Customers.FirstOrDefault(c => c.Email == email);
+        return _dbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
     }
 
-    public bool EmailExists(string email)
+    public async Task<bool> EmailExists(string email)
     {
-        return GetByEmail(email) != null;
+        return (await GetByEmail(email)) != null;
     }
 
-    public Customer GetById(Guid id)
+    public Task<Customer> GetById(Guid id)
     {
-        return _dbContext.Customers.FirstOrDefault(c => c.Id == id);
+        return _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public void Update(Customer customer)
+    public Task Update(Customer customer)
     {
         _dbContext.Customers.Update(customer);
-        _dbContext.SaveChanges();
+        return _dbContext.SaveChangesAsync();
     }
 
-    public void Delete(Guid id)
+    public async Task Delete(Guid id)
     {
-        var customer = GetById(id);
+        var customer = await GetById(id);
         _dbContext.Customers.Remove(customer);
-        _dbContext.SaveChanges();
+        _dbContext.SaveChangesAsync();
     }
 }

@@ -42,11 +42,11 @@ public class AuthenticationController : Controller
     [Route("register")]
     [ProducesResponseType(typeof(CustomerResponseDto),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
-    public IActionResult RegisterCustomer(CustomerCreateDto customerDto)
+    public async Task<IActionResult> RegisterCustomer(CustomerCreateDto customerDto)
     {
         try
         {
-            var customer = _authenticationService.RegisterCustomer(customerDto);
+            var customer = await _authenticationService.RegisterCustomer(customerDto);
             return Ok(customer);
             // TODO better would be following response, but the routing is not working:
             // CreatedAtAction(
@@ -90,12 +90,12 @@ public class AuthenticationController : Controller
     [Route("login")]
     [ProducesResponseType(typeof(JwtResponseDto),StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string),StatusCodes.Status400BadRequest)]
-    public IActionResult LoginCustomer(string email, string password)
+    public async Task<IActionResult> LoginCustomer(string email, string password)
     {
         try
         {
-            var jwtToken = _authenticationService.AuthenticateUser(email, password);
-            return Ok(new JwtResponseDto(jwtToken));
+            var jwtResponse = await _authenticationService.AuthenticateUser(email, password);
+            return Ok(jwtResponse);
         }
         catch (InvalidLoginException e)
         {

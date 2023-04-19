@@ -4,6 +4,6 @@ namespace Account.Application.Profile;
 
 public interface IAuthenticationService
 {
-    CustomerResponseDto RegisterCustomer(CustomerCreateDto userDto);
-    string AuthenticateUser(string email, string password);
+    Task<CustomerResponseDto> RegisterCustomer(CustomerCreateDto userDto);
+    Task<JwtResponseDto> AuthenticateUser(string email, string password);
 }

@@ -1,4 +1,5 @@
 ﻿using Account.Core.Administrator;
+using Microsoft.EntityFrameworkCore;
 
 namespace Account.Infrastructure.Repository;
 
@@ -11,13 +12,13 @@ public class AdministratorRepository : IAdministratorRepository
         _dbContext = dbContext;
     }
 
-    public Administrator GetAdministrator(string email)
+    public Task<Administrator> GetAdministrator(string email)
     {
-        return _dbContext.Administrator.FirstOrDefault(a => a.Email == email);
+        return _dbContext.Administrator.FirstOrDefaultAsync(a => a.Email == email);
     }
 
-    public bool EmailExists(string email)
+    public async Task<bool> EmailExists(string email)
     {
-        return GetAdministrator(email) != null;
+        return (await GetAdministrator(email)) != null;
     }
 }
