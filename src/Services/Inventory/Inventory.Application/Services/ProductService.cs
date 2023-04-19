@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using Ecommerce.Common.Core;
 using Inventory.Application.Dtos;
 using Inventory.Application.Exceptions;
 using Inventory.Core.DomainEvents;
 using Inventory.Core.Product;
-using Inventory.Core.Utility;
+using Inventory.Infrastructure.Repository;
 using MediatR;
 
 namespace Inventory.Application.Services;
@@ -21,23 +22,23 @@ public class ProductService : IProductService
         _mediator = mediator;
     }
 
-    public ProductResponseDto GetProduct(Guid productId)
+    public async Task<ProductResponseDto> GetProduct(Guid productId)
     {
-        var product = GetProductFromRepository(productId);
+        var product = await GetProductFromRepository(productId);
         return _mapper.Map<Product, ProductResponseDto>(product);
     }
 
-    public AdminProductResponseDto GetAdminProduct(Guid productId)
+    public async Task<AdminProductResponseDto> GetAdminProduct(Guid productId)
     {
-        var product = GetProductFromRepository(productId);
+        var product = await GetProductFromRepository(productId);
         return _mapper.Map<Product, AdminProductResponseDto>(product);
     }
 
-    public PagedList<ProductResponseDto> GetProducts(ProductParameters productParameters, out object metadata)
+    public async Task<Tuple<PagedList<ProductResponseDto>, object>> GetProducts(ProductParameters productParameters)
     {
-        var products = _productRepository.GetAvailableProducts(productParameters.PageNumber, productParameters.PageSize, productParameters.Search);
+        var products = await _productRepository.FindAll(productParameters);
         
-        metadata = new
+        var metadata = new
         {
             products.TotalCount,
             products.PageSize,
@@ -46,24 +47,13 @@ public class ProductService : IProductService
             products.HasNext,
             products.HasPrevious
         };
-        return _mapper.Map<PagedList<Product>, PagedList<ProductResponseDto>>(products);
+        
+        return new Tuple<PagedList<ProductResponseDto>, object>(_mapper.Map<PagedList<Product>, PagedList<ProductResponseDto>>(products), metadata);
     }
 
-    public void ReserveProduct(Guid productId, int quantity)
+    public async Task UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto)
     {
-        var product = GetProductFromRepository(productId);
-        product.RemoveStock(quantity);
-    }
-
-    public void CancelReservation(Guid productId, int quantity)
-    {
-        var product = GetProductFromRepository(productId);
-        product.AddStock(quantity);
-    }
-
-    public void UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto)
-    {
-        var product = GetProductFromRepository(productId);
+        var product = await GetProductFromRepository(productId);
         product.Update(productUpdateDto.Name, productUpdateDto.Description, productUpdateDto.GrossPrice);
         // remove all existing information
         product.Informations.ToList().ForEach(x => product.RemoveInformation(x.Key));
@@ -71,40 +61,40 @@ public class ProductService : IProductService
         {
             product.AddInformation(keyValuePair.Key, keyValuePair.Value);
         }
-        _productRepository.Update(product);
+        await _productRepository.Update(product);
     }
 
-    public void CreateProduct(ProductCreateDto productCreateDto)
+    public async Task CreateProduct(ProductCreateDto productCreateDto)
     {
         var product = Product.Create(productCreateDto.Name, productCreateDto.Description, productCreateDto.GrossPrice);
-        _productRepository.Create(product);
+        await _productRepository.Create(product);
     }
     
-    public void AddStock(Guid productId, int quantity)
+    public async Task AddStock(Guid productId, int quantity)
     {
-        var product = GetProductFromRepository(productId);
+        var product = await GetProductFromRepository(productId);
         product.AddStock(quantity);
-        _productRepository.Update(product);
+        await _productRepository.Update(product);
     }
     
-    public void RemoveStock(Guid productId, int quantity)
+    public async Task RemoveStock(Guid productId, int quantity)
     {
-        var product = GetProductFromRepository(productId);
+        var product = await GetProductFromRepository(productId);
         product.RemoveStock(quantity);
-        _productRepository.Update(product);
+        await _productRepository.Update(product);
     }
 
-    public void DeleteProduct(Guid productId)
+    public async Task DeleteProduct(Guid productId)
     {
-        _productRepository.Delete(productId);
+        await _productRepository.Delete(productId);
         // TODO this is a bit of an edge case, usually we would like to create the event in the product and public it after save
         // but in this case the product does not exist anymore and the event does not exist anymore aswell, so for now we simply publish here
         _mediator.Publish(new ProductRemovedByAdmin(productId));
     }
     
-    private Product GetProductFromRepository(Guid productId)
+    private async Task<Product> GetProductFromRepository(Guid productId)
     {
-        var product = _productRepository.GetById(productId);
+        var product = await _productRepository.GetById(productId);
         if (product == null)
         {
             throw new EntityNotFoundException($"Product with id: {productId} not found");

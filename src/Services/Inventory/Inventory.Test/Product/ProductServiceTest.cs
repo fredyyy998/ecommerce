@@ -1,13 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using AutoMapper;
-using Inventory.Application.Dtos;
+﻿using AutoMapper;
+using Ecommerce.Common.Core;
 using Inventory.Application.Services;
 using Inventory.Application.Utils;
 using Inventory.Core.Product;
-using Inventory.Core.Utility;
+using Inventory.Infrastructure.Repository;
 using MediatR;
 using Moq;
-using Xunit;
 
 namespace Inventory.Test;
 
@@ -29,7 +27,7 @@ public class ProductServiceTest
     }
 
     [Fact]
-    public void Product_search_response_with_list()
+    public async Task Product_search_response_with_list()
     {
         // Arrange
         var product = Product.Create("test", "test", 1);
@@ -37,15 +35,15 @@ public class ProductServiceTest
         productParameters.Search = "test";
         productParameters.PageNumber = 1;
         productParameters.PageSize = 20;
-        _productRepositoryMock.Setup(x => x.GetAvailableProducts(productParameters.PageNumber, productParameters.PageSize, productParameters.Search))
-            .Returns(new PagedList<Product>(new List<Product>
+        _productRepositoryMock.Setup(x => x.FindAll(productParameters))
+            .ReturnsAsync(new PagedList<Product>(new List<Product>
         {
             product
         }, 1, 1, 1));
         
         // Act
-        var foundProducts = _productService.GetProducts(productParameters, out var metadata);
+        var foundProducts = await _productService.GetProducts(productParameters);
         // Assert
-        Assert.Equal(1, foundProducts.Count);
+        Assert.Equal(1, foundProducts.Item1.Count);
     }
 }

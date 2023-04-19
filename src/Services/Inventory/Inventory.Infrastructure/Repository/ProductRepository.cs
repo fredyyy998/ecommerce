@@ -1,5 +1,5 @@
-﻿using Inventory.Core.Product;
-using Inventory.Core.Utility;
+﻿using Ecommerce.Common.Core;
+using Inventory.Core.Product;
 
 namespace Inventory.Infrastructure.Repository;
 
@@ -12,41 +12,69 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public Product GetById(Guid id)
+    public async Task<Product> GetById(Guid id)
     {
-        return _context.Products.Find(id);
+        return await _context.Products.FindAsync(id);
     }
 
-    public void Create(Product entity)
+    public async Task<Product> Create(Product entity)
     {
         _context.Products.Add(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        return  await GetById(entity.Id);
     }
 
-    public void Update(Product entity)
+    public async Task Update(Product entity)
     {
         _context.Products.Update(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Delete(Guid id)
+    public async Task Delete(Guid id)
     {
-        var product = GetById(id);
+        var product = await GetById(id);
         _context.Products.Remove(product);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public PagedList<Product> GetAvailableProducts(int pageNumber, int pageSize, string? search)
+    public async Task<PagedList<Product>> FindAll(ProductParameters paginationParameter)
     {
         // query for products with stock
-        var query = _context.Products.Where(p => p.Stock > 0);
-        if (search != null)
+        var query = await GetProductsSearchQuery(paginationParameter);
+        return GetPagedListFromQuery(query, paginationParameter);
+    }
+
+    public async Task<PagedList<Product>> FindAll(PaginationParameter paginationParameter)
+    {
+        // query for products with stock
+        var query = await GetAvailableProductsQuery();
+        return GetPagedListFromQuery(query, paginationParameter);
+    }
+    
+    private async Task<IQueryable<Product>> GetAvailableProductsQuery()
+    {
+        var query = _context.Products.AsQueryable();
+        query = query.Where(p => p.Stock > 0);
+        return query;
+    }
+    
+    private async Task<IQueryable<Product>> GetProductsSearchQuery(ProductParameters productParameters)
+    {
+        var query = await GetAvailableProductsQuery();
+        if (!string.IsNullOrWhiteSpace(productParameters.Search))
         {
+            var search = productParameters.Search.Trim();
             query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
         }
+        return query;
+    }
+
+    private PagedList<Product> GetPagedListFromQuery(IQueryable<Product> query,
+        PaginationParameter paginationParameter)
+    {
         return PagedList<Product>.ToPagedList(query
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize),
-                pageNumber, pageSize);
+                .Skip((paginationParameter.PageNumber - 1) * paginationParameter.PageSize)
+                .Take(paginationParameter.PageSize),
+            paginationParameter.PageNumber, paginationParameter.PageSize);
     }
 }

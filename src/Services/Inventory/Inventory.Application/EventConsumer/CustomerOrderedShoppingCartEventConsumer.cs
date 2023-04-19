@@ -17,7 +17,7 @@ public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<Cus
         _logger = logger;
     }
     
-    public Task Handle(CustomerOrderedShoppingCartEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(CustomerOrderedShoppingCartEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
@@ -26,16 +26,15 @@ public class CustomerOrderedShoppingCartEventConsumer : INotificationHandler<Cus
                 var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
                 foreach (var item in notification.Items)
                 {
-                    var product = productRepository.GetById(item.ProductId);
+                    var product = await productRepository.GetById(item.ProductId);
                     product.RemoveStock(item.Quantity);
-                    productRepository.Update(product);
+                    await productRepository.Update(product);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while handling CustomerOrderedShoppingCartEvent");
             }
-            return Task.CompletedTask;
         }
     }
     

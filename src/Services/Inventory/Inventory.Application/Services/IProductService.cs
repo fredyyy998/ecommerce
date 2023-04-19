@@ -1,27 +1,22 @@
-﻿using System.Collections;
+﻿using Ecommerce.Common.Core;
 using Inventory.Application.Dtos;
-using Inventory.Core.Product;
-using Inventory.Core.Utility;
+using Inventory.Infrastructure.Repository;
 
 namespace Inventory.Application.Services;
 
 public interface IProductService
 {
-    ProductResponseDto GetProduct(Guid productId);
-    AdminProductResponseDto GetAdminProduct(Guid productId);
-    PagedList<ProductResponseDto> GetProducts(ProductParameters productParameters, out object metadata);
-    
-    void ReserveProduct(Guid productId, int quantity);
-    
-    void CancelReservation(Guid productId, int quantity);
+    Task<ProductResponseDto> GetProduct(Guid productId);
+    Task<AdminProductResponseDto> GetAdminProduct(Guid productId);
+    Task<Tuple<PagedList<ProductResponseDto>, object>> GetProducts(ProductParameters productParameters);
 
-    void UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto);
+    Task UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto);
     
-    void CreateProduct(ProductCreateDto productCreateDto);
+    Task CreateProduct(ProductCreateDto productCreateDto);
     
-    void DeleteProduct(Guid productId);
+    Task DeleteProduct(Guid productId);
     
-    void AddStock(Guid productId, int quantity);
+    Task AddStock(Guid productId, int quantity);
     
-    void RemoveStock(Guid productId, int quantity);
+    Task RemoveStock(Guid productId, int quantity);
 }

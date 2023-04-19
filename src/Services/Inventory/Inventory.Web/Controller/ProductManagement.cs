@@ -31,11 +31,11 @@ public class ProductManagement : BaseController
     [ProducesResponseType(typeof(AdminProductResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult GetProduct(Guid productId)
+    public async Task<IActionResult> GetProduct(Guid productId)
     {
         try
         {
-            var product = _productService.GetAdminProduct(productId);
+            var product = await _productService.GetAdminProduct(productId);
             return Ok(product);
         }
         catch (Exception e)
@@ -64,12 +64,12 @@ public class ProductManagement : BaseController
     /// <response code="401">If the user is not authorized</response>
     /// <response code="500">If an internal server error occurs</response>
     [HttpPost()]
-    public IActionResult CreateProduct([FromBody] ProductCreateDto productRequestDto)
+    public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto productRequestDto)
     {
         try
         {
             // TODO respond with created product and return CreatedAtAction
-            _productService.CreateProduct(productRequestDto);
+            await _productService.CreateProduct(productRequestDto);
             return NoContent();
         }
         catch (Exception e)
@@ -106,11 +106,11 @@ public class ProductManagement : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult UpdateProduct(Guid productId, [FromBody] ProductUpdateDto productUpdateDto)
+    public async Task<IActionResult> UpdateProduct(Guid productId, [FromBody] ProductUpdateDto productUpdateDto)
     {
         try
         {
-            _productService.UpdateProduct(productId, productUpdateDto);
+            await _productService.UpdateProduct(productId, productUpdateDto);
             return NoContent();
         }
         catch (Exception e)
@@ -132,11 +132,11 @@ public class ProductManagement : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult DeleteProduct(Guid productId)
+    public async Task<IActionResult> DeleteProduct(Guid productId)
     {
         try
         {
-            _productService.DeleteProduct(productId);
+            await _productService.DeleteProduct(productId);
             return NoContent();
         }
         catch (Exception e)
@@ -168,11 +168,11 @@ public class ProductManagement : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult AddStock(Guid productId, [FromBody] QuantityDto quantityDto)
+    public async Task<IActionResult> AddStock(Guid productId, [FromBody] QuantityDto quantityDto)
     {
         try
         {
-            _productService.AddStock(productId, quantityDto.Quantity);
+            await _productService.AddStock(productId, quantityDto.Quantity);
             return NoContent();
         }
         catch (Exception e)
@@ -204,11 +204,11 @@ public class ProductManagement : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    public IActionResult RemoveStock(Guid productId, [FromBody] QuantityDto quantityDto)
+    public async Task<IActionResult> RemoveStock(Guid productId, [FromBody] QuantityDto quantityDto)
     {
         try
         {
-            _productService.RemoveStock(productId, quantityDto.Quantity);
+            await _productService.RemoveStock(productId, quantityDto.Quantity);
             return NoContent();
         }
         catch (Exception e)

@@ -1,7 +1,8 @@
 using System.Text.Json;
+using Ecommerce.Common.Core;
 using Inventory.Application.Dtos;
 using Inventory.Application.Services;
-using Inventory.Core.Utility;
+using Inventory.Infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -27,14 +28,14 @@ public class ProductsController : BaseController
     [ProducesResponseType(typeof(PagedList<ProductResponseDto>), StatusCodes.Status200OK)]
     [SwaggerResponseHeader(StatusCodes.Status200OK, "X-Pagination", "The pagination information for the response list", "json")]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-    public IActionResult GetProductsBySearch([FromQuery] ProductParameters productParameters)
+    public async Task<IActionResult> GetProductsBySearch([FromQuery] ProductParameters productParameters)
     {
         try
         {
-            var products = _productService.GetProducts(productParameters, out var metadata);
+            var products = await _productService.GetProducts(productParameters);
             
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
-            return Ok(products);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(products.Item2));
+            return Ok(products.Item1);
         }
         catch (Exception e)
         {

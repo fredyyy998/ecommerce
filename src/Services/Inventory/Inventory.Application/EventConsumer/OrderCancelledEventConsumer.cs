@@ -17,7 +17,7 @@ public class OrderCancelledEventConsumer : INotificationHandler<OrderCancelledEv
         _logger = logger;
     }
     
-    public Task Handle(OrderCancelledEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(OrderCancelledEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
@@ -26,16 +26,15 @@ public class OrderCancelledEventConsumer : INotificationHandler<OrderCancelledEv
                 var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
                 foreach (var item in notification.Items)
                 {
-                    var product = productRepository.GetById(item.ProductId);
+                    var product = await productRepository.GetById(item.ProductId);
                     product.AddStock(item.Quantity);
-                    productRepository.Update(product);
+                    await productRepository.Update(product);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while handling OrderCancelledEvent");
             }
-            return Task.CompletedTask;
         }
     }
 }
