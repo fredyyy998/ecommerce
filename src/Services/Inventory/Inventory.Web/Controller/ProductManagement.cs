@@ -1,7 +1,10 @@
-﻿using Inventory.Application.Dtos;
+﻿using Ecommerce.Common.Core;
+using Inventory.Application.Dtos;
 using Inventory.Application.Services;
+using Inventory.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Inventory.Web;
 
@@ -16,6 +19,31 @@ public class ProductManagement : BaseController
 {
     public ProductManagement(IProductService productService) : base(productService)
     {
+    }
+    
+    /// <summary>
+    /// Returns a list of products  with pagination in the admin format
+    /// </summary>
+    /// <param name="productParameters">The pagination parameters</param>
+    /// <returns>A paginated list of products</returns>
+    /// <response code="200">Returns the paginated list of products</response>
+    /// <response code="500">If an internal server error occurs</response>
+    [HttpGet()]
+    [ProducesResponseType(typeof(PagedList<AdminProductResponseDto>), StatusCodes.Status200OK)]
+    [SwaggerResponseHeader(StatusCodes.Status200OK, "X-Pagination", "The pagination information for the response list", "json")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    
+    public async Task<IActionResult> GetProducts([FromQuery] ProductParameters productParameters)
+    {
+        try
+        {
+            var products = await _productService.GetAdminProducts(productParameters);
+            return Ok(products.Item1);
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
     }
     
     /// <summary>

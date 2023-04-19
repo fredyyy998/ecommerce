@@ -9,6 +9,8 @@ public interface IProductService
     Task<ProductResponseDto> GetProduct(Guid productId);
     Task<AdminProductResponseDto> GetAdminProduct(Guid productId);
     Task<Tuple<PagedList<ProductResponseDto>, object>> GetProducts(ProductParameters productParameters);
+    
+    Task<Tuple<PagedList<AdminProductResponseDto>, object>> GetAdminProducts(ProductParameters productParameters);
 
     Task UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto);
     

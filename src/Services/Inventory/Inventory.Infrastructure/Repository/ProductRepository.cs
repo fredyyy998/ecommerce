@@ -40,17 +40,23 @@ public class ProductRepository : IProductRepository
     public async Task<PagedList<Product>> FindAll(ProductParameters paginationParameter)
     {
         // query for products with stock
-        var query = await GetProductsSearchQuery(paginationParameter);
+        var query = await GetAvailableProductsSearchQuery(paginationParameter);
         return GetPagedListFromQuery(query, paginationParameter);
     }
 
     public async Task<PagedList<Product>> FindAll(PaginationParameter paginationParameter)
     {
         // query for products with stock
+        var query = _context.Products.AsQueryable();
+        return GetPagedListFromQuery(query, paginationParameter);
+    }
+
+    public async Task<PagedList<Product>> FindAllAvailable(PaginationParameter paginationParameter)
+    {
         var query = await GetAvailableProductsQuery();
         return GetPagedListFromQuery(query, paginationParameter);
     }
-    
+
     private async Task<IQueryable<Product>> GetAvailableProductsQuery()
     {
         var query = _context.Products.AsQueryable();
@@ -58,7 +64,7 @@ public class ProductRepository : IProductRepository
         return query;
     }
     
-    private async Task<IQueryable<Product>> GetProductsSearchQuery(ProductParameters productParameters)
+    private async Task<IQueryable<Product>> GetAvailableProductsSearchQuery(ProductParameters productParameters)
     {
         var query = await GetAvailableProductsQuery();
         if (!string.IsNullOrWhiteSpace(productParameters.Search))

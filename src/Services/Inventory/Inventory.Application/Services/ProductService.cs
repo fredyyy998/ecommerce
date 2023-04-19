@@ -36,8 +36,18 @@ public class ProductService : IProductService
 
     public async Task<Tuple<PagedList<ProductResponseDto>, object>> GetProducts(ProductParameters productParameters)
     {
+        var products = await _productRepository.FindAllAvailable(productParameters);
+        return await GetPagedResponse<ProductResponseDto>(products);
+    }
+
+    public async Task<Tuple<PagedList<AdminProductResponseDto>, object>> GetAdminProducts(ProductParameters productParameters)
+    {
         var products = await _productRepository.FindAll(productParameters);
-        
+        return await GetPagedResponse<AdminProductResponseDto>(products);
+    }
+    
+    private async Task<Tuple<PagedList<T>, object>> GetPagedResponse<T>(PagedList<Product> products)
+    {
         var metadata = new
         {
             products.TotalCount,
@@ -48,7 +58,7 @@ public class ProductService : IProductService
             products.HasPrevious
         };
         
-        return new Tuple<PagedList<ProductResponseDto>, object>(_mapper.Map<PagedList<Product>, PagedList<ProductResponseDto>>(products), metadata);
+        return new Tuple<PagedList<T>, object>(_mapper.Map<PagedList<Product>, PagedList<T>>(products), metadata);
     }
 
     public async Task UpdateProduct(Guid productId, ProductUpdateDto productUpdateDto)
