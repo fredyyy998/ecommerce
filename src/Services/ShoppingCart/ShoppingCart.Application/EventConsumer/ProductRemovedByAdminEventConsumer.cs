@@ -17,21 +17,19 @@ public class ProductRemovedByAdminEventConsumer : INotificationHandler<ProductRe
         _logger = logger;
     }
     
-    public Task Handle(ProductRemovedByAdminEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(ProductRemovedByAdminEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
             try
             {
                 var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-                productRepository.Delete(notification.ProductId);
+                await productRepository.Delete(notification.ProductId);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error while deleting product");
             }
-
-            return Task.CompletedTask;
         }
 
     }

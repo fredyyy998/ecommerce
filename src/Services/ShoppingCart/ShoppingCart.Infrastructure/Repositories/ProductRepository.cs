@@ -1,4 +1,5 @@
-﻿using ShoppingCart.Core.Product;
+﻿using Ecommerce.Common.Core;
+using ShoppingCart.Core.Product;
 
 namespace ShoppingCart.Infrastructure.Repositories;
 
@@ -11,27 +12,33 @@ public class ProductRepository : IProductRepository
         _dataContext = dataContext;
     }
     
-    public Product GetById(Guid id)
+    public async Task<Product> GetById(Guid id)
     {
-        return _dataContext.Products.Find(id);
+        return await _dataContext.Products.FindAsync(id);
     }
 
-    public void Create(Product entity)
+    public async Task<Product> Create(Product entity)
     {
         _dataContext.Products.Add(entity);
-        _dataContext.SaveChanges();
+        await _dataContext.SaveChangesAsync();
+        return await GetById(entity.Id);
     }
 
-    public void Update(Product entity)
+    public async Task Update(Product entity)
     {
         _dataContext.Products.Update(entity);
-        _dataContext.SaveChanges();
+        await _dataContext.SaveChangesAsync();
     }
 
-    public void Delete(Guid id)
+    public async Task Delete(Guid id)
     {
-        var product = GetById(id);
+        var product = await GetById(id);
         _dataContext.Products.Remove(product);
-        _dataContext.SaveChanges();
+        await _dataContext.SaveChangesAsync();
+    }
+
+    public Task<PagedList<Product>> FindAll(PaginationParameter paginationParameter)
+    {
+        throw new NotImplementedException();
     }
 }

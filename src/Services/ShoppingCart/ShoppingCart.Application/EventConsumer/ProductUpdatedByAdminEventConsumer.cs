@@ -24,7 +24,7 @@ public class ProductUpdatedByAdminEventConsumer : INotificationHandler<ProductUp
             try
             {
                 var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-                var product = productRepository.GetById(notification.Id);
+                var product = await productRepository.GetById(notification.Id);
                 product.Update(notification.Name, notification.Description, notification.Price, notification.Stock);
                 productRepository.Update(product);
             }

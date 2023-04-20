@@ -23,8 +23,8 @@ public class ProductStockUpdateByAdminEventConsumer : INotificationHandler<Produ
         {
             try
             {
-                var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-                var product = productRepository.GetById(notification.ProductId);
+                var productRepository =  scope.ServiceProvider.GetRequiredService<IProductRepository>();
+                var product = await productRepository.GetById(notification.ProductId);
                 product.Update(product.Name, product.Description, product.Price, notification.Stock);
                 productRepository.Update(product);
             }

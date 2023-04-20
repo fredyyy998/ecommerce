@@ -18,7 +18,7 @@ public class ProductAddedByAdminEventConsumer : INotificationHandler<ProductAdde
     }
 
 
-    public Task Handle(ProductAddedByAdminEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(ProductAddedByAdminEvent notification, CancellationToken cancellationToken)
     {
         using (var scope = _serviceScopeFactory.CreateScope())
         {
@@ -27,13 +27,12 @@ public class ProductAddedByAdminEventConsumer : INotificationHandler<ProductAdde
                 var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
                 var product = Product.Create(notification.Id, notification.Name, notification.Description, notification.Price,
                     notification.Stock);
-                productRepository.Create(product);
+                await productRepository.Create(product);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error while creating product");
             }
-            return Task.CompletedTask;
         }
     }
 }

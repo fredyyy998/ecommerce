@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
+using Ecommerce.Common.Core;
 using ShoppingCart.Core.ShoppingCart;
 
 namespace ShoppingCart.Infrastructure.Repositories;
@@ -12,63 +13,70 @@ public class ShoppingCartRepository : IShoppingCartRepository
         _context = context;
     }
 
-    public Core.ShoppingCart.ShoppingCart GetById(Guid id)
+    public async Task<Core.ShoppingCart.ShoppingCart> GetById(Guid id)
     {
-        return _context.ShoppingCarts.Find(id);
+        return await _context.ShoppingCarts.FindAsync(id);
     }
 
-    public void Create(Core.ShoppingCart.ShoppingCart entity)
+    public async Task<Core.ShoppingCart.ShoppingCart> Create(Core.ShoppingCart.ShoppingCart entity)
     {
         _context.ShoppingCarts.Add(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+        return await GetById(entity.Id);
     }
 
-    public void Update(Core.ShoppingCart.ShoppingCart entity)
+    public async Task Update(Core.ShoppingCart.ShoppingCart entity)
     {
         _context.ShoppingCarts.Update(entity);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void Delete(Guid id)
+    public async Task Delete(Guid id)
     {
-        var shoppingCart = GetById(id);
+        var shoppingCart = await GetById(id);
         _context.ShoppingCarts.Remove(shoppingCart);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public List<Core.ShoppingCart.ShoppingCart> GetTimedOutShoppingCarts()
+    public async Task<List<Core.ShoppingCart.ShoppingCart>> GetTimedOutShoppingCarts()
     {
-        return _context.ShoppingCarts.Where(x => x.Status == State.TimedOut).ToList();
+        return await _context.ShoppingCarts.Where(x => x.Status == State.TimedOut).ToListAsync();
     }
 
-    public List<Core.ShoppingCart.ShoppingCart> GetShoppingCartsByCustomerId(Guid customerId)
+    public async Task<List<Core.ShoppingCart.ShoppingCart>> GetShoppingCartsByCustomerId(Guid customerId)
     {
-        return _context.ShoppingCarts.Where(x => x.CustomerId == customerId).ToList();
+        return await _context.ShoppingCarts.Where(x => x.CustomerId == customerId).ToListAsync();
     }
 
-    public Core.ShoppingCart.ShoppingCart GetActiveShoppingCartByCustomer(Guid customerId)
+    public async Task<Core.ShoppingCart.ShoppingCart> GetActiveShoppingCartByCustomer(Guid customerId)
     {
         // TODO there must be a better way to do this, but i really dont understand what is happening here
         // when the products are not loaded like this the shopping cart items are not populated correctly
         // somehow lazy loading is not working here
-        _context.Products.ToList();
-        var shoppingCart = _context.ShoppingCarts
-            .Include(s => s.Items.Select(p =>p.Product))
-            .FirstOrDefault(x => x.CustomerId == customerId && x.Status == State.Active);
+        await _context.Products.ToListAsync();
+        var shoppingCart = await _context.ShoppingCarts
+            .Include(s => s.Items)
+            .FirstOrDefaultAsync(x => x.CustomerId == customerId && x.Status == State.Active);
         
         return shoppingCart;
     }
     
-    public List<Core.ShoppingCart.ShoppingCart> GetActiveShoppingCartsCreatedBefore(DateTime date)
+    
+    public async Task<List<Core.ShoppingCart.ShoppingCart>> GetActiveShoppingCartsCreatedBefore(DateTime date)
     {
-        return _context.ShoppingCarts.Where(x => x.CreatedAt < date && x.Status == State.Active).ToList();
+        return await _context.ShoppingCarts.Where(x => x.CreatedAt < date && x.Status == State.Active).ToListAsync();
     }
 
-    public void RemoveProductFromShoppingCart(Guid shoppingCartId, Guid productId)
+    public async Task RemoveProductFromShoppingCart(Guid shoppingCartId, Guid productId)
     {
-        var shoppingCart = GetById(shoppingCartId);
+        var shoppingCart = await GetById(shoppingCartId);
         var item = shoppingCart.Items.FirstOrDefault(x => x.Product.Id == productId);
         shoppingCart.RemoveQuantityOfItem(item.Product, item.Quantity);
         Update(shoppingCart);
+    }
+
+    public Task<PagedList<Core.ShoppingCart.ShoppingCart>> FindAll(PaginationParameter paginationParameter)
+    {
+        throw new NotImplementedException();
     }
 }
