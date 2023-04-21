@@ -33,4 +33,9 @@ public class OrderRepository : IOrderRepository
         _dataContext.Orders.Update(order);
         return _dataContext.SaveChangesAsync();
     }
+
+    public Task<List<Order>> FindInDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        return _dataContext.Orders.Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate).ToListAsync();
+    }
 }
