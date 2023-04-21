@@ -6,6 +6,7 @@ using Ecommerce.Common.Kafka;
 using Fulfillment.Application.EventConsumer;
 using Fulfillment.Application.EventHandler;
 using Fulfillment.Application.Services;
+using Fulfillment.Application.Services.Revenue;
 using Fulfillment.Application.Utlis;
 using Fulfillment.Core.Buyer;
 using Fulfillment.Core.DomainEvents;
@@ -72,9 +73,11 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     builder.Services.AddScoped<IBuyerRepository, BuyerRepository>();
+    
 
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddScoped<IOrderService, OrderService>();
+    builder.Services.AddScoped<IRevenueService, RevenueReport>();
     
     builder.Services.AddSingleton(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));

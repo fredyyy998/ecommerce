@@ -11,5 +11,6 @@ public class MappingProfile : Profile
         CreateMap<Core.Order.Order, OrderResponseDto>();
         CreateMap<Core.Order.OrderItem, OrderItemResponseDto>();
         CreateMap<Buyer, BuyerResponseDto>();
+        CreateMap<Core.Revenue.RevenueReport, RevenueReportResponseDto>();
     }
 }
