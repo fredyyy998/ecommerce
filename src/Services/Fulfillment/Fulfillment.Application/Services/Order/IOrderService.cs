@@ -1,6 +1,5 @@
-﻿using Fulfillment.Application.Dtos;
-using Fulfillment.Core.Buyer;
-using Fulfillment.Core.Order;
+﻿using Ecommerce.Common.Core;
+using Fulfillment.Application.Dtos;
 
 namespace Fulfillment.Application.Services;
 
@@ -12,5 +11,6 @@ public interface IOrderService
     Task ShipOrder(Guid orderId);
     Task DeliverOrder(Guid orderId);
     Task CancelOrder(Guid orderId);
+    Task<Tuple<PagedList<OrderResponseDto>, object>> FindReadyToShipAsync(OrderAdminParameter parameters);
 }
 

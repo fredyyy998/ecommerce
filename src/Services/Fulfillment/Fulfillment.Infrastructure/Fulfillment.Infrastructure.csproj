@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Fulfillment.Application\Fulfillment.Application.csproj" />
       <ProjectReference Include="..\Fulfillment.Core\Fulfillment.Core.csproj" />
     </ItemGroup>
 

@@ -1,4 +1,6 @@
-﻿using Fulfillment.Application.Services;
+﻿using Ecommerce.Common.Core;
+using Fulfillment.Application.Dtos;
+using Fulfillment.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +42,20 @@ public class OrderManagementController : BaseController
         {
             await _orderService.ShipOrder(orderId);
             return NoContent();
+        }
+        catch (Exception e)
+        {
+            return HandleException(e);
+        }
+    }
+    
+    [HttpGet()]
+    public async Task<IActionResult> FindAll([FromQuery] OrderAdminParameter parameters)
+    {
+        try
+        {
+            var result = await _orderService.FindReadyToShipAsync(parameters);
+            return Ok(result.Item1);
         }
         catch (Exception e)
         {

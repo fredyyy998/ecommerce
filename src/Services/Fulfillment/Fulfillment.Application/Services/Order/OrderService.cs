@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Ecommerce.Common.Core;
 using Fulfillment.Application.Dtos;
 using Fulfillment.Application.Exceptions;
 using Fulfillment.Core.Buyer;
@@ -67,5 +68,23 @@ public class OrderService : IOrderService
         }
 
         return orderResult;
+    }
+
+    public async Task<Tuple<PagedList<OrderResponseDto>, object>> FindReadyToShipAsync(OrderAdminParameter parameters)
+    {
+         var orders = await _orderRepository.FindReadyToShipAsync(parameters, parameters.Status);
+         var metadata = new
+         {
+             orders.TotalCount,
+             orders.PageSize,
+             orders.CurrentPage,
+             orders.TotalPages,
+             orders.HasNext,
+             orders.HasPrevious
+         };
+        
+         return new Tuple<PagedList<OrderResponseDto>, object>(_mapper.Map<PagedList<Order>, PagedList<OrderResponseDto>>(orders), metadata);
+
+         
     }
 }
