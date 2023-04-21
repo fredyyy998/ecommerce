@@ -3,4 +3,4 @@
 public record RevenueReportResponseDto(
     DateTime StartDate,
     DateTime EndDate,
-    decimal TotalRevenue);
+    decimal Revenue);
