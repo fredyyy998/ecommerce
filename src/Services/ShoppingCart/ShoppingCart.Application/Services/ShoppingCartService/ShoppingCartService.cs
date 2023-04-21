@@ -71,7 +71,7 @@ public class ShoppingCartService : IShoppingCartService
         var checkout = new ShoppingCartCheckout(checkoutRequestDto.CustomerId, checkoutRequestDto.FirstName, checkoutRequestDto.LastName, checkoutRequestDto.Email, address, billingAddress);
         
         shoppingCart.Checkout(checkout);
-        _shoppingBasketRepository.Update(shoppingCart);
+        await _shoppingBasketRepository.Update(shoppingCart);
     }
     
     private async Task<Product> GetProductFromRepository(Guid productId)

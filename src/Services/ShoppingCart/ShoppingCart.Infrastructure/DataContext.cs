@@ -67,10 +67,11 @@ public class DataContext : DbContext
             });
         });
     }
+    
 
-    public override int SaveChanges()
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        var result = base.SaveChanges();
+        var result = await base.SaveChangesAsync();
 
         var domainEntities = this.ChangeTracker
             .Entries<EntityRoot>()
