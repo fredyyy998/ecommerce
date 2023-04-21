@@ -77,7 +77,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddScoped<IOrderService, OrderService>();
-    builder.Services.AddScoped<IRevenueService, RevenueReport>();
+    builder.Services.AddScoped<IRevenueService, RevenueReportService>();
     
     builder.Services.AddSingleton(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
