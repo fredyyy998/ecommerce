@@ -6,4 +6,5 @@ public interface IOrderRepository
     Task<List<Order>> FindAllByBuyerIdAsync(Guid buyerId);
     Task SaveAsync(Order order);
     Task UpdateAsync(Order order);
+    Task<List<Order>> FindInDateRangeAsync(DateTime startDate, DateTime endDate);
 }
