@@ -49,7 +49,19 @@ public class OrderManagementController : BaseController
         }
     }
     
+    /// <summary>
+    /// Returns all orders in a paginated list
+    /// </summary>
+    /// <param name="parameters">The pagination and filter parameters</param>
+    /// <returns>A paginated list of orders</returns>
+    /// <response code="200">Orders were found successfully</response>
+    /// <response code="401">If the user is not authorized</response>
+    /// <response code="403">If the user is not an admin</response>
+    /// <response code="500">If an internal server error occurs</response>
     [HttpGet()]
+    [ProducesResponseType(typeof(PagedList<OrderResponseDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> FindAll([FromQuery] OrderAdminParameter parameters)
     {
         try
