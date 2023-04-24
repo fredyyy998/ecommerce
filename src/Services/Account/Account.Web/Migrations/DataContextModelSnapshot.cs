@@ -45,6 +45,16 @@ namespace Account.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Administrator");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("916d53a7-bc64-4a96-b0a1-0ee5eed5d131"),
+                            CreatedAt = new DateTime(2023, 4, 24, 13, 28, 58, 914, DateTimeKind.Local).AddTicks(2450),
+                            Email = "ecommerce@admin.de",
+                            Role = "Admin",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Account.Core.User.Customer", b =>
@@ -89,6 +99,14 @@ namespace Account.Web.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("AdministratorId");
+
+                            b1.HasData(
+                                new
+                                {
+                                    AdministratorId = new Guid("916d53a7-bc64-4a96-b0a1-0ee5eed5d131"),
+                                    Hash = new byte[] { 214, 240, 111, 64, 207, 135, 86, 173, 95, 235, 32, 87, 92, 19, 252, 84, 219, 3, 109, 49, 39, 246, 156, 72, 60, 194, 89, 223, 170, 242, 221, 149, 46, 136, 204, 184, 77, 151, 41, 51, 59, 25, 135, 117, 118, 96, 1, 241, 87, 73, 86, 122, 192, 205, 143, 137, 162, 22, 180, 232, 252, 22, 69, 4 },
+                                    Salt = new byte[] { 153, 6, 63, 8, 7, 17, 165, 147, 177, 213, 58, 175, 193, 240, 113, 226, 196, 1, 117, 124, 239, 139, 17, 20, 248, 167, 113, 229, 23, 226, 4, 34, 220, 118, 140, 5, 96, 78, 88, 61, 17, 126, 116, 191, 155, 171, 89, 82, 0, 178, 237, 66, 133, 232, 197, 220, 102, 114, 184, 104, 144, 199, 181, 224, 226, 105, 111, 224, 192, 29, 230, 238, 206, 204, 12, 141, 94, 128, 158, 42, 127, 225, 205, 13, 232, 119, 15, 193, 46, 151, 45, 210, 190, 207, 69, 109, 171, 20, 244, 114, 240, 226, 204, 38, 181, 231, 47, 215, 225, 30, 162, 0, 95, 39, 186, 1, 217, 110, 120, 34, 237, 158, 251, 180, 108, 202, 203, 232 }
+                                });
                         });
 
                     b.Navigation("Password")

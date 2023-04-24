@@ -57,6 +57,17 @@ public class DataContext : DbContext
         });
         
         modelBuilder.Entity<Administrator>(entity => entity.OwnsOne(c => c.Password));
+        
+        // Seed the database
+        
+        var admin = Core.Administrator.Administrator.Create("ecommerce@admin.de", "!abc123?");
+        
+        modelBuilder.Entity<Administrator>(entity => entity.OwnsOne(c => c.Password)
+            .HasData(new { AdministratorId =  admin.Id, Hash = admin.Password.Hash, Salt = admin.Password.Salt }));
+
+        modelBuilder.Entity<Administrator>().HasData(
+            new { Id = admin.Id, Email = admin.Email, Role = "Admin", CreatedAt = admin.CreatedAt, UpdatedAt = admin.UpdatedAt }
+        );
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
