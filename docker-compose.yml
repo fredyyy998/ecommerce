@@ -4,7 +4,7 @@ services:
 
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
@@ -15,6 +15,7 @@ services:
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
+    restart: unless-stopped
     ports:
       - "2181:2181"
     environment:
@@ -24,6 +25,7 @@ services:
   kafka:
     image: wurstmeister/kafka:latest
     container_name: kafka
+    restart: unless-stopped
     depends_on:
       - zookeeper
     ports:
@@ -40,6 +42,7 @@ services:
 
   web_inventory_service:
     image: ghcr.io/fredyyy998/ecommerce/inventory:latest
+    restart: unless-stopped
     depends_on:
       - db
       - kafka
@@ -48,6 +51,7 @@ services:
 
   web_account_service:
     image: ghcr.io/fredyyy998/ecommerce/account:latest
+    restart: unless-stopped
     depends_on:
       - db
       - kafka
@@ -56,6 +60,7 @@ services:
   
   web_shopping_cart_service:
     image: ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
+    restart: unless-stopped
     depends_on:
       - db
       - kafka
@@ -64,6 +69,7 @@ services:
   
   web_fulfillment_service:
     image: ghcr.io/fredyyy998/ecommerce/fulfillment:latest
+    restart: unless-stopped
     depends_on:
       - db
       - kafka
