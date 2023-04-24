@@ -42,6 +42,43 @@ namespace Inventory.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("641f8d19-ed9e-44e1-b635-be6d11723346"),
+                            Description = "13-inch, 8GB RAM, 256GB SSD, 2.3GHz Dual-Core Processor",
+                            Name = "MacBook",
+                            Stock = 10
+                        },
+                        new
+                        {
+                            Id = new Guid("5d5385fd-5406-4a5b-a638-653cf3927349"),
+                            Description = "6.1-inch Super Retina XDR display, 5G capable, 128GB storage",
+                            Name = "iPhone 12 Pro",
+                            Stock = 25
+                        },
+                        new
+                        {
+                            Id = new Guid("4566d5c6-0071-4eb2-bd45-20aa880b32e7"),
+                            Description = "6.8-inch Dynamic AMOLED 2X, 5G capable, 256GB storage",
+                            Name = "Samsung Galaxy S21 Ultra",
+                            Stock = 15
+                        },
+                        new
+                        {
+                            Id = new Guid("230f0201-3b1b-4d49-b2a0-85f855771865"),
+                            Description = "Gaming console with 4K UHD Blu-ray drive, 825GB SSD storage	",
+                            Name = "Sony PlayStation 5",
+                            Stock = 20
+                        },
+                        new
+                        {
+                            Id = new Guid("e0966bcd-a21a-444b-87ea-50faf45dd25a"),
+                            Description = "65-inch OLED display, 4K UHD, webOS 5.0, Alexa and Google Assistant compatible	",
+                            Name = "LG OLED CX Series 65\" 4K Smart TV	",
+                            Stock = 5
+                        });
                 });
 
             modelBuilder.Entity("Inventory.Core.Product.Product", b =>
@@ -70,9 +107,51 @@ namespace Inventory.Web.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductId");
+
+                            b1.HasData(
+                                new
+                                {
+                                    ProductId = new Guid("641f8d19-ed9e-44e1-b635-be6d11723346"),
+                                    CurrencyCode = "EUR",
+                                    GrossPrice = 1299m,
+                                    NetPrice = 1091.60m,
+                                    SalesTax = 19
+                                },
+                                new
+                                {
+                                    ProductId = new Guid("5d5385fd-5406-4a5b-a638-653cf3927349"),
+                                    CurrencyCode = "EUR",
+                                    GrossPrice = 999m,
+                                    NetPrice = 839.50m,
+                                    SalesTax = 19
+                                },
+                                new
+                                {
+                                    ProductId = new Guid("4566d5c6-0071-4eb2-bd45-20aa880b32e7"),
+                                    CurrencyCode = "EUR",
+                                    GrossPrice = 1199m,
+                                    NetPrice = 1007.56m,
+                                    SalesTax = 19
+                                },
+                                new
+                                {
+                                    ProductId = new Guid("230f0201-3b1b-4d49-b2a0-85f855771865"),
+                                    CurrencyCode = "EUR",
+                                    GrossPrice = 499m,
+                                    NetPrice = 419.33m,
+                                    SalesTax = 19
+                                },
+                                new
+                                {
+                                    ProductId = new Guid("e0966bcd-a21a-444b-87ea-50faf45dd25a"),
+                                    CurrencyCode = "EUR",
+                                    GrossPrice = 1999m,
+                                    NetPrice = 1679.83m,
+                                    SalesTax = 19
+                                });
                         });
 
-                    b.OwnsMany("Inventory.Core.Product.ProductInformation", "Information", b1 =>
+                    b.OwnsMany("Inventory.Core.Product.ProductInformation", "Informations", b1 =>
                         {
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uuid");
@@ -99,7 +178,7 @@ namespace Inventory.Web.Migrations
                                 .HasForeignKey("ProductId");
                         });
 
-                    b.Navigation("Information");
+                    b.Navigation("Informations");
 
                     b.Navigation("Price")
                         .IsRequired();
