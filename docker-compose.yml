@@ -42,12 +42,16 @@ services:
 
   web_inventory_service:
     image: ghcr.io/fredyyy998/ecommerce/inventory:latest
+    container_name: service.inventory
+    hostname: service.inventory
     restart: unless-stopped
     depends_on:
       - db
       - kafka
     ports:
       - "8080:80"
+    networks:
+      - services
 
   web_account_service:
     image: ghcr.io/fredyyy998/ecommerce/account:latest
@@ -75,7 +79,28 @@ services:
       - kafka
     ports:
       - "8083:80"
+        
+  api_gateway:
+    container_name: api-gateway
+    hostname: api-gateway
+    build:
+        context: ./src/ApiGateway
+        dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - web_account_service
+      - web_inventory_service
+      - web_shopping_cart_service
+      - web_fulfillment_service
+    networks:
+      - services
+    ports:
+      - "4000:80"
+    
 
 volumes:
   db-data:
     driver: local
+    
+networks:
+  services:
