@@ -54,10 +54,9 @@ public class DataContext : DbContext
         modelBuilder.Entity<Product>().HasData(new { Id = product.Id, Name = product.Name, Description = product.Description, Stock = product.Stock });
     }
 
-    public override int SaveChanges()
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
-        // first save the changes to the repo, then publish so the published data is always persisted correctly
-        var result=  base.SaveChanges();
+        var result=  await base.SaveChangesAsync(cancellationToken);
         
         var domainEntities = this.ChangeTracker
             .Entries<EntityRoot>()
