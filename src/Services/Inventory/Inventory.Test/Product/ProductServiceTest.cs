@@ -35,7 +35,7 @@ public class ProductServiceTest
         productParameters.Search = "test";
         productParameters.PageNumber = 1;
         productParameters.PageSize = 20;
-        _productRepositoryMock.Setup(x => x.FindAllAvailable(productParameters))
+        _productRepositoryMock.Setup(x => x.FindAll(productParameters, productParameters.Search))
             .ReturnsAsync(new PagedList<Product>(new List<Product>
         {
             product
