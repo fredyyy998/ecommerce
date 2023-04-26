@@ -4,16 +4,12 @@ using Account.Application;
 using Account.Application.Dtos;
 using Account.Application.EventHandler;
 using Account.Application.Profile;
-using Account.Core.Administrator;
 using Account.Core.Events;
-using Account.Core.User;
-using Account.Infrastructure;
-using Account.Infrastructure.Repository;
 using Ecommerce.Common.Kafka;
+using Ecommerce.Common.Web;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -54,10 +50,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IValidator<CustomerCreateDto>, CustomerCreateDtoValidator>();
     builder.Services.AddAutoMapper(typeof(MappingProfile));
-    builder.Services.AddDbContext<DataContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-            b => b.MigrationsAssembly("Account.Web")));
-    
+
 
     var jwtInformation = new JwtInformation(configuration["JWT:Secret"], configuration["JWT:ValidIssuer"], configuration["JWT:ValidAudience"]);
     builder.Services.AddSingleton<JwtInformation>(jwtInformation);
@@ -73,9 +66,6 @@ var builder = WebApplication.CreateBuilder(args);
             ValidateAudience = false
         };
     });
-    
-    builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-    builder.Services.AddScoped<IAdministratorRepository, AdministratorRepository>();
 
     builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
     builder.Services.AddScoped<IProfileService, ProfileService>();
@@ -84,8 +74,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<INotificationHandler<CustomerRegisteredEvent>, CustomerRegisteredEventHandler>();
     builder.Services.AddScoped<INotificationHandler<CustomerEditedEvent>, CustomerEditedEventHandler>();
     
-    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-    
+    builder.Services.InstallServices(configuration, Assembly.GetExecutingAssembly());
+
     
     builder.Services.AddCors(options =>
     {
