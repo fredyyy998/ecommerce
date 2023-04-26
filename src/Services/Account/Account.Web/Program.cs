@@ -1,5 +1,5 @@
 using System.Reflection;
-using Ecommerce.Common.Web;
+using Account.Web.Configuration;
 
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
             });
     });
 
-    builder.Services.InstallServices(builder.Configuration, Assembly.GetExecutingAssembly());
+    builder.Services.InstallServicesTest(builder.Configuration, Assembly.GetExecutingAssembly());
 }
 
 var app = builder.Build();
