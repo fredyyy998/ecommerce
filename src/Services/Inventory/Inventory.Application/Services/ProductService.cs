@@ -36,7 +36,7 @@ public class ProductService : IProductService
 
     public async Task<Tuple<PagedList<ProductResponseDto>, object>> GetProducts(ProductParameters productParameters)
     {
-        var products = await _productRepository.FindAllAvailable(productParameters);
+        var products = await _productRepository.FindAll(productParameters, productParameters.Search);
         return await GetPagedResponse<ProductResponseDto>(products);
     }
 

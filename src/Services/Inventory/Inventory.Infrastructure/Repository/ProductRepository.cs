@@ -37,10 +37,10 @@ public class ProductRepository : IProductRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<PagedList<Product>> FindAll(ProductParameters paginationParameter)
+    public async Task<PagedList<Product>> FindAll(PaginationParameter paginationParameter, string search)
     {
         // query for products with stock
-        var query = await GetAvailableProductsSearchQuery(paginationParameter);
+        var query = await GetAvailableProductsSearchQuery(paginationParameter, search);
         return GetPagedListFromQuery(query, paginationParameter);
     }
 
@@ -64,13 +64,13 @@ public class ProductRepository : IProductRepository
         return query;
     }
     
-    private async Task<IQueryable<Product>> GetAvailableProductsSearchQuery(ProductParameters productParameters)
+    private async Task<IQueryable<Product>> GetAvailableProductsSearchQuery(PaginationParameter productParameters, string search)
     {
         var query = await GetAvailableProductsQuery();
-        if (!string.IsNullOrWhiteSpace(productParameters.Search))
+        if (!string.IsNullOrWhiteSpace(search))
         {
-            var search = productParameters.Search.Trim();
-            query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
+            var searchTrimmed = search.Trim();
+            query = query.Where(p => p.Name.Contains(searchTrimmed) || p.Description.Contains(searchTrimmed));
         }
         return query;
     }
