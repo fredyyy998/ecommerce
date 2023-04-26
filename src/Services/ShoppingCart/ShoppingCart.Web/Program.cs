@@ -1,112 +1,14 @@
-
 using System.Reflection;
-using System.Text;
-using Ecommerce.Common.Kafka;
-using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Quartz;
-using ShoppingCart.Application.EventConsumer;
-using ShoppingCart.Application.EventHandlers;
-using ShoppingCart.Application.Services;
-using ShoppingCart.Application.Utils;
-using ShoppingCart.Core.Events;
-using ShoppingCart.Core.Product;
-using ShoppingCart.Core.ShoppingCart;
-using ShoppingCart.Infrastructure;
-using ShoppingCart.Infrastructure.Kafka;
-using ShoppingCart.Infrastructure.Repositories;
-using Swashbuckle.AspNetCore.Filters;
+using Ecommerce.Common.Web;
 
 var  LocalDevelopmentOrigins = "_localDevelopmentOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 {
     ConfigurationManager configuration = builder.Configuration;
+
+    builder.Services.InstallServices(configuration, Assembly.GetExecutingAssembly());
     
-    // Add services to the container.
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddHttpContextAccessor();
-    builder.Services.AddSwaggerGen(options =>
-    {
-        options.SwaggerDoc("v1", new OpenApiInfo
-        {
-            Title = "ShoppingCart Service API", Version = "v1",
-            Description = "The ShoppingCart service is a microservice of the Ecommerce application [Github](https://github.com/fredyyy998/ecommerce). It is responsible for managing the shopping carts of the customers.",
-            
-        });
-        
-        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
-        {
-            Description = "Standard authorization header using the Bearer scheme (\"bearer {token}\"",
-            In = ParameterLocation.Header,
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
-        });
-
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
-        
-        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFile));
-    });
-
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:Secret").Value)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
-    
-    builder.Services.AddDbContext<DataContext>(options =>
-        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
-            b => b.MigrationsAssembly("ShoppingCart.Web")));
-
-
-    builder.Services.AddScoped<IProductRepository, ProductRepository>();
-    builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
-    
-    builder.Services.AddAutoMapper(typeof(MappingProfile));    
-    builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
-
-    builder.Services.AddQuartz(q =>
-    {
-        q.UseMicrosoftDependencyInjectionScopedJobFactory();
-        var jobKey = new JobKey("TimeOutShoppingCartsJob");
-        q.AddJob<TimeOutShoppingCartsJob>(opts => opts.WithIdentity(jobKey));
-        q.AddTrigger(opts => opts
-            .ForJob(jobKey)
-            .WithIdentity("TimeOutShoppingCartsJobTrigger")
-            .WithCronSchedule("0 */30 * ? * *"));
-    });
-    builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
-
-    builder.Services.AddSingleton<KafkaProducer>(new KafkaProducer(configuration["Kafka:BootstrapServers"], configuration["Kafka:ClientId"]));
-    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-    builder.Services
-        .AddScoped<INotificationHandler<CustomerAddedProductToBasketEvent>, CustomerAddedProductToBasketEventHandler>();
-    builder.Services
-        .AddScoped<INotificationHandler<CustomerChangedProductQuantityInCartEvent>,
-            CustomerChangedProductQuantityInCartEventHandler>();
-    builder.Services
-        .AddScoped<INotificationHandler<CustomerOrderedShoppingCartEvent>, CustomerOrderedShoppingCartEventHandler>();
-    builder.Services.AddScoped<INotificationHandler<ShoppingCartTimedOutEvent>, ShoppingCartTimedOutEventHandler>();
-    builder.Services
-        .AddScoped<INotificationHandler<ReservationCanceledDueToStockUpdateEvent>,
-            ReservationCanceledDueToStockUpdateEventHandler>();
-    
-    builder.Services.AddHostedService<KafkaInventoryListener>();
-    builder.Services.AddTransient<INotificationHandler<ProductAddedByAdminEvent>, ProductAddedByAdminEventConsumer>();
-    builder.Services.AddTransient<INotificationHandler<ProductRemovedByAdminEvent>, ProductRemovedByAdminEventConsumer>();
-    builder.Services.AddTransient<INotificationHandler<ProductStockUpdatedByAdminEvent>, ProductStockUpdateByAdminEventConsumer>();
-    builder.Services.AddTransient<INotificationHandler<ProductUpdatedByAdminEvent>, ProductUpdatedByAdminEventConsumer>();
     
     builder.Services.AddCors(options =>
     {
