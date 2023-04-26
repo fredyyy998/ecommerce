@@ -70,7 +70,7 @@ public class ProductRepository : IProductRepository
         if (!string.IsNullOrWhiteSpace(search))
         {
             var searchTrimmed = search.Trim();
-            query = query.Where(p => p.Name.Contains(searchTrimmed) || p.Description.Contains(searchTrimmed));
+            query = query.Where(p => p.Name.ToLower().Contains(searchTrimmed.ToLower()) || p.Description.ToLower().Contains(searchTrimmed.ToLower()));
         }
         return query;
     }
