@@ -99,6 +99,16 @@ var builder = WebApplication.CreateBuilder(args);
     });
 }
 
+
+// seed work
+using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetService<DataContext>();
+    await DataSeeder.SeedProducts(dataContext);
+}
+
+
+
 var app = builder.Build();
 {
     // allow cors
