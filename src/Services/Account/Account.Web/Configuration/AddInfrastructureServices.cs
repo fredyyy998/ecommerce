@@ -6,7 +6,7 @@ using Account.Infrastructure.Repository;
 using Ecommerce.Common.Web;
 using Microsoft.EntityFrameworkCore;
 
-namespace Account.Web.Configuraiton;
+namespace Account.Web.Configuration;
 
 public class AddInfrastructureServices : IServiceInstaller
 {
