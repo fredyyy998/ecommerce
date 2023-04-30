@@ -23,17 +23,24 @@ var builder = WebApplication.CreateBuilder(args);
 }
 
 
-// seed work
-using (var scope = builder.Services.BuildServiceProvider().CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetService<DataContext>();
-    await DataSeeder.SeedProducts(dataContext);
-}
+
 
 
 
 var app = builder.Build();
 {
+    
+    // seed work
+    using (var scope = app.Services.CreateScope())
+    {
+        var dataContext = scope.ServiceProvider.GetService<DataContext>();
+        var created = await dataContext.Database.EnsureCreatedAsync();
+        if (created)
+        {
+            await DataSeeder.SeedProducts(dataContext);
+        }
+    }
+    
     // allow cors
     app.UseCors(LocalDevelopmentOrigins);
     
