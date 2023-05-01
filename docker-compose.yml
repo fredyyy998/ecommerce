@@ -76,13 +76,6 @@ services:
     ports:
       - "8083:80"
         
-        
-  web_app:
-    image: ghcr.io/fredyyy998/ecommerce-frontend/ecommerce-app:latest
-    restart: unless-stopped
-    ports:
-      - "4200:80"
-
 volumes:
   db-data:
     driver: local
