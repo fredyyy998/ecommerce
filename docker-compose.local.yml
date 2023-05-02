@@ -1,0 +1,90 @@
+﻿version: '3.1'
+
+services:
+
+  db:
+    container_name: db
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:latest
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "19092:19092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:19092
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "account:1:1,inventory:1:1,shopping-cart:1:1,fulfillment:1:1"
+
+
+  web_inventory_service:
+    container_name: web_inventory_service
+    build:
+      context: ./src/Services/Inventory
+      dockerfile: Dockerfile.local
+    restart: unless-stopped
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8080:80"
+
+
+  web_account_service:
+    container_name: web_account_service
+    image: ghcr.io/fredyyy998/ecommerce/account:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8081:80"
+  
+  web_shopping_cart_service:
+    container_name: web_shopping_cart_service
+    image: ghcr.io/fredyyy998/ecommerce/shoppingcart:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8082:80"
+  
+  web_fulfillment_service:
+    container_name: web_fulfillment_service
+    image: ghcr.io/fredyyy998/ecommerce/fulfillment:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - kafka
+    ports:
+      - "8083:80"
+
+volumes:
+  db-data:
+    driver: local
