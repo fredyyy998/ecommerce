@@ -1,5 +1,5 @@
 # E-Commerce
-E-Commerce Project based on microservice architecture build with .net
+E-Commerce Project based on microservice architecture build with .net 6.0.16
 
 
 ## Getting Started
