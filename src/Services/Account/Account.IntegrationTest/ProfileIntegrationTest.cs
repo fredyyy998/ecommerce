@@ -217,7 +217,8 @@ public class ProfileIntegrationTest : IClassFixture<CustomWebApplicationFactory<
 
         var response = await client.PostAsync($"/api/Authentication/login?email={email}&password={password}", content);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+        var tokenResponse = await response.Content.ReadFromJsonAsync<JwtResponseDto>();
+        return tokenResponse.token;
     }
 
 }

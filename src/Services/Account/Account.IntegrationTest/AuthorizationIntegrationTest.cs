@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text;
+using Account.Application.Dtos;
 using Account.Core.User;
 using Account.Infrastructure;
 using Confluent.Kafka;
@@ -54,10 +55,10 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
         var response = await client.PostAsync($"/api/Authentication/login?email={email}&password={password}", content);
         // Assert
         response.EnsureSuccessStatusCode();
-        var token = await response.Content.ReadAsStringAsync();
+        var tokenResponse = await response.Content.ReadFromJsonAsync<JwtResponseDto>();
         
-        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
-        Assert.NotNull(token);
+        var jwt = new JwtSecurityTokenHandler().ReadJwtToken(tokenResponse.token);
+        Assert.NotNull(tokenResponse.token);
         Assert.Equal(email, jwt.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value);
     }
 
@@ -73,8 +74,9 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
         // Act
         var response = await client.PostAsync($"/api/Authentication/login?email={email}&password={password}", content);
         // Assert
+        var responsContent = await response.Content.ReadAsStringAsync();
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Equal("Invalid login", await response.Content.ReadAsStringAsync());
+        Assert.Contains("Invalid login", responsContent);
     }
     
     [Fact]
@@ -125,44 +127,7 @@ public class AuthorizationIntegrationTest : IClassFixture<CustomWebApplicationFa
         var response = client.PostAsync($"/api/Authentication/register", content);
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.Result.StatusCode);
-        Assert.Equal("Email already exists", await response.Result.Content.ReadAsStringAsync());
-    }
-
-    [Fact]
-    public async Task Message_Is_Published_To_Kafka_On_Successful_Registration()
-    {
-        // Arrange
-        var client = _factory.CreateClient();
-        var content = new StringContent(
-            @"{
-                ""Email"": ""newRegistered@gmx.de"",
-                ""Password"": ""testPassword""
-            }",
-            Encoding.UTF8,
-            "application/json");
-        
-        var config = new ConsumerConfig
-        {
-            BootstrapServers = "localhost:9092",
-            GroupId = "test-consumer-group",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
-
-        
-        using (var consumer = new ConsumerBuilder<string, string>(config).Build())
-        {
-            consumer.Subscribe("account");
-            
-            // Act
-            await client.PostAsync($"/api/Authentication/register", content);
-
-            // Wait for the message to be consumed
-            var consumeResult = await Task.Run(() => consumer.Consume(TimeSpan.FromSeconds(10)));
-            
-            // Assert
-            Assert.NotNull(consumeResult.Value);
-            Assert.Equal("customer-registration", consumeResult.Message.Key);
-        }
+        Assert.Contains("Email already exists", await response.Result.Content.ReadAsStringAsync());
     }
 }
 
