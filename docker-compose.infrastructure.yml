@@ -3,6 +3,7 @@
 services:
 
   db:
+    container_name: db
     image: postgres
     restart: unless-stopped
     environment:
@@ -14,6 +15,7 @@ services:
 
 
   zookeeper:
+    container_name: zookeeper
     image: wurstmeister/zookeeper:latest
     restart: unless-stopped
     ports:
