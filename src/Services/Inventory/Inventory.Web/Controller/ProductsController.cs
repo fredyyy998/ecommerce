@@ -1,9 +1,9 @@
-using System.Text.Json;
 using Ecommerce.Common.Core;
 using Inventory.Application.Dtos;
 using Inventory.Application.Services;
 using Inventory.Infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Inventory.Web;
@@ -34,7 +34,7 @@ public class ProductsController : BaseController
         {
             var products = await _productService.GetProducts(productParameters);
             
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(products.Item2));
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.Item2));
             return Ok(products.Item1);
         }
         catch (Exception e)
