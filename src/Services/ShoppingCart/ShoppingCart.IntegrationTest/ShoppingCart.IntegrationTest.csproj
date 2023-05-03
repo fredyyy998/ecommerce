@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
         <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.5.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.0" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,7 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ShoppingCart.Application\ShoppingCart.Application.csproj" />
       <ProjectReference Include="..\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj" />
+      <ProjectReference Include="..\ShoppingCart.Web\ShoppingCart.Web.csproj" />
     </ItemGroup>
 
 </Project>
