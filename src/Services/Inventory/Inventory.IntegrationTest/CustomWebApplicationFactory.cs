@@ -1,9 +1,12 @@
-﻿using Inventory.Infrastructure;
+﻿using Ecommerce.Common.Kafka;
+using Inventory.Infrastructure;
+using Inventory.Infrastructure.Kafka;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Inventory.IntegrationTest;
 
@@ -31,6 +34,19 @@ public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStar
             services.AddDbContext<DataContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Inventory.Web")));
+            
+    
+            // remove hosted services since tests do not work properly with them, currently this is a good workaround
+            var shoppingCartConsumer = services.SingleOrDefault(
+                d => d.ImplementationType ==
+                     typeof(ShoppingCartConsumer));
+            services.Remove(shoppingCartConsumer);
+
+            var fulfillmentConsumer = services.SingleOrDefault(
+                d => d.ImplementationType ==
+                     typeof(FulfillmentConsumer));
+            services.Remove(fulfillmentConsumer);
+            
         });
 
         builder.UseEnvironment("Development");
