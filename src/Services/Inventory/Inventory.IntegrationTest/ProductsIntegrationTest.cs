@@ -205,6 +205,48 @@ public class ProductsIntegrationTest : IClassFixture<CustomWebApplicationFactory
             Assert.Null(persistedProduct);
         }
     }
+
+    [Fact()]
+    public async Task Add_Stock_Is_Persisted()
+    {
+        // arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // act
+        var response = await client.PostAsJsonAsync($"/api/ProductManagement/{product1.Id}/Stock/add", new QuantityDto(10));
+        // assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<DataContext>();
+
+            var persistedProduct = db.Products.FirstOrDefault(c => c.Id == product1.Id);
+            Assert.Equal(product1.Stock + 10, persistedProduct.Stock);
+        }
+    }
+    
+    [Fact()]
+    public async Task Remove_Stock_Is_Persisted()
+    {
+        // arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // act
+        var response = await client.PostAsJsonAsync($"/api/ProductManagement/{product1.Id}/Stock/remove", new QuantityDto(5));
+        // assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<DataContext>();
+
+            var persistedProduct = db.Products.FirstOrDefault(c => c.Id == product1.Id);
+            Assert.Equal(product1.Stock - 5, persistedProduct.Stock);
+        }
+    }
     
 
     private string GenerateJwt()
