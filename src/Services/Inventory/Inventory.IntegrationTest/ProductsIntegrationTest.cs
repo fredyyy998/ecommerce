@@ -16,7 +16,12 @@ public class ProductsIntegrationTest : IClassFixture<CustomWebApplicationFactory
     {
         _factory = factory;
         
-        using (var scope = _factory.Services.CreateScope())
+        SeedDatabase(factory);
+    }
+
+    async private static void SeedDatabase(CustomWebApplicationFactory<Program> factory)
+    {
+        using (var scope = factory.Services.CreateScope())
         {
             var scopedServices = scope.ServiceProvider;
             var db = scopedServices.GetRequiredService<DataContext>();
@@ -30,11 +35,11 @@ public class ProductsIntegrationTest : IClassFixture<CustomWebApplicationFactory
             db.Products.Add(product1);
             db.Products.Add(product2);
             db.Products.Add(product3);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
     
-    public void Dispose()
+    public async void Dispose()
     {
         using (var scope = _factory.Services.CreateScope())
         {
@@ -42,18 +47,18 @@ public class ProductsIntegrationTest : IClassFixture<CustomWebApplicationFactory
             var db = scopedServices.GetRequiredService<DataContext>();
 
             db.Products.RemoveRange(db.Products);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
         }
     }
     
     
-    [Fact(Skip = "The test fails, but it should not. The test is not even reaching the controller code.")]
+    [Fact()]
     public async Task Products_In_Sock_Are_Returned_As_List()
     {
         // Arrange
         var client = _factory.CreateClient();
         // Act
-        var response = await client.GetAsync($"/api/Products?PageNumber=1&PageSize=20");
+        var response = await client.GetAsync($"/api/Products");
         // Assert
         var products = await response.Content.ReadFromJsonAsync<List<ProductResponseDto>>();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
