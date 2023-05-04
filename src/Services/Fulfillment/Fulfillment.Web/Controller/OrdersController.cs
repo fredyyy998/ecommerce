@@ -110,7 +110,7 @@ public class OrdersController : BaseController
         try
         {
             await _orderService.PayOrder(id);
-            return Ok();
+            return NoContent();
         }
         catch (Exception e)
         {
