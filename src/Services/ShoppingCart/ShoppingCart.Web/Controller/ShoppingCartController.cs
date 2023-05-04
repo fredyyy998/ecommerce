@@ -162,7 +162,7 @@ public class ShoppingCartController : Controller
         {
             EntityNotFoundException => NotFound(exception.Message),
             UnauthorizedException => Unauthorized(exception.Message),
-            ShoppingCartDomainException => Forbid(exception.Message),
+            ShoppingCartDomainException => Conflict(exception.Message),
             _ => StatusCode(500)
         };
     }
