@@ -86,7 +86,66 @@ public class ShoppingCartIntegrationTest : IClassFixture<CustomWebApplicationFac
             Assert.Equal(persistedShoppingCart.Items.First().Quantity, 2);
         }
     }
+
+    [Fact]
+    public async Task Customer_Without_Shopping_Basket_Gets_No_Content()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // Act
+        var response = await client.GetAsync($"/api/ShoppingCart");
+        // Assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
     
+    [Fact]
+    public async Task Customer_With_Shopping_Basket_Gets_Ok()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        await client.PutAsJsonAsync($"/api/ShoppingCart/items/{product1Guid}", new QuantityRequestDto(2));
+        // Act
+        var response = await client.GetAsync($"/api/ShoppingCart");
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var result = response.Content.ReadFromJsonAsync<ShoppingCartResponseDto>().Result;
+        Assert.NotNull(result);
+        Assert.Equal(result.Items.Count(), 1);
+        Assert.Equal(result.Items.First().ProductId, product1Guid);
+    }
+
+    [Fact]
+    public async Task Customer_Adds_Not_Existing_Product_Returns_Error()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // act
+        var guid = Guid.Parse("9c9682d9-275d-44cd-bd25-c6332b405eee");
+        var response = await client.PutAsJsonAsync($"/api/ShoppingCart/items/{guid}", new QuantityRequestDto(1));
+        // assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Customer_Adds_More_Products_Than_In_Stock_Returns_Error()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // act
+        var response = await client.PutAsJsonAsync($"/api/ShoppingCart/items/{product1Guid}", new QuantityRequestDto(21));
+        // assert
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
     private string GenerateJwt()
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey));
