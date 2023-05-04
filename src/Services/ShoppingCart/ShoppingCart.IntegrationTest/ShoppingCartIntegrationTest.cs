@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Newtonsoft.Json;
 using ShoppingCart.Application.Dtos;
 using ShoppingCart.Core.Product;
 using ShoppingCart.Infrastructure;
@@ -144,6 +145,84 @@ public class ShoppingCartIntegrationTest : IClassFixture<CustomWebApplicationFac
         // assert
         var content = await response.Content.ReadAsStringAsync();
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Customer_Removes_Item_From_Cart_Is_Persisted()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // TODO in general it would be better to do this directly at the db, but unfortunately it will throw an error
+        await client.PutAsJsonAsync($"/api/ShoppingCart/items/{product1Guid}", new QuantityRequestDto(2));
+        // act
+        var response = await client.DeleteAsync($"/api/ShoppingCart/items/{product1Guid}");
+        // assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<DataContext>();
+            
+            var persistedShoppingCart = db.ShoppingCarts.FirstOrDefault(c => c.CustomerId == customerGuid);
+            Assert.NotNull(persistedShoppingCart);
+            Assert.Equal(persistedShoppingCart.Items.Count, 0);
+        }
+    }
+    
+    [Fact]
+    public async Task Customer_Removes_Item_From_Cart_That_Does_Not_Exist_Returns_Error()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        // act
+        var guid = Guid.Parse("9c9682d9-275d-44cd-bd25-c6332b405eee");
+        var response = await client.DeleteAsync($"/api/ShoppingCart/items/{guid}");
+        // assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact(Skip = "There is an test triggers a db error, that does not occur in the normal startup")]
+    public async Task Customer_Creates_Checkout_Is_Persisted()
+    {
+        // arrange
+        var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
+        await client.PutAsJsonAsync($"/api/ShoppingCart/items/{product1Guid}", new QuantityRequestDto(2));
+        // act
+        var requestBody = new CheckoutRequestDto
+        {
+            Email = "customer@email.com",
+            FirstName = "Max",
+            LastName = "Mustermann",
+            CustomerId = Guid.Parse("9c9682d9-275d-44cd-bd25-c6332b405acc"),
+            ShippingAddress = new AddressDto("Musterstraße 1", "12345", "Musterstadt", "Deutschland"),
+        };
+        var serializedRequest = JsonConvert.SerializeObject(requestBody);
+        var requestContent = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
+        var response = await client.PatchAsync("/api/ShoppingCart/state/checkout", requestContent);
+        // assert
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var scopedServices = scope.ServiceProvider;
+            var db = scopedServices.GetRequiredService<DataContext>();
+            
+            var persistedShoppingCart = db.ShoppingCarts.FirstOrDefault(c => c.CustomerId == customerGuid);
+            Assert.NotNull(persistedShoppingCart);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.Email, requestBody.Email);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.FirstName, requestBody.FirstName);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.LastName, requestBody.LastName);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.CustomerId, requestBody.CustomerId);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.ShippingAddress.Street, requestBody.ShippingAddress.Street);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.ShippingAddress.ZipCode, requestBody.ShippingAddress.ZipCode);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.ShippingAddress.City, requestBody.ShippingAddress.City);
+            Assert.Equal(persistedShoppingCart.ShoppingCartCheckout.ShippingAddress.Country, requestBody.ShippingAddress.Country);
+        }
     }
 
     private string GenerateJwt()
