@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShoppingCart.Infrastructure;
+using ShoppingCart.Infrastructure.Kafka;
 
 namespace Account.IntegrationTest;
 
@@ -31,9 +32,15 @@ public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStar
             services.AddDbContext<DataContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("ShoppingCart.Web")));
+            
+            // remove hosted services since tests do not work properly with them, currently this is a good workaround
+            var kafkaInventoryConsumer = services.SingleOrDefault(
+                d => d.ImplementationType ==
+                     typeof(KafkaInventoryListener));
+            services.Remove(kafkaInventoryConsumer);
+
         });
 
         builder.UseEnvironment("Development");
-
     }
 }
