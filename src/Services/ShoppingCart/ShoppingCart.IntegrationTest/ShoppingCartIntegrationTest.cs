@@ -72,9 +72,8 @@ public class ShoppingCartIntegrationTest : IClassFixture<CustomWebApplicationFac
         client.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateJwt());
         // Act
-        var response = await client.PutAsJsonAsync($"/api/ShoppingCart/items{product1Guid}", new QuantityRequestDto(2));
+        var response = await client.PutAsJsonAsync($"/api/ShoppingCart/items/{product1Guid}", new QuantityRequestDto(2));
         // Assert
-        Assert.True(response.IsSuccessStatusCode);
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         using (var scope = _factory.Services.CreateScope())
         {
