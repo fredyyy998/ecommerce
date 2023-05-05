@@ -2,17 +2,7 @@
 E-Commerce Project based on microservice architecture build with .net 6.0.16
 
 
-## Getting Started
-
-A more detailed description of the project can be found in the [wiki](https://github.com/fredyyy998/ecommerce/wiki).
-
-Run `docker-compose up` in the project root to start the docker container providing a postgres database and the infrastructure for Apache Kafka.
-
-The services share code via the Common project. To provided the Nuget package locally. Do the following steps:
-
-1. Pack the project with `dotnet pack -o {direcotry path}`
-2. Reference the local package directory
-
+## [Getting Started](https://github.com/fredyyy998/ecommerce/wiki)
 
 ## Status
 [![Docker images](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-docker-images.yml/badge.svg)](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-docker-images.yml)
