@@ -15,6 +15,7 @@ The services share code via the Common project. To provided the Nuget package lo
 
 
 ## Status
+[![Docker images](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-docker-images.yml/badge.svg)](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-docker-images.yml)
 
 [![NuGet Package](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-packages.yml/badge.svg)](https://github.com/fredyyy998/ecommerce/actions/workflows/publish-packages.yml)
 
