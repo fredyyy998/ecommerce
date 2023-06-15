@@ -27,6 +27,14 @@ public class OfferController : Controller
         return Ok(offerResult);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetOffer(Guid id)
+    {
+        var offerResult = await _offerRepository.FindById(id);
+        return Ok(offerResult);
+    }
+
+
     [HttpPost("single")]
     public async Task<IActionResult> CreateSingleOffer([FromBody] CreateSingleOfferRequestDto createSingleOfferRequestDto)
     {
