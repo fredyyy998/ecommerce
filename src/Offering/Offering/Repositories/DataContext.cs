@@ -29,8 +29,9 @@ public class DataContext : DbContext
         
         modelBuilder.Entity<SingleOffer>()
             .HasOne(so => so.Product)
-            .WithOne()
-            .HasForeignKey<SingleOffer>("ProductId");
+            .WithMany()
+            .HasForeignKey("ProductId")
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<PackageOffer>()
             .HasMany(po => po.Products)
