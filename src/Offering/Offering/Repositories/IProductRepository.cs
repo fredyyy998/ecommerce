@@ -8,7 +8,7 @@ public interface IProductRepository
     
     Task<List<Product>> FindAll();
     
-    Task Add(Product product);
+    Task<Product> Add(Product product);
     
     Task Update(Product product);
     

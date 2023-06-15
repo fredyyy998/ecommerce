@@ -14,7 +14,7 @@ public interface IOfferRepository
     
     Task<List<Offer>> findByProduct(Guid productId);
     
-    Task Add(Offer offer);
+    Task<Offer> Add(Offer offer);
     
     Task Update(Offer offer);
     
