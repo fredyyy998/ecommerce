@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IOfferRepository, OfferRepository>();
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+    builder.Services.AddSwaggerGen();
 }
 
 var app = builder.Build();
@@ -23,6 +25,9 @@ var app = builder.Build();
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
     app.MapControllers();
+    
+    app.UseSwagger();
+    app.UseSwaggerUI();
     
     app.Run();
 }
