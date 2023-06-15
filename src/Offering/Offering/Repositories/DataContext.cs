@@ -11,6 +11,7 @@ public class DataContext : DbContext
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
+        
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,5 +20,21 @@ public class DataContext : DbContext
             .HasDiscriminator<string>("OfferType")
             .HasValue<SingleOffer>("SingleOffer")
             .HasValue<PackageOffer>("PackageOffer");
+
+        modelBuilder.Entity<Offer>()
+            .OwnsOne(o => o.Price);
+        
+        modelBuilder.Entity<Offer>()
+            .OwnsOne(o => o.Discount);
+        
+        modelBuilder.Entity<SingleOffer>()
+            .HasOne(so => so.Product)
+            .WithOne()
+            .HasForeignKey<SingleOffer>("ProductId");
+
+        modelBuilder.Entity<PackageOffer>()
+            .HasMany(po => po.Products)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("PackageOfferProducts"));
     }
 }

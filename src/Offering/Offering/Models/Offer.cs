@@ -14,6 +14,7 @@ public abstract class Offer
     
     public DateTime EndDate { get; protected set; }
 
+    protected Offer() {}
     protected Offer(Guid id, string name, Price price, DateTime startDate, DateTime endDate)
     {
         Id = id;

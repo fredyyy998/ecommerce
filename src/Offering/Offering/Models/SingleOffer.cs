@@ -4,6 +4,7 @@ public class SingleOffer : Offer
 {
     public Product Product { get; protected set; }
     
+    private SingleOffer() : base() {}
     protected SingleOffer(Guid id, string name, Price price, DateTime startDate, DateTime endDate, Product product) : base( Guid.NewGuid(), name, price, startDate, endDate)
     {
         Product = product;
