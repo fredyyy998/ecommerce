@@ -1,7 +1,11 @@
 package com.example.offersb.models;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Embeddable
+@NoArgsConstructor
 public class Price {
 
     @Getter

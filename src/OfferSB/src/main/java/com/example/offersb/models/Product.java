@@ -1,15 +1,20 @@
 package com.example.offersb.models;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Entity
 @NoArgsConstructor
 public class Product
 {
     @Getter
+    @Id
+    @GeneratedValue
     private UUID id;
 
     @Getter
