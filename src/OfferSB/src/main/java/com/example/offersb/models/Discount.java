@@ -1,18 +1,25 @@
 package com.example.offersb.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Embeddable
+@NoArgsConstructor
 public class Discount {
 
     @Getter
     private double discountRate;
 
     @Getter
+    @Column(name = "discount_start_date")
     public LocalDateTime startDate;
 
     @Getter
+    @Column(name = "discount_end_date")
     public LocalDateTime endDate;
 
     private Discount(double discountRate, LocalDateTime startDate, LocalDateTime endDate) {

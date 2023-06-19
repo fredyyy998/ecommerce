@@ -1,24 +1,31 @@
 package com.example.offersb.models;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@MappedSuperclass
 @NoArgsConstructor
 public abstract class Offer {
 
+    @Id
     @Getter
     protected UUID id;
 
     @Getter
     protected String name;
 
+    @Embedded
     @Getter
     protected Price price;
 
+    @Embedded
     @Getter
     @Nullable
     protected Discount discount;
