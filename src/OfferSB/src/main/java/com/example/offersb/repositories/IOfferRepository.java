@@ -5,6 +5,7 @@ import com.example.offersb.models.PackageOffer;
 import com.example.offersb.models.SingleOffer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,5 +19,8 @@ public interface IOfferRepository extends JpaRepository<Offer, UUID> {
 
     List<Offer> findOExpiredOffers();
 
-    List<Offer> findByProductId(UUID id);
+    // @Query("SELECT so FROM SingleOffer so JOIN so.product p WHERE p.id = :productId " +
+    //         "UNION " +
+    //         "SELECT po FROM PackageOffer po JOIN po.products p WHERE p.id = :productId")
+    // List<Offer> findByProductId(@Param("productId") Long productId);
 }
