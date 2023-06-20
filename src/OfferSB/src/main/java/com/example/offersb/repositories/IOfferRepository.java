@@ -17,8 +17,6 @@ public interface IOfferRepository extends JpaRepository<Offer, UUID> {
 
     List<Offer> findByEndDateLessThan(LocalDate date);
 
-    List<Offer> findOExpiredOffers();
-
     // @Query("SELECT so FROM SingleOffer so JOIN so.product p WHERE p.id = :productId " +
     //         "UNION " +
     //         "SELECT po FROM PackageOffer po JOIN po.products p WHERE p.id = :productId")
