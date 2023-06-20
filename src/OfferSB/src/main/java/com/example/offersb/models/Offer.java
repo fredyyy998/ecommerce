@@ -1,16 +1,15 @@
 package com.example.offersb.models;
 
 import jakarta.annotation.Nullable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
 public abstract class Offer {
 
