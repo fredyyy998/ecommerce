@@ -42,7 +42,7 @@ public class OfferController {
         return offerRepository.save(offer);
     }
 
-    @PostMapping("single")
+    @PostMapping("package")
     public PackageOffer createPackageOffer(@RequestBody CreatePackageOfferRequestDto offerDto) {
         var price = Price.CreateFromGross(offerDto.grossPrice(), offerDto.taxValue(), offerDto.currency());
 
