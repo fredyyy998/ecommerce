@@ -16,11 +16,11 @@ public class Discount {
 
     @Getter
     @Column(name = "discount_start_date")
-    public LocalDateTime startDate;
+    private LocalDateTime startDate;
 
     @Getter
     @Column(name = "discount_end_date")
-    public LocalDateTime endDate;
+    private LocalDateTime endDate;
 
     private Discount(double discountRate, LocalDateTime startDate, LocalDateTime endDate) {
         this.discountRate = discountRate;
