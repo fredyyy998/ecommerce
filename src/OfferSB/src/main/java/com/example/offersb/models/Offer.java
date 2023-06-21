@@ -41,6 +41,7 @@ public abstract class Offer {
         this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.discount = new Discount();
     }
 
     public void applyDiscount(Discount discount) {
