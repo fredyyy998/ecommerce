@@ -1,0 +1,37 @@
+###
+GET localhost:8080/api/offers
+
+### create offer
+
+POST localhost:8080/api/offers/single
+Content-Type: application/json
+
+{
+  "name": "offer name",
+  "grossPrice": 100,
+  "taxValue": 19,
+  "currency": "EUR",
+  "startDate": "2021-01-01T00:00:00Z",
+  "endDate": "2021-01-01T00:00:00Z",
+  "productId": "fd239078-28ff-4158-a79c-ad533ce26dc5"
+}
+
+### create package offer
+
+POST localhost:8080/api/offers/package
+Content-Type: application/json
+
+{
+  "name": "offer name",
+  "grossPrice": 100,
+  "taxValue": 19,
+  "currency": "EUR",
+  "startDate": "2021-01-01T00:00:00Z",
+  "endDate": "2021-01-01T00:00:00Z",
+  "productIds": ["fd239078-28ff-4158-a79c-ad533ce26dc5"]
+}
+
+### delete offer
+
+DELETE localhost:8080/api/offers/d4495823-04a4-4ff9-9cc9-f17adee419f7
+
