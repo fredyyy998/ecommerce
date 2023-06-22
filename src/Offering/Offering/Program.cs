@@ -22,6 +22,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var dataContext = scope.ServiceProvider.GetService<DataContext>();
+        await DataSeeder.SeedData(dataContext);
+    }
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
     app.MapControllers();
