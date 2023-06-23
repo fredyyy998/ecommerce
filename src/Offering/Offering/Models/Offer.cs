@@ -13,9 +13,11 @@ public abstract class Offer
     public DateTime StartDate { get; protected set; }
     
     public DateTime EndDate { get; protected set; }
+    
+    public Localization Localization { get; protected set; }
 
     protected Offer() {}
-    protected Offer(Guid id, string name, Price price, DateTime startDate, DateTime endDate)
+    protected Offer(Guid id, string name, Price price, DateTime startDate, DateTime endDate, Localization localization)
     {
         Id = id;
         Name = name;
@@ -23,6 +25,7 @@ public abstract class Offer
         Discount = null;
         StartDate = startDate;
         EndDate = endDate;
+        Localization = localization;
     }
     
     public void ApplyDiscount(Discount discount)
@@ -44,13 +47,13 @@ public abstract class Offer
     private Price CalculatePriceFromDiscount(Discount discount, Price price)
     {
         var discountPrice = discount.DiscountRate / 100 * price.GrossPrice;
-        return Price.CreateFromGross(price.GrossPrice - discountPrice, price.TaxRate, price.CurrencyCode);
+        return Price.CreateFromGross(price.GrossPrice - discountPrice, price.TaxRate);
     }
     
     private Price RemoveDiscountFromPrice(Discount discount, Price price)
     {
         var discountPrice = discount.DiscountRate / (100 - discount.DiscountRate) * price.GrossPrice;
-        return Price.CreateFromGross(price.GrossPrice + discountPrice, price.TaxRate, price.CurrencyCode);
+        return Price.CreateFromGross(price.GrossPrice + discountPrice, price.TaxRate);
     }
 }
 

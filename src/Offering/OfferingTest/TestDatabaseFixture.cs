@@ -23,11 +23,15 @@ public class TestDatabaseFixture
         
         context.RemoveRange(context.Offers);
         context.RemoveRange(context.Products);
+        context.RemoveRange(context.Localizations);
 
-        var price = Price.CreateFromGross(10, 19, "EUR");
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        context.Add(localisation);
+
+        var price = Price.CreateFromGross(10, 19);
         var product1 = Product.Create(Guid.NewGuid(), "Product 1", "Description");
         var product2 = Product.Create(Guid.NewGuid(), "Product 2", "Description");
-        var offer = SingleOffer.Create("Offer 1", price, DateTime.Now, DateTime.Now.AddDays(1), product1);
+        var offer = SingleOffer.Create("Offer 1", price, DateTime.Now, DateTime.Now.AddDays(1), product1, localisation);
         context.AddRange(
             product1,
             product2,

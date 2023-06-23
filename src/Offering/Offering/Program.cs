@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IOfferRepository, OfferRepository>();
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    builder.Services.AddScoped<ILocalizationRepository, LocalizationRepository>();
 
     builder.Services.AddSwaggerGen();
 }

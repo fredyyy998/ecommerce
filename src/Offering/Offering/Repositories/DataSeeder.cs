@@ -20,13 +20,14 @@ public class DataSeeder
 
         if (context.Offers.ToList().Count == 0)
         {
-            var price1 = Price.CreateFromGross(119, 19, "EUR");
+            var localization = context.Localizations.FirstOrDefault(l => l.CountryCode == "DE");
+                var price1 = Price.CreateFromGross(119, 19);
             var products = context.Products.ToList();
-            var price2 = Price.CreateFromGross(99, 19, "EUR");
+            var price2 = Price.CreateFromGross(99, 19);
             var offers = new List<Offer>
             {
-                SingleOffer.Create("Offer 1", price1, DateTime.Now, DateTime.Now, products.First()),
-                PackageOffer.Create("Offer 2", price2, DateTime.Now, DateTime.Now, products)
+                SingleOffer.Create("Offer 1", price1, DateTime.Now, DateTime.Now, products.First(), localization),
+                PackageOffer.Create("Offer 2", price2, DateTime.Now, DateTime.Now, products, localization)
             };
             context.Offers.AddRange(offers);
             await context.SaveChangesAsync();

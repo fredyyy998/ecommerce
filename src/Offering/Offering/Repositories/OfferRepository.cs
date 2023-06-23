@@ -15,7 +15,9 @@ public class OfferRepository : IOfferRepository
 
     public async Task<List<Offer>> FindAll()
     {
-        return await _context.Offers.Include(o => (o as SingleOffer).Product).Include(o => (o as PackageOffer).Products).ToListAsync();
+        return await _context.Offers.Include(o => (o as SingleOffer).Product)
+            .Include(o => (o as PackageOffer).Products)
+            .Include(o => o.Localization).ToListAsync();
     }
 
     public async Task<List<Offer>> FindAllAvailable()
@@ -30,7 +32,8 @@ public class OfferRepository : IOfferRepository
 
     public async Task<Offer> FindById(Guid id)
     {
-        return await _context.Offers.Include(o => (o as SingleOffer).Product).Include(o => (o as PackageOffer).Products).FirstOrDefaultAsync(po => po.Id == id);
+        return await _context.Offers.Include(o => (o as SingleOffer).Product).Include(o => (o as PackageOffer).Products)
+            .Include(o => o.Localization).FirstOrDefaultAsync(po => po.Id == id);
     }
 
     public async Task<List<Offer>> findByProduct(Guid productId)

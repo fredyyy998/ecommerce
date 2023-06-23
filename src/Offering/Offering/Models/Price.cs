@@ -7,18 +7,15 @@ public class Price
     public decimal NetPrice { get; private set; }
     
     public decimal TaxRate { get; private set; }
-    
-    public string CurrencyCode { get; private set; }
 
-    private Price(decimal grossPrice, decimal netPrice, decimal taxRate, string currencyCode)
+    private Price(decimal grossPrice, decimal netPrice, decimal taxRate)
     {
         GrossPrice = grossPrice;
         NetPrice = netPrice;
         TaxRate = taxRate;
-        CurrencyCode = currencyCode;
     }
     
-    public static Price CreateFromGross(decimal grossPrice, decimal taxRate, string currencyCode)
+    public static Price CreateFromGross(decimal grossPrice, decimal taxRate)
     {
         if (grossPrice < 0)
         {
@@ -29,13 +26,8 @@ public class Price
         {
             throw new ArgumentException("Tax rate cannot be negative");
         }
-        
-        if (string.IsNullOrWhiteSpace(currencyCode))
-        {
-            throw new ArgumentException("Currency code cannot be empty");
-        }
-        
+
         var netPrice = grossPrice / (1 + taxRate / 100);
-        return new Price(grossPrice, netPrice, taxRate, currencyCode);
+        return new Price(grossPrice, netPrice, taxRate);
     }
 }

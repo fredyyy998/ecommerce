@@ -7,9 +7,10 @@ public class OfferTest
     [Fact]
     public void Add_Discount_To_Offer()
     {
-        var price = Price.CreateFromGross(119, 19, "EUR");
+        var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product);
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         
         var discount = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
         offer.ApplyDiscount(discount);
@@ -22,9 +23,10 @@ public class OfferTest
     [Fact]
     public void Remove_Discount_From_Offer()
     {
-        var price = Price.CreateFromGross(119, 19, "EUR");
+        var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product);
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         var discount = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
         offer.ApplyDiscount(discount);
         
@@ -38,12 +40,13 @@ public class OfferTest
     [Fact]
     public void Single_Offer_Is_Instantiated_Correctly()
     {
-        var price = Price.CreateFromGross(119, 19, "EUR");
+        var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
         var dateStart = DateTime.Now;
         var dateEnd = DateTime.MaxValue;
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
         
-        var offer = SingleOffer.Create("test offer", price, dateStart, dateEnd, product);
+        var offer = SingleOffer.Create("test offer", price, dateStart, dateEnd, product, localisation);
         
         Assert.Equal("test offer", offer.Name);
         Assert.Equal(price, offer.Price);
@@ -56,13 +59,14 @@ public class OfferTest
     [Fact]
     public void Package_Offer_Is_Instantiated_Correctly()
     {
-        var price = Price.CreateFromGross(119, 19, "EUR");
+        var price = Price.CreateFromGross(119, 19);
         var product1 = Product.Create(Guid.NewGuid(), "test product", "test description");
         var product2 = Product.Create(Guid.NewGuid(), "test product2", "test description");
         var products = new List<Product> {product1, product2};
         var dateStart = DateTime.Now;
         var dateEnd = DateTime.MaxValue;
-        var offer = PackageOffer.Create("test offer", price, dateStart, dateEnd, products);
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var offer = PackageOffer.Create("test offer", price, dateStart, dateEnd, products, localisation);
         
         Assert.Equal("test offer", offer.Name);
         Assert.Equal(price, offer.Price);
@@ -75,9 +79,10 @@ public class OfferTest
     [Fact]
     public void Cannot_Apply_2_Discounts_To_Offer()
     {
-        var price = Price.CreateFromGross(119, 19, "EUR");
+        var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product);
+        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         var discount1 = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
         offer.ApplyDiscount(discount1);
         

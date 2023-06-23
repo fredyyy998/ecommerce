@@ -19,13 +19,14 @@ public class OfferControllerMockTests
             .ReturnsAsync(
                 new List<Offer>
                 {
-                    SingleOffer.Create("Offer 1", Price.CreateFromGross(10, 19, "EUR"), DateTime.Now,
-                        DateTime.Now.AddDays(1), Product.Create(Guid.NewGuid(), "Product 1", "Description"))
+                    SingleOffer.Create("Offer 1", Price.CreateFromGross(10, 19), DateTime.Now,
+                        DateTime.Now.AddDays(1), Product.Create(Guid.NewGuid(), "Product 1", "Description"), new Localization("DE", "Germany", "Deutschland", "EUR"))
                 });
         
         var productRepositoryMock = new Mock<IProductRepository>();
+        var localizationRepositoryMock = new Mock<ILocalizationRepository>();
 
-        var controller = new OfferController(repositoryMock.Object, productRepositoryMock.Object);
+        var controller = new OfferController(repositoryMock.Object, productRepositoryMock.Object, localizationRepositoryMock.Object);
 
         // Act
         var result = await controller.ListOffers();
@@ -47,12 +48,13 @@ public class OfferControllerMockTests
 
         
         var product = Product.Create(Guid.NewGuid(), "Product 2", "Description");
-        var createSingleOfferRequestDto = new CreateSingleOfferRequestDto("Offer 2", 10, 19, "EUR", DateTime.Now, DateTime.Now.AddDays(1), product.Id);
+        var createSingleOfferRequestDto = new CreateSingleOfferRequestDto("Offer 2", 10, 19, DateTime.Now, DateTime.Now.AddDays(1), product.Id);
 
         productRepositoryMock.Setup(r => r.FindById(product.Id)).ReturnsAsync(product);
-        repositoryMock.Setup(r => r.Add(It.IsAny<SingleOffer>())).ReturnsAsync(SingleOffer.Create(createSingleOfferRequestDto.name, Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue, createSingleOfferRequestDto.currency), createSingleOfferRequestDto.startDate, createSingleOfferRequestDto.endDate, product));
+        repositoryMock.Setup(r => r.Add(It.IsAny<SingleOffer>())).ReturnsAsync(SingleOffer.Create(createSingleOfferRequestDto.name, Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue), createSingleOfferRequestDto.startDate, createSingleOfferRequestDto.endDate, product, new Localization("DE", "Germany", "Deutschland", "EUR")));
+        var localizationRepositoryMock = new Mock<ILocalizationRepository>();
 
-        var controller = new OfferController(repositoryMock.Object, productRepositoryMock.Object);
+        var controller = new OfferController(repositoryMock.Object, productRepositoryMock.Object, localizationRepositoryMock.Object);
         
         // Act
         var result = await controller.CreateSingleOffer(createSingleOfferRequestDto);

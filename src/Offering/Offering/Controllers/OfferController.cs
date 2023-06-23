@@ -13,11 +13,14 @@ public class OfferController : Controller
     private readonly IOfferRepository _offerRepository;
 
     private readonly IProductRepository _productRepository;
+    
+    private readonly ILocalizationRepository _localizationRepository;
 
-    public OfferController(IOfferRepository offerRepository, IProductRepository productRepository)
+    public OfferController(IOfferRepository offerRepository, IProductRepository productRepository, ILocalizationRepository localizationRepository)
     {
         _offerRepository = offerRepository;
         _productRepository = productRepository;
+        _localizationRepository = localizationRepository;
     }
 
     [HttpGet]
@@ -38,11 +41,11 @@ public class OfferController : Controller
     [HttpPost("single")]
     public async Task<IActionResult> CreateSingleOffer([FromBody] CreateSingleOfferRequestDto createSingleOfferRequestDto)
     {
-        var price = Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue,
-            createSingleOfferRequestDto.currency);
+        var localization = await _localizationRepository.findByKey("DE");
+        var price = Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue);
         var product = await _productRepository.FindById(createSingleOfferRequestDto.productId);
         var offer = SingleOffer.Create(createSingleOfferRequestDto.name, price, createSingleOfferRequestDto.startDate,
-            createSingleOfferRequestDto.endDate, product);
+            createSingleOfferRequestDto.endDate, product, localization);
 
         var createdOffer = await _offerRepository.Add(offer);
         return Ok(createdOffer);
@@ -51,9 +54,8 @@ public class OfferController : Controller
     [HttpPost("package")]
     public async Task<IActionResult> CreatePackageOffer([FromBody] CreatePackageOfferRequestDto createPackageOfferRequestDto)
     {
-        var price = Price.CreateFromGross(createPackageOfferRequestDto.grossPrice, createPackageOfferRequestDto.taxValue,
-            createPackageOfferRequestDto.currency);
-
+        var localization = await _localizationRepository.findByKey("DE");
+        var price = Price.CreateFromGross(createPackageOfferRequestDto.grossPrice, createPackageOfferRequestDto.taxValue);
         var products = new List<Product>();
         foreach (var productId in createPackageOfferRequestDto.productIds)
         {
@@ -61,7 +63,7 @@ public class OfferController : Controller
             products.Add(product);
         }
         var offer = PackageOffer.Create(createPackageOfferRequestDto.name, price, createPackageOfferRequestDto.startDate,
-            createPackageOfferRequestDto.endDate, products);
+            createPackageOfferRequestDto.endDate, products, localization);
 
         var createdOffer = await _offerRepository.Add(offer);
         return Ok(createdOffer);
