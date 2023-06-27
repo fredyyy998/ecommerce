@@ -1,6 +1,7 @@
 package com.example.offersb;
 
 import com.example.offersb.models.*;
+import com.example.offersb.repositories.ILocalizationRepository;
 import com.example.offersb.repositories.IOfferRepository;
 import com.example.offersb.repositories.IProductRepository;
 import jakarta.annotation.PostConstruct;
@@ -16,9 +17,12 @@ public class OfferSbApplication {
     private final IProductRepository productRepository;
     private final IOfferRepository offerRepository;
 
-    public OfferSbApplication(IProductRepository productRepository, IOfferRepository offerRepository) {
+    private final ILocalizationRepository localizationRepository;
+
+    public OfferSbApplication(IProductRepository productRepository, IOfferRepository offerRepository, ILocalizationRepository localizationRepository) {
         this.productRepository = productRepository;
         this.offerRepository = offerRepository;
+        this.localizationRepository = localizationRepository;
     }
     public static void main(String[] args) {
         SpringApplication.run(OfferSbApplication.class, args);
@@ -32,12 +36,14 @@ public class OfferSbApplication {
         products.add(Product.create(UUID.fromString("a7948abe-571c-4e9d-a7f3-94a88ed10125"), "Product 3", "Product 3 description"));
         productRepository.saveAll(products);
 
-        var offers = new ArrayList<Offer>();
-        var price1 = Price.CreateFromGross(119, 19, "EUR");
-        offers.add(SingleOffer.create(UUID.fromString("ad8b5807-cab4-4006-9425-1596bcf55c4a"), "Offer 1", price1, LocalDateTime.now(), LocalDateTime.now(), products.get(0)));
 
-        var price2 = Price.CreateFromGross(99, 19, "EUR");
-        offers.add(PackageOffer.create(UUID.fromString("d4495823-04a4-4ff9-9cc9-f17adee419f7"), "Offer 2", price2, LocalDateTime.now(), LocalDateTime.now(), products));
+        var localizations = localizationRepository.findById("DE");
+        var offers = new ArrayList<Offer>();
+        var price1 = Price.CreateFromGross(119, 19);
+        offers.add(SingleOffer.create(UUID.fromString("ad8b5807-cab4-4006-9425-1596bcf55c4a"), "Offer 1", price1, LocalDateTime.now(), LocalDateTime.now(), products.get(0), localizations.get()));
+
+        var price2 = Price.CreateFromGross(99, 19);
+        offers.add(PackageOffer.create(UUID.fromString("d4495823-04a4-4ff9-9cc9-f17adee419f7"), "Offer 2", price2, LocalDateTime.now(), LocalDateTime.now(), products, localizations.get()));
         offerRepository.saveAll(offers);
     }
 }

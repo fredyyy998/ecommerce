@@ -16,12 +16,12 @@ public class SingleOffer extends Offer {
     @ManyToOne
     protected Product product;
 
-    protected SingleOffer(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product) {
-        super(id, name, price, startDate, endDate);
+    protected SingleOffer(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product, Localization localization) {
+        super(id, name, price, startDate, endDate, localization);
         this.product = product;
     }
 
-    public static SingleOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product) {
-        return new SingleOffer(id, name, price, startDate, endDate, product);
+    public static SingleOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product, Localization localization) {
+        return new SingleOffer(id, name, price, startDate, endDate, product, localization);
     }
 }
