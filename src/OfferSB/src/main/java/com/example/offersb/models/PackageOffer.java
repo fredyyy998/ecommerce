@@ -3,6 +3,7 @@ package com.example.offersb.models;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -19,12 +20,12 @@ public class PackageOffer extends Offer {
         return (List<Product>) Collections.unmodifiableCollection(products);
     }
 
-    protected PackageOffer(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products) {
-        super(id, name, price, startDate, endDate);
+    protected PackageOffer(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products, Localization localization) {
+        super(id, name, price, startDate, endDate, localization);
         this.products = products;
     }
 
-    public static PackageOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products) {
-        return new PackageOffer(id, name, price, startDate, endDate, products);
+    public static PackageOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products, Localization localization) {
+        return new PackageOffer(id, name, price, startDate, endDate, products, localization);
     }
 }
