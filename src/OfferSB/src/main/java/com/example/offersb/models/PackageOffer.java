@@ -13,11 +13,11 @@ import java.util.UUID;
 @Entity
 public class PackageOffer extends Offer {
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     protected List<Product> products;
 
     public List<Product> getProducts() {
-        return (List<Product>) Collections.unmodifiableCollection(products);
+        return (products);
     }
 
     protected PackageOffer(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products, Localization localization) {

@@ -1,7 +1,9 @@
 package com.example.offersb.controllers;
 
 import com.example.offersb.Dtos.CreatePackageOfferRequestDto;
+import com.example.offersb.Dtos.CreatePackageWithProductsRequestDto;
 import com.example.offersb.Dtos.CreateSingleOfferRequestDto;
+import com.example.offersb.Dtos.CreateSingleOfferWithProductRequestDto;
 import com.example.offersb.models.*;
 import com.example.offersb.repositories.ILocalizationRepository;
 import com.example.offersb.repositories.IOfferRepository;
@@ -47,6 +49,15 @@ public class OfferController {
         return offerRepository.save(offer);
     }
 
+    @PostMapping("single/newProduct")
+    public SingleOffer createSingleOffer(@RequestBody CreateSingleOfferWithProductRequestDto offerDto) {
+        var price = Price.CreateFromGross(offerDto.grossPrice(), offerDto.taxValue());
+        var product = Product.create(UUID.randomUUID(), offerDto.product().name(), offerDto.product().description());
+        var localization = localizationRepository.findById("DE");
+        var offer = SingleOffer.create(UUID.randomUUID(), offerDto.name(), price, offerDto.startDate(), offerDto.endDate(), product, localization.get());
+        return offerRepository.save(offer);
+    }
+
     @PostMapping("package")
     public PackageOffer createPackageOffer(@RequestBody CreatePackageOfferRequestDto offerDto) {
         var price = Price.CreateFromGross(offerDto.grossPrice(), offerDto.taxValue());
@@ -54,6 +65,21 @@ public class OfferController {
         var products = new ArrayList<Product>();
         for (var productId : offerDto.productIds()) {
             var product = productRepository.findById(productId).orElse(null);
+            products.add(product);
+        }
+        var localization = localizationRepository.findById("DE");
+        var offer = PackageOffer.create(UUID.randomUUID(), offerDto.name(), price, offerDto.startDate(), offerDto.endDate(), products, localization.get());
+        var result = offerRepository.save(offer);
+        return result;
+    }
+
+    @PostMapping("package/newProducts")
+    public PackageOffer createPackageOffer(@RequestBody CreatePackageWithProductsRequestDto offerDto) {
+        var price = Price.CreateFromGross(offerDto.grossPrice(), offerDto.taxValue());
+
+        var products = new ArrayList<Product>();
+        for (var productRequest : offerDto.products()) {
+            var product = Product.create(UUID.randomUUID(), productRequest.name(), productRequest.description());
             products.add(product);
         }
         var localization = localizationRepository.findById("DE");
