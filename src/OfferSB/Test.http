@@ -7,13 +7,32 @@ POST localhost:8080/api/offers/single
 Content-Type: application/json
 
 {
-  "name": "offer name",
+  "name": "offer tester",
   "grossPrice": 100,
   "taxValue": 19,
   "currency": "EUR",
   "startDate": "2021-01-01T00:00:00Z",
   "endDate": "2021-01-01T00:00:00Z",
-  "productId": "fd239078-28ff-4158-a79c-ad533ce26dc5"
+  "productId": "5933f215-d9dc-43af-925d-8ce18b5ee7b6"
+}
+
+
+###
+
+POST localhost:8080/api/offers/single/newProduct
+Content-Type: application/json
+
+{
+"name": "offer name",
+"grossPrice": 100,
+"taxValue": 19,
+"currency": "EUR",
+"startDate": "2021-01-01T00:00:00Z",
+"endDate": "2021-01-01T00:00:00Z",
+"product": {
+  "name": "products name",
+  "description": "products description"
+}
 }
 
 ### create package offer
@@ -29,6 +48,26 @@ Content-Type: application/json
   "startDate": "2021-01-01T00:00:00Z",
   "endDate": "2021-01-01T00:00:00Z",
   "productIds": ["fd239078-28ff-4158-a79c-ad533ce26dc5"]
+}
+
+###
+
+POST localhost:8080/api/offers/package/newProducts
+Content-Type: application/json
+
+{
+  "name": "offer name",
+  "grossPrice": 100,
+  "taxValue": 19,
+  "currency": "EUR",
+  "startDate": "2021-01-01T00:00:00Z",
+  "endDate": "2021-01-01T00:00:00Z",
+  "products": [
+    {
+      "name": "products name",
+      "description": "products description"
+    }
+  ]
 }
 
 ### delete offer
