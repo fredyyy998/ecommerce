@@ -50,7 +50,21 @@ public class OfferController : Controller
         var createdOffer = await _offerRepository.Add(offer);
         return Ok(createdOffer);
     }
-    
+
+    [HttpPost("single/newProduct")]
+    public async Task<IActionResult> CreateSingleOfferWithProduct([FromBody] CreateSingleOfferWithProductRequestDto createSingleOfferRequestDto)
+    {
+        var localization = await _localizationRepository.findByKey("DE");
+        var price = Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue);
+        var product = Product.Create(Guid.NewGuid(), createSingleOfferRequestDto.product.name,
+            createSingleOfferRequestDto.product.description);
+        var offer = SingleOffer.Create(createSingleOfferRequestDto.name, price, createSingleOfferRequestDto.startDate,
+            createSingleOfferRequestDto.endDate, product, localization);
+
+        var createdOffer = await _offerRepository.Add(offer);
+        return Ok(createdOffer);
+    }
+
     [HttpPost("package")]
     public async Task<IActionResult> CreatePackageOffer([FromBody] CreatePackageOfferRequestDto createPackageOfferRequestDto)
     {
@@ -60,6 +74,25 @@ public class OfferController : Controller
         foreach (var productId in createPackageOfferRequestDto.productIds)
         {
             var product = await _productRepository.FindById(productId);
+            products.Add(product);
+        }
+        var offer = PackageOffer.Create(createPackageOfferRequestDto.name, price, createPackageOfferRequestDto.startDate,
+            createPackageOfferRequestDto.endDate, products, localization);
+
+        var createdOffer = await _offerRepository.Add(offer);
+        return Ok(createdOffer);
+    }
+    
+    [HttpPost("package/newProduct")]
+    public async Task<IActionResult> CreatePackageOffer([FromBody] CreatePackageOfferWithProductRequestDto createPackageOfferRequestDto)
+    {
+        var localization = await _localizationRepository.findByKey("DE");
+        var price = Price.CreateFromGross(createPackageOfferRequestDto.grossPrice, createPackageOfferRequestDto.taxValue);
+        var products = new List<Product>();
+        foreach (var productId in createPackageOfferRequestDto.products)
+        {
+            var product = Product.Create(Guid.NewGuid(), productId.name,
+                productId.description);
             products.Add(product);
         }
         var offer = PackageOffer.Create(createPackageOfferRequestDto.name, price, createPackageOfferRequestDto.startDate,
