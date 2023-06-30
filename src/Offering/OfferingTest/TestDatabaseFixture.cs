@@ -11,8 +11,6 @@ public class TestDatabaseFixture
     public TestDatabaseFixture()
     {
         using var context = CreateContext();
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
 
         Cleanup();
     }
@@ -24,21 +22,22 @@ public class TestDatabaseFixture
         context.RemoveRange(context.Offers);
         context.RemoveRange(context.Products);
         context.RemoveRange(context.Localizations);
+        context.SaveChanges();
+        
+    }
 
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
-        context.Add(localisation);
+    public void CreateMockDbData()
+    {
+        var context = CreateContext();
+        
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
+        context.Localizations.Add(localisation);
 
         var price = Price.CreateFromGross(10, 19);
         var product1 = Product.Create(Guid.NewGuid(), "Product 1", "Description");
-        var product2 = Product.Create(Guid.NewGuid(), "Product 2", "Description");
         var offer = SingleOffer.Create("Offer 1", price, DateTime.Now, DateTime.Now.AddDays(1), product1, localisation);
-        context.AddRange(
-            product1,
-            product2,
-            offer
-        );
+        context.Offers.AddRange(offer);
         context.SaveChanges();
-        
     }
     
     public DataContext CreateContext()

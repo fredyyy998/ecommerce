@@ -9,7 +9,7 @@ public class OfferTest
     {
         var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
         var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         
         var discount = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
@@ -25,7 +25,7 @@ public class OfferTest
     {
         var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
         var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         var discount = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
         offer.ApplyDiscount(discount);
@@ -44,10 +44,11 @@ public class OfferTest
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
         var dateStart = DateTime.Now;
         var dateEnd = DateTime.MaxValue;
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
         
         var offer = SingleOffer.Create("test offer", price, dateStart, dateEnd, product, localisation);
         
+        Assert.NotNull(offer.Id);
         Assert.Equal("test offer", offer.Name);
         Assert.Equal(price, offer.Price);
         Assert.Equal(dateStart, offer.StartDate);
@@ -65,9 +66,10 @@ public class OfferTest
         var products = new List<Product> {product1, product2};
         var dateStart = DateTime.Now;
         var dateEnd = DateTime.MaxValue;
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
         var offer = PackageOffer.Create("test offer", price, dateStart, dateEnd, products, localisation);
         
+        Assert.NotNull(offer.Id);
         Assert.Equal("test offer", offer.Name);
         Assert.Equal(price, offer.Price);
         Assert.Equal(dateStart, offer.StartDate);
@@ -81,7 +83,7 @@ public class OfferTest
     {
         var price = Price.CreateFromGross(119, 19);
         var product = Product.Create(Guid.NewGuid(), "test product", "test description");
-        var localisation = new Localization("DE", "Germany", "Deutschland", "EUR");
+        var localisation = Localization.Create("DE", "Germany", "Deutschland", "EUR");
         var offer = SingleOffer.Create("test offer", price, DateTime.Now, DateTime.MaxValue, product, localisation);
         var discount1 = Discount.Create(10, DateTime.Now, DateTime.MaxValue);
         offer.ApplyDiscount(discount1);

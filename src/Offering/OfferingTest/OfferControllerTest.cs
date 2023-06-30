@@ -24,6 +24,7 @@ public class OfferControllerTest : IClassFixture<TestDatabaseFixture>, IDisposab
     public async void ListOffers_Should_Return_All_Offers()
     {
         // Arrange
+        Fixture.CreateMockDbData();
         var context = Fixture.CreateContext();
         var _offerRepository = new OfferRepository(context);
         var _productRepository = new ProductRepository(context);
@@ -47,6 +48,8 @@ public class OfferControllerTest : IClassFixture<TestDatabaseFixture>, IDisposab
         var _offerRepository = new OfferRepository(context);
         var _productRepository = new ProductRepository(context);
         var _localisationRepository = new LocalizationRepository(context);
+        context.Localizations.Add(Localization.Create("DE", "Germany", "Deutschland", "EUR"));
+        context.SaveChanges();
         var controller = new OfferController(_offerRepository, _productRepository, _localisationRepository);
         var product = Product.Create(Guid.NewGuid(), "Product 2", "Description");
         await _productRepository.Add(product);

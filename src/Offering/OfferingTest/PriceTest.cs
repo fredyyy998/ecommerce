@@ -13,4 +13,16 @@ public class PriceTest
         Assert.Equal(100, price.NetPrice);
         Assert.Equal(19, price.TaxRate);
     }
+    
+    [Fact]
+    public void Create_Price_With_Negative_Gross_throws_Exception()
+    {
+        Assert.Throws<ArgumentException>(() => Price.CreateFromGross(-119, 19));
+    }
+    
+    [Fact]
+    public void Create_Price_With_Negative_Tax_Rate_throws_Exception()
+    {
+        Assert.Throws<ArgumentException>(() => Price.CreateFromGross(119, -19));
+    }
 }

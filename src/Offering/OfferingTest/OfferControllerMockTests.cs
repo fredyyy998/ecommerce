@@ -20,7 +20,7 @@ public class OfferControllerMockTests
                 new List<Offer>
                 {
                     SingleOffer.Create("Offer 1", Price.CreateFromGross(10, 19), DateTime.Now,
-                        DateTime.Now.AddDays(1), Product.Create(Guid.NewGuid(), "Product 1", "Description"), new Localization("DE", "Germany", "Deutschland", "EUR"))
+                        DateTime.Now.AddDays(1), Product.Create(Guid.NewGuid(), "Product 1", "Description"), Localization.Create("DE", "Germany", "Deutschland", "EUR"))
                 });
         
         var productRepositoryMock = new Mock<IProductRepository>();
@@ -51,7 +51,7 @@ public class OfferControllerMockTests
         var createSingleOfferRequestDto = new CreateSingleOfferRequestDto("Offer 2", 10, 19, DateTime.Now, DateTime.Now.AddDays(1), product.Id);
 
         productRepositoryMock.Setup(r => r.FindById(product.Id)).ReturnsAsync(product);
-        repositoryMock.Setup(r => r.Add(It.IsAny<SingleOffer>())).ReturnsAsync(SingleOffer.Create(createSingleOfferRequestDto.name, Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue), createSingleOfferRequestDto.startDate, createSingleOfferRequestDto.endDate, product, new Localization("DE", "Germany", "Deutschland", "EUR")));
+        repositoryMock.Setup(r => r.Add(It.IsAny<SingleOffer>())).ReturnsAsync(SingleOffer.Create(createSingleOfferRequestDto.name, Price.CreateFromGross(createSingleOfferRequestDto.grossPrice, createSingleOfferRequestDto.taxValue), createSingleOfferRequestDto.startDate, createSingleOfferRequestDto.endDate, product, Localization.Create("DE", "Germany", "Deutschland", "EUR")));
         var localizationRepositoryMock = new Mock<ILocalizationRepository>();
 
         var controller = new OfferController(repositoryMock.Object, productRepositoryMock.Object, localizationRepositoryMock.Object);

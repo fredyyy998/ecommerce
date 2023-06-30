@@ -10,11 +10,16 @@ public class Localization
     
     public string Currency { get; private set; }
     
-    public Localization(string countryCode, string countryName, string localName, string currency)
+    protected Localization(string countryCode, string countryName, string localName, string currency)
     {
         CountryCode = countryCode;
         CountryName = countryName;
         LocalName = localName;
         Currency = currency;
+    }
+    
+    public static Localization Create(string countryCode, string countryName, string localName, string currency)
+    {
+        return new Localization(countryCode, countryName, localName, currency);
     }
 }
