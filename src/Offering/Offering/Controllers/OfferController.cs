@@ -24,9 +24,9 @@ public class OfferController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ListOffers()
+    public async Task<IActionResult> ListOffers([FromQuery] int skip = 0, [FromQuery] int take = 25)
     {
-        var offerResult = await _offerRepository.FindAll();
+        var offerResult = await _offerRepository.FindAll(skip, take);
         return Ok(offerResult);
     }
 

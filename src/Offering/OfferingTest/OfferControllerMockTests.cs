@@ -15,7 +15,7 @@ public class OfferControllerMockTests
         // Arrange
         var repositoryMock = new Mock<IOfferRepository>();
         repositoryMock
-            .Setup(r => r.FindAll())
+            .Setup(r => r.FindAll(0, 25))
             .ReturnsAsync(
                 new List<Offer>
                 {
@@ -32,7 +32,7 @@ public class OfferControllerMockTests
         var result = await controller.ListOffers();
 
         // Assert
-        repositoryMock.Verify(r => r.FindAll(), Times.Once);
+        repositoryMock.Verify(r => r.FindAll(0, 25), Times.Once);
         var okResult = result as OkObjectResult;
         var value = okResult.Value as List<Offer>;
         Assert.Equal(1, value.Count);

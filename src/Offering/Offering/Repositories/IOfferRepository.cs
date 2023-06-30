@@ -4,7 +4,7 @@ namespace Offering.Repositories;
 
 public interface IOfferRepository
 {
-    Task<List<Offer>> FindAll(); 
+    Task<List<Offer>> FindAll(int skip, int take); 
     
     Task<List<Offer>> FindAllAvailable();
 

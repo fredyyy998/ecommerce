@@ -13,13 +13,14 @@ public class OfferRepository : IOfferRepository
         _context = context;
     }
 
-    public async Task<List<Offer>> FindAll()
+    public async Task<List<Offer>> FindAll(int skip = 0, int take = 25)
     {
         return await _context.Offers.Include(o => (o as SingleOffer).Product)
             .Include(o => (o as PackageOffer).Products)
-            .Include(o => o.Localization).ToListAsync();
+            .Include(o => o.Localization)
+            .Skip(skip).Take(take).ToListAsync();
     }
-
+    
     public async Task<List<Offer>> FindAllAvailable()
     {
         return await _context.Offers.Where(o => o.EndDate > DateTime.Now).ToListAsync();
