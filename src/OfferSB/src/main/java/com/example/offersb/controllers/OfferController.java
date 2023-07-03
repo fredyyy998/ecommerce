@@ -8,7 +8,9 @@ import com.example.offersb.models.*;
 import com.example.offersb.repositories.ILocalizationRepository;
 import com.example.offersb.repositories.IOfferRepository;
 import com.example.offersb.repositories.IProductRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +33,9 @@ public class OfferController {
     }
 
     @GetMapping()
-    public List<Offer> getAllOffers() {
-        return offerRepository.findAll();
+    public List<Offer> getAllOffers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int limit) {
+        var pageable = PageRequest.of(page, limit);
+        return offerRepository.findAllBy(pageable);
     }
 
     @GetMapping("/{id}")

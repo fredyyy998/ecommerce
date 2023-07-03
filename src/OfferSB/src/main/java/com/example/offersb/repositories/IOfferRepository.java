@@ -1,11 +1,8 @@
 package com.example.offersb.repositories;
 
 import com.example.offersb.models.Offer;
-import com.example.offersb.models.PackageOffer;
-import com.example.offersb.models.SingleOffer;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.UUID;
 
 public interface IOfferRepository extends JpaRepository<Offer, UUID> {
 
+    List<Offer> findAllBy(PageRequest pageable);
     List<Offer> findByEndDateGreaterThan(LocalDate date);
 
     List<Offer> findByEndDateLessThan(LocalDate date);
