@@ -37,7 +37,7 @@ public class OfferControllerTest : IClassFixture<TestDatabaseFixture>, IDisposab
         // Assert
         var okResult = result as OkObjectResult;
         var value = okResult.Value as List<Offer>;
-        Assert.Equal(1, value.Count);
+        Assert.Equal(6, value.Count);
     }
 
     [Fact]

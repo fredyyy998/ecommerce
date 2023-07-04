@@ -7,7 +7,7 @@ public class PackageOffer : Offer
     public IReadOnlyCollection<Product> Products => _products.AsReadOnly();
 
     private PackageOffer() : base() {}
-    protected PackageOffer(Guid id, string name, Price price, DateTime startDate, DateTime endDate, List<Product> products, Localization localization) : base(Guid.NewGuid(), name, price, startDate, endDate, localization)
+    protected PackageOffer(Guid id, string name, Price price, DateTime startDate, DateTime endDate, List<Product> products, Localization localization) : base(id, name, price, startDate, endDate, localization)
     {
         _products = products;
     }
@@ -15,5 +15,10 @@ public class PackageOffer : Offer
     public static PackageOffer Create(string name, Price price, DateTime startDate, DateTime endDate, List<Product> products, Localization localization)
     {
         return new PackageOffer(Guid.NewGuid(), name, price, startDate, endDate, products, localization);
+    }
+    
+    public static PackageOffer Create(Guid id, string name, Price price, DateTime startDate, DateTime endDate, List<Product> products, Localization localization)
+    {
+        return new PackageOffer(id, name, price, startDate, endDate, products, localization);
     }
 }
