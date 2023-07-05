@@ -54,6 +54,9 @@ public abstract class Offer {
         if (discount == null) {
             throw new IllegalArgumentException("discount must not be null");
         }
+        if (this.discount.getDiscountRate() != 0 && this.discount.getEndDate() != null && this.discount.getStartDate() != null) {
+            throw new IllegalStateException("discount already applied");
+        }
         this.discount = discount;
         this.price = calculatePriceFromDiscount(discount, this.price);
     }

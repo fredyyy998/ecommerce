@@ -25,4 +25,8 @@ public class SingleOffer extends Offer {
     public static SingleOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product, Localization localization) {
         return new SingleOffer(id, name, price, startDate, endDate, product, localization);
     }
+
+    public static SingleOffer create(String name, Price price, LocalDateTime startDate, LocalDateTime endDate, Product product, Localization localization) {
+        return new SingleOffer(UUID.randomUUID(), name, price, startDate, endDate, product, localization);
+    }
 }

@@ -28,4 +28,8 @@ public class PackageOffer extends Offer {
     public static PackageOffer create(UUID id, String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products, Localization localization) {
         return new PackageOffer(id, name, price, startDate, endDate, products, localization);
     }
+
+    public static PackageOffer create(String name, Price price, LocalDateTime startDate, LocalDateTime endDate, List<Product> products, Localization localization) {
+        return new PackageOffer(UUID.randomUUID(), name, price, startDate, endDate, products, localization);
+    }
 }
